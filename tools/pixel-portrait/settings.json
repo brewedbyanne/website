@@ -1,0 +1,72 @@
+[
+  {
+    "name": "anne-8bit",
+    "photo": "../../resources/img/anne.jpg",
+    "mask": "work/anne-mask.png",
+    "landmarks": "work/anne-landmarks.json",
+    "crop": [
+      0,
+      90,
+      660
+    ],
+    "size": 48,
+    "saturation": 1.15,
+    "contrast": 1.0,
+    "cleanupPasses": 3,
+    "personPalette": [
+      "#e8b796",
+      "#e4a672",
+      "#c28569",
+      "#b86f50",
+      "#733e39",
+      "#3e2731",
+      "#be4a2f",
+      "#a22633",
+      "#68386c",
+      "#c0cbdc",
+      "#8b9bb4",
+      "#5a6988",
+      "#262b44",
+      "#181425"
+    ],
+    "features": {
+      "eyebrow": "#733e39",
+      "frame": "#68386c",
+      "frameBottom": "#68386c",
+      "pupil": "#181425",
+      "mouth": "#a22633",
+      "noseShadow": "#c28569"
+    }
+  },
+  {
+    "name": "curious-8bit",
+    "photo": "../../resources/img/curious.jpg",
+    "mask": "work/curious-mask.png",
+    "crop": [
+      220,
+      110,
+      360
+    ],
+    "size": 48,
+    "saturation": 1.3,
+    "contrast": 1.1,
+    "keepBackground": true,
+    "backgroundSaturation": 1.1,
+    "backgroundBlock": 2,
+    "cleanupPasses": 2,
+    "backgroundPalette": [
+      "#ffffff",
+      "#c0cbdc",
+      "#8b9bb4",
+      "#5a6988",
+      "#ead4aa",
+      "#e4a672",
+      "#c28569",
+      "#b86f50",
+      "#733e39",
+      "#3e2731",
+      "#3e8948"
+    ],
+    "brightness": 1.25
+  }
+]

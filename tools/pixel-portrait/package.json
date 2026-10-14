@@ -1,0 +1,11 @@
+{
+  "name": "pixel-portrait",
+  "private": true,
+  "description": "Makes the video game theme's 8-bit profile photos",
+  "scripts": {
+    "make": "node make.js"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}

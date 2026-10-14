@@ -375,11 +375,24 @@
         text-align: center;
     }
 
+    /*
+     * Your photos as 8-bit pixel art (made with tools/pixel-portrait). The left padding as
+     * wide as the image pushes the real photo out of its own box, so only the pixel-art
+     * background shows. The art is 48px, so 192px is exactly 4 screen pixels per art pixel.
+     */
     .profilePic {
-        width: 160px;
-        height: 160px;
-        object-fit: cover;
+        --vg-portrait-size: 192px;
+        box-sizing: border-box;
+        width: var(--vg-portrait-size);
+        height: var(--vg-portrait-size);
+        padding-left: var(--vg-portrait-size);
+        background: var(--vg-yellow) url("../../img/anne-8bit.png") 0 0 / 100% 100% no-repeat;
+        image-rendering: pixelated;
         box-shadow: var(--vg-box-border);
+    }
+
+    #us {
+        background-image: url("../../img/curious-8bit.png");
     }
 
     .name {
@@ -498,9 +511,9 @@
             padding: 1.25rem;
         }
 
+        /* 3 screen pixels per art pixel */
         .profilePic {
-            width: 120px;
-            height: 120px;
+            --vg-portrait-size: 144px;
         }
     }
 

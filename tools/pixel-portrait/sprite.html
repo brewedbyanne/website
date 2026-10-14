@@ -1,0 +1,198 @@
+<!doctype html>
+<meta charset="utf-8">
+<body style="margin:0">
+<script>
+// Turns a photo + person mask into 8-bit pixel art. make.js runs makeSprite() in headless Chrome
+// with each entry from settings.json:
+//
+//   photo, mask, landmarks   source photo, its person mask, and (optional) its facial features
+//   crop: [x, y, size]       the square of the photo to use, in photo pixels
+//   size                     width/height of the pixel art
+//   saturation, contrast, brightness   color tweaks for the person
+//   personPalette            colors the person may use (default: all 32)
+//   keepBackground           keep the scenery (a game "level"), or leave it transparent (a portrait)
+//   backgroundPalette, backgroundSaturation, backgroundBlock   the same, for the scenery
+//   cleanupPasses            how many times to smooth away lone pixels
+//   features                 colors for the drawn eyebrows, glasses, pupils, mouth and nose shadow
+const hexToRgb = hex => [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16));
+
+// The "Endesga 32" palette, a popular 32-color pixel-art palette
+const ENDESGA_32 = ['#be4a2f', '#d77643', '#ead4aa', '#e4a672', '#b86f50', '#733e39', '#3e2731', '#a22633',
+    '#e43b44', '#f77622', '#feae34', '#fee761', '#63c74d', '#3e8948', '#265c42', '#193c3e', '#124e89', '#0099db',
+    '#2ce8f5', '#ffffff', '#c0cbdc', '#8b9bb4', '#5a6988', '#3a4466', '#262b44', '#181425', '#ff0044', '#68386c',
+    '#b55088', '#f6757a', '#e8b796', '#c28569'
+].map(hexToRgb);
+const OUTLINE = hexToRgb('#181425'); // the palette's darkest color
+
+function nearest([r, g, b], palette = ENDESGA_32) {
+    let best, bestDistance = Infinity;
+    for (const c of palette) {
+        const rMean = (r + c[0]) / 2, dr = r - c[0], dg = g - c[1], db = b - c[2];
+        const d = (2 + rMean / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rMean) / 256) * db * db;
+        if (d < bestDistance) { bestDistance = d; best = c; }
+    }
+    return best;
+}
+
+// Push colors away from gray (saturation) and away from mid-gray (contrast)
+function punchUp([r, g, b], saturation, contrast, brightness = 1) {
+    [r, g, b] = [r, g, b].map(v => v * brightness);
+    const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+    return [r, g, b].map(v => {
+        v = gray + (v - gray) * saturation;
+        v = 128 + (v - 128) * contrast;
+        return Math.max(0, Math.min(255, v));
+    });
+}
+
+function load(src) {
+    return new Promise(resolve => { const img = new Image(); img.onload = () => resolve(img); img.src = src; });
+}
+
+// Draw a square crop of an image at a small size (smoothing on, so each pixel is the area's average)
+function shrink(img, crop, size) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, crop[0], crop[1], crop[2], crop[2], 0, 0, size, size);
+    return ctx.getImageData(0, 0, size, size).data;
+}
+
+// Draw crisp pixel-art features where Vision found them: eyebrows, glasses, eyes, smile, nose shadow
+function drawFeatures(grid, n, o, lm) {
+    const scale = n / o.crop[2];
+    const toSprite = ([x, y]) => [(x - o.crop[0]) * scale, (y - o.crop[1]) * scale];
+    const paint = (x, y, hex) => {
+        x = Math.round(x); y = Math.round(y);
+        if (grid[y] && grid[y][x]) grid[y][x].color = hexToRgb(hex);
+    };
+    // Bresenham-style line between two sprite-space points
+    const line = (a, b, hex) => {
+        const steps = Math.max(Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1]), 1);
+        for (let t = 0; t <= steps; t++) paint(a[0] + (b[0] - a[0]) * t / steps, a[1] + (b[1] - a[1]) * t / steps, hex);
+    };
+    const polyline = (pts, hex) => pts.map(toSprite).forEach((p, i, all) => { if (i) line(all[i - 1], p, hex); });
+    const box = pts => {
+        const s = pts.map(toSprite), xs = s.map(p => p[0]), ys = s.map(p => p[1]);
+        return { minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys) };
+    };
+
+    const f = o.features;
+    // Eyebrows
+    polyline(lm.leftEyebrow, f.eyebrow);
+    polyline(lm.rightEyebrow, f.eyebrow);
+
+    // Glasses: a frame around each eye, sized and placed the way the real lenses sit (a bit outward and low)
+    const lens = (eye, outward) => {
+        const b = box(eye), w = b.maxX - b.minX, cx = (b.minX + b.maxX) / 2 + outward * 0.4 * w, cy = (b.minY + b.maxY) / 2 + 0.3 * w;
+        return { left: Math.round(cx - 1.0 * w), right: Math.round(cx + 1.0 * w), top: Math.round(cy - 0.75 * w), bottom: Math.round(cy + 0.75 * w) };
+    };
+    // Vision's leftEye is the one on the left side of the photo; each lens sits a little outward from its eye
+    const lenses = [lens(lm.leftEye, -1), lens(lm.rightEye, 1)].sort((a, b) => a.left - b.left);
+    lenses.forEach(l => {
+        // a glint in the top corner of each lens
+        paint(l.left + 2, l.top + 1, '#ffffff');
+        line([l.left, l.top], [l.right, l.top], f.frame);
+        line([l.left, l.top], [l.left, l.bottom], f.frame);
+        line([l.right, l.top], [l.right, l.bottom], f.frame);
+        line([l.left, l.bottom], [l.right, l.bottom], f.frameBottom);
+    });
+    line([lenses[0].right, lenses[0].top + 1], [lenses[1].left, lenses[1].top + 1], f.frame); // bridge
+
+    // Eyes: a dark pupil two pixels tall with a white catchlight beside it
+    [lm.leftPupil[0], lm.rightPupil[0]].map(toSprite).forEach(([x, y]) => {
+        paint(x, y, f.pupil);
+        paint(x, y - 1, f.pupil);
+        paint(x + 1, y - 1, '#ffffff');
+    });
+
+    // Smile along the line where the lips meet, corners turned up a pixel
+    const mouth = lm.innerLips.map(toSprite).sort((a, b) => a[0] - b[0]);
+    for (let i = 1; i < mouth.length; i++) line(mouth[i - 1], mouth[i], f.mouth);
+    paint(mouth[0][0] - 1, mouth[0][1] - 1, f.mouth);
+    paint(mouth[mouth.length - 1][0] + 1, mouth[mouth.length - 1][1] - 1, f.mouth);
+
+    // A little shadow under the nose
+    const noseBottom = box(lm.nose);
+    paint((noseBottom.minX + noseBottom.maxX) / 2, noseBottom.maxY, f.noseShadow);
+    paint((noseBottom.minX + noseBottom.maxX) / 2 + 1, noseBottom.maxY, f.noseShadow);
+}
+
+async function makeSprite(o) {
+    const [photo, mask] = await Promise.all([load(o.photo), load(o.mask)]);
+    const n = o.size;
+    const rgb = shrink(photo, o.crop, n);
+    const alpha = shrink(mask, o.crop, n);
+    const personPalette = o.personPalette ? o.personPalette.map(hexToRgb) : ENDESGA_32;
+    const backgroundPalette = o.backgroundPalette ? o.backgroundPalette.map(hexToRgb) : ENDESGA_32;
+    // A chunkier background: average it over 2x2 blocks so the scenery reads as simple shapes
+    const backgroundRgb = o.backgroundBlock ? shrink(photo, o.crop, n / o.backgroundBlock) : null;
+
+    // grid[y][x] = { color, person } ; color null means transparent
+    const grid = [];
+    for (let y = 0; y < n; y++) {
+        grid.push([]);
+        for (let x = 0; x < n; x++) {
+            const i = (y * n + x) * 4;
+            const person = alpha[i] > 127;
+            let color = null;
+            if (person) {
+                color = nearest(punchUp([rgb[i], rgb[i + 1], rgb[i + 2]], o.saturation, o.contrast, o.brightness), personPalette);
+            } else if (o.keepBackground) {
+                let src = rgb, j = i;
+                if (backgroundRgb) {
+                    const b = o.backgroundBlock, m = n / b;
+                    src = backgroundRgb;
+                    j = (Math.floor(y / b) * m + Math.floor(x / b)) * 4;
+                }
+                color = nearest(punchUp([src[j], src[j + 1], src[j + 2]], o.backgroundSaturation, 1), backgroundPalette);
+            }
+            grid[y].push({ color, person });
+        }
+    }
+
+    // Tidy up: a pixel unlike all four neighbors takes the most common neighbor color
+    const same = (a, b) => a && b && a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
+    for (let pass = 0; pass < (o.cleanupPasses || 1); pass++) {
+        for (let y = 1; y < n - 1; y++) {
+            for (let x = 1; x < n - 1; x++) {
+                const cell = grid[y][x];
+                if (!cell.color) continue;
+                const neighbors = [grid[y - 1][x], grid[y + 1][x], grid[y][x - 1], grid[y][x + 1]]
+                    .filter(c => c.color && c.person === cell.person);
+                if (neighbors.length < 3 || neighbors.some(c => same(c.color, cell.color))) continue;
+                const counts = new Map();
+                neighbors.forEach(c => counts.set(c.color, (counts.get(c.color) || 0) + 1));
+                cell.color = [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+            }
+        }
+    }
+
+    if (o.landmarks) {
+        drawFeatures(grid, n, o, await (await fetch(o.landmarks)).json());
+    }
+
+    // Outline: every non-person pixel touching the person becomes the outline color
+    const outlined = grid.map(row => row.map(c => ({ ...c })));
+    for (let y = 0; y < n; y++) {
+        for (let x = 0; x < n; x++) {
+            if (grid[y][x].person) continue;
+            const touches = [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => grid[y + dy] && grid[y + dy][x + dx] && grid[y + dy][x + dx].person);
+            if (touches) outlined[y][x].color = OUTLINE;
+        }
+    }
+
+    const out = document.createElement('canvas');
+    out.width = out.height = n;
+    const ctx = out.getContext('2d');
+    const image = ctx.createImageData(n, n);
+    outlined.forEach((row, y) => row.forEach((cell, x) => {
+        if (!cell.color) return;
+        const i = (y * n + x) * 4;
+        image.data.set([...cell.color, 255], i);
+    }));
+    ctx.putImageData(image, 0, 0);
+    return out.toDataURL('image/png');
+}
+</script>
