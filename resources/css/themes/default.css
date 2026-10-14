@@ -74,6 +74,7 @@
 
     .name,
     .job h2 a,
+    .job h2 > b,
     .contact-links a {
         color: #72676b;
     }

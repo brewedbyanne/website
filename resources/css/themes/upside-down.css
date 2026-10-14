@@ -439,8 +439,10 @@
         box-shadow: 0 0 16px rgba(255, 204, 51, .35);
     }
 
+    /* Company names (most are links; one isn't) */
     .school h2,
-    .job h2 a {
+    .job h2 a,
+    .job h2 > b {
         color: var(--ud-gold);
     }
 
