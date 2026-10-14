@@ -1,0 +1,511 @@
+/* Upside Down: '80s synthwave meets small-town supernatural */
+
+/*
+ * Animations and @property can't go inside the :where(...) block below (CSS only
+ * allows them at the top level), so their names start with "upside-down-" to keep
+ * them from clashing with other themes.
+ *
+ * Everything that moves animates transform, opacity, or a background position, and
+ * all of it stops for visitors who've asked their device to reduce motion.
+ */
+
+/* Lets the browser animate an angle inside a gradient (the light chasing around a card's border) */
+@property --upside-down-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+/* The neon floor rolls toward you, one grid square per loop */
+@keyframes upside-down-grid {
+    to {
+        background-position: 0 64px, 0 64px;
+    }
+}
+
+/* Ash drifting up through the air, one tile per loop */
+@keyframes upside-down-spores {
+    to {
+        transform: translateY(-240px);
+    }
+}
+
+/* Red fog sliding slowly back and forth */
+@keyframes upside-down-fog {
+    to {
+        transform: translateX(-12%);
+    }
+}
+
+/* The sun breathing */
+@keyframes upside-down-sun {
+    50% {
+        opacity: .7;
+        transform: translate(-50%, 50%) scale(1.03);
+    }
+}
+
+/* Christmas lights: the whole string shifts one bulb at a time, so the colors chase */
+@keyframes upside-down-lights {
+    to {
+        background-position: 128px 0;
+    }
+}
+
+/* A neon sign with a bad connection (two quick dips, well under the 3-flashes-a-second limit) */
+@keyframes upside-down-flicker {
+    0%,
+    30%,
+    33%,
+    70%,
+    72%,
+    100% {
+        opacity: 1;
+    }
+
+    31.5% {
+        opacity: .35;
+    }
+
+    71% {
+        opacity: .55;
+    }
+}
+
+/* Something's near: the lights dim twice, about once every 11 seconds */
+@keyframes upside-down-power-dip {
+    0%,
+    86%,
+    88.5%,
+    91%,
+    100% {
+        opacity: 0;
+    }
+
+    87% {
+        opacity: .55;
+    }
+
+    90% {
+        opacity: .35;
+    }
+}
+
+/* Title letters drift together out of the dark, like an opening credit */
+@keyframes upside-down-title-in {
+    from {
+        opacity: 0;
+        letter-spacing: .5em;
+        filter: blur(6px);
+    }
+}
+
+@keyframes upside-down-chase {
+    to {
+        --upside-down-angle: 360deg;
+    }
+}
+
+/* Only applies while <html data-theme="upside-down"> (see default.css for how this works) */
+:where(:root[data-theme="upside-down"]) {
+    --ud-red: #ff1f3d;
+    --ud-pink: #ff2a6d;
+    --ud-cyan: #2de2e6;
+    --ud-gold: #ffcc33;
+    --ud-text: #ddd6ee;
+    --ud-panel: rgba(14, 6, 24, .88);
+
+    body {
+        background-color: #07030c;
+        color: var(--ud-text);
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 17px;
+    }
+
+    /* ---------- The world behind the page (all fixed to the screen, behind the content) ---------- */
+
+    /* Red fog */
+    &::before {
+        content: "";
+        position: fixed;
+        z-index: -3;
+        inset: -10% -30% -10% -10%;
+        background:
+            radial-gradient(ellipse 40% 30% at 20% 85%, rgba(255, 31, 61, .35), transparent 70%),
+            radial-gradient(ellipse 35% 25% at 70% 90%, rgba(181, 23, 158, .3), transparent 70%),
+            radial-gradient(ellipse 30% 20% at 50% 58%, rgba(255, 42, 109, .35), transparent 70%),
+            radial-gradient(ellipse 45% 30% at 85% 10%, rgba(120, 0, 30, .35), transparent 70%);
+        filter: blur(30px);
+        animation: upside-down-fog 24s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+
+    /* The lights dimming, over everything */
+    &::after {
+        content: "";
+        position: fixed;
+        z-index: 2000;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        animation: upside-down-power-dip 11s infinite;
+        pointer-events: none;
+    }
+
+    /* Striped sunset sun sitting on the horizon */
+    main::before {
+        content: "";
+        position: fixed;
+        z-index: -2;
+        left: 50%;
+        bottom: 42vh;
+        width: min(46vmin, 380px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: linear-gradient(#ffd84d, #ff8a3d 35%, #ff2a6d 65%, #b5179e);
+        transform: translate(-50%, 50%);
+        mask-image: linear-gradient(#000 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 68%, #000 68% 75%,
+                transparent 75% 80%, #000 80% 86%, transparent 86% 92%, #000 92%);
+        animation: upside-down-sun 6s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    /* Neon grid floor, tipped back in 3D */
+    body::before {
+        content: "";
+        position: fixed;
+        z-index: -1;
+        left: -50%;
+        right: -50%;
+        bottom: 0;
+        height: 42vh;
+        background-image:
+            linear-gradient(to right, rgba(255, 42, 109, .6) 2px, transparent 2px),
+            linear-gradient(to bottom, rgba(255, 42, 109, .6) 2px, transparent 2px);
+        background-size: 64px 64px;
+        transform: perspective(320px) rotateX(62deg);
+        transform-origin: top;
+        mask-image: linear-gradient(transparent, #000 30%);
+        animation: upside-down-grid 1.6s linear infinite;
+        pointer-events: none;
+    }
+
+    /* Floating ash */
+    body::after {
+        content: "";
+        position: fixed;
+        z-index: -1;
+        inset: 0 0 -240px;
+        background-image:
+            radial-gradient(2px 2px at 30px 40px, rgba(255, 255, 255, .55), transparent),
+            radial-gradient(1.5px 1.5px at 110px 160px, rgba(255, 190, 200, .5), transparent),
+            radial-gradient(2.5px 2.5px at 190px 90px, rgba(255, 255, 255, .35), transparent),
+            radial-gradient(1.5px 1.5px at 60px 210px, rgba(255, 255, 255, .45), transparent),
+            radial-gradient(2px 2px at 160px 20px, rgba(255, 150, 170, .45), transparent);
+        background-size: 240px 240px;
+        animation: upside-down-spores 26s linear infinite;
+        pointer-events: none;
+    }
+
+    /* ---------- Navbar, with a string of Christmas lights hanging off the bottom ---------- */
+
+    #navbar {
+        position: relative;
+        z-index: 10;
+        border-bottom: 1px solid rgba(255, 42, 109, .6);
+        background-color: #05020a;
+        box-shadow: 0 0 24px rgba(255, 42, 109, .35);
+    }
+
+    #navbar::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -24px;
+        height: 24px;
+        background:
+            linear-gradient(#3a2f45, #3a2f45) 0 0 / 10px 2px repeat-x,
+            radial-gradient(circle at 16px 12px, #ff3b3b 0 3.5px, rgba(255, 59, 59, .45) 4.5px, transparent 10px) 0 0 / 128px 24px repeat-x,
+            radial-gradient(circle at 48px 12px, #ffd23f 0 3.5px, rgba(255, 210, 63, .45) 4.5px, transparent 10px) 0 0 / 128px 24px repeat-x,
+            radial-gradient(circle at 80px 12px, #3bd16f 0 3.5px, rgba(59, 209, 111, .45) 4.5px, transparent 10px) 0 0 / 128px 24px repeat-x,
+            radial-gradient(circle at 112px 12px, #3b8bff 0 3.5px, rgba(59, 139, 255, .45) 4.5px, transparent 10px) 0 0 / 128px 24px repeat-x;
+        animation: upside-down-lights 2.4s steps(4) infinite;
+        pointer-events: none;
+    }
+
+    /* Solid instead of outlined: an outline turns to mush at this size */
+    .site-name,
+    .site-name:hover {
+        color: var(--ud-red);
+        font-family: 'Fraunces', serif;
+        font-weight: 900;
+        text-shadow: 0 0 6px rgba(255, 31, 61, .8), 0 0 14px rgba(255, 0, 40, .5);
+    }
+
+    /* The typewriter font runs wide, so the menu gets a touch smaller to stay on one line */
+    #navbar {
+        font-size: 15px;
+    }
+
+    .nav-links a,
+    .dropdown > summary {
+        color: rgba(221, 214, 238, .7);
+        white-space: nowrap;
+    }
+
+    .nav-links a:hover,
+    .dropdown > summary:hover {
+        color: var(--ud-cyan);
+        text-shadow: 0 0 8px rgba(45, 226, 230, .8);
+    }
+
+    .nav-links a[aria-current="page"] {
+        color: #fff;
+        text-shadow: 0 0 8px var(--ud-red), 0 0 16px var(--ud-red);
+    }
+
+    .dropdown-menu {
+        border-color: var(--ud-pink);
+        background-color: #120a1c;
+        box-shadow: 0 0 18px rgba(255, 42, 109, .4);
+    }
+
+    .dropdown-menu button {
+        color: var(--ud-text);
+    }
+
+    .dropdown-menu button:hover,
+    .dropdown-menu button:focus-visible {
+        background-color: rgba(255, 42, 109, .2);
+    }
+
+    .dropdown-menu button[aria-current="true"] {
+        background-color: var(--ud-red);
+        color: #fff;
+    }
+
+    /* ---------- Headings: red neon outlines on a bad circuit ---------- */
+
+    .page-title,
+    .name {
+        color: #12000a;
+        font-family: 'Fraunces', serif;
+        font-weight: 900;
+        letter-spacing: .02em;
+        -webkit-text-stroke: 1.5px var(--ud-red);
+        text-shadow:
+            0 0 4px var(--ud-red),
+            0 0 14px rgba(255, 31, 61, .8),
+            0 0 36px rgba(255, 0, 40, .5);
+        animation:
+            upside-down-title-in 2.5s cubic-bezier(.2, .7, .2, 1) both,
+            upside-down-flicker 6s 2.5s infinite;
+    }
+
+    .page-title {
+        margin: 2.5rem 0 1.5rem;
+        font-size: clamp(1.8rem, 6vw, 4rem);
+    }
+
+    .name {
+        font-size: clamp(2.5rem, 7vw, 5.5rem);
+    }
+
+    .title {
+        color: var(--ud-cyan);
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
+        letter-spacing: .35em;
+        text-shadow: 0 0 8px rgba(45, 226, 230, .8);
+        text-transform: uppercase;
+    }
+
+    h3 {
+        color: var(--ud-pink);
+        font-family: 'Fraunces', serif;
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(255, 42, 109, .7);
+    }
+
+    h4 {
+        color: var(--ud-gold);
+    }
+
+    h5,
+    .project-facts dt {
+        color: var(--ud-cyan);
+        font-size: 1rem;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+    }
+
+    a {
+        color: var(--ud-cyan);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--ud-pink);
+        text-shadow: 0 0 8px rgba(255, 42, 109, .8);
+    }
+
+    .noShowLink,
+    .noShowLink:hover {
+        color: inherit;
+        text-shadow: none;
+    }
+
+    hr {
+        border-top-color: var(--ud-pink);
+        box-shadow: 0 0 10px var(--ud-pink);
+        opacity: .6;
+    }
+
+    /* ---------- Panels and cards ---------- */
+
+    .container {
+        margin-block: 2rem;
+        padding: 1.5rem 2rem;
+        border: 1px solid rgba(255, 42, 109, .5);
+        border-radius: 6px;
+        background-color: var(--ud-panel);
+        box-shadow: 0 0 22px rgba(255, 0, 60, .25), inset 0 0 40px rgba(255, 0, 60, .07);
+    }
+
+    /* A light chases around the border when you hover a card */
+    .card {
+        border: 2px solid transparent;
+        background:
+            linear-gradient(#120a1c, #120a1c) padding-box,
+            conic-gradient(from var(--upside-down-angle), var(--ud-pink), var(--ud-cyan), var(--ud-gold), var(--ud-pink)) border-box;
+        transition: transform .3s, box-shadow .3s;
+        animation: upside-down-chase 3s linear infinite paused;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 24px rgba(45, 226, 230, .35);
+        animation-play-state: running;
+    }
+
+    .card-img {
+        filter: saturate(.75) contrast(1.05);
+        transition: filter .3s;
+    }
+
+    .card:hover .card-img {
+        filter: none;
+    }
+
+    /* ---------- Home page ---------- */
+
+    #site-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem 3rem;
+        padding: 1rem 0 .5rem;
+        text-align: center;
+    }
+
+    .profilePic {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border: 3px solid var(--ud-red);
+        border-radius: 50%;
+        box-shadow: 0 0 18px var(--ud-red), 0 0 40px rgba(255, 0, 40, .35);
+    }
+
+    /* Hovering your photo flips it into the Upside Down */
+    #us {
+        transform: rotate(180deg);
+        filter: grayscale(1) brightness(.7) contrast(1.5) sepia(1) hue-rotate(-50deg) saturate(3);
+        box-shadow: 0 0 18px var(--ud-cyan), 0 0 40px rgba(45, 226, 230, .35);
+        border-color: var(--ud-cyan);
+    }
+
+    .emptyAfterTitle {
+        display: none;
+    }
+
+    /* ---------- Other pages ---------- */
+
+    .school img {
+        padding: 10px 14px;
+        border-radius: 6px;
+        background-color: #f4efe6;
+        box-shadow: 0 0 16px rgba(255, 204, 51, .35);
+    }
+
+    .school h2,
+    .job h2 a {
+        color: var(--ud-gold);
+    }
+
+    .contact-links a {
+        font-size: 1.1rem;
+    }
+
+    .contact-links img {
+        margin-right: 12px;
+        filter: drop-shadow(0 0 8px rgba(45, 226, 230, .6));
+        transition: transform .3s;
+    }
+
+    .contact-links a:hover img {
+        transform: rotate(-8deg) scale(1.1);
+    }
+
+    .project-list {
+        border-color: rgba(255, 42, 109, .6);
+        box-shadow: 0 0 16px rgba(255, 42, 109, .25);
+    }
+
+    .project-list a {
+        background-color: rgba(255, 255, 255, .03);
+        color: var(--ud-text);
+    }
+
+    .project-list a + a {
+        border-top-color: rgba(255, 42, 109, .25);
+    }
+
+    .project-list a:hover {
+        background-color: rgba(255, 42, 109, .15);
+        color: var(--ud-text);
+    }
+
+    .project-list a[aria-current="true"] {
+        background-color: var(--ud-red);
+        color: #fff;
+        text-shadow: 0 0 6px rgba(255, 255, 255, .6);
+    }
+
+    /* ---------- Smaller screens and reduced motion ---------- */
+
+    @media (max-width: 767px) {
+        .container {
+            margin-inline: 10px;
+            padding: 1rem;
+        }
+
+        .profilePic {
+            width: 140px;
+            height: 140px;
+        }
+    }
+
+    /* Everything holds still; the theme still looks the same, just frozen */
+    @media (prefers-reduced-motion: reduce) {
+
+        &::before,
+        &::after,
+        *,
+        *::before,
+        *::after {
+            animation: none !important;
+        }
+    }
+}
