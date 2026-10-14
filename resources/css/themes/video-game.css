@@ -1,72 +1,515 @@
-/* Game style */
+/* Video game style: an 8-bit platformer world, drawn entirely in CSS */
+
+/*
+ * Animations can't go inside the :where(...) block below (CSS only allows them at
+ * the top level), so their names start with "video-game-" to keep them from
+ * clashing with other themes.
+ */
+
+/* Clouds drift left, one 600px tile per loop */
+@keyframes video-game-clouds {
+    to {
+        transform: translateX(-600px);
+    }
+}
+
+/* The ▶ cursor and PRESS START blink like a title screen */
+@keyframes video-game-blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Your name bobs like a sprite waiting for input */
+@keyframes video-game-bob {
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* Cards hop like a block you've just hit from below */
+@keyframes video-game-bump {
+    50% {
+        transform: translateY(-8px);
+    }
+}
 
 /* Only applies while <html data-theme="video-game"> (see default.css for how this works) */
 :where(:root[data-theme="video-game"]) {
+    --vg-sky: #6b8cff;
+    --vg-ink: #1d1d2b;
+    --vg-white: #fff;
+    --vg-red: #e4205c;
+    --vg-red-dark: #8c0a30;
+    --vg-yellow: #ffd23f;
+    --vg-blue: #2050e0;
+    --vg-green: #2db84b;
+    --vg-green-dark: #13692a;
+    --vg-brick: #c8501c;
+    --vg-brick-dark: #6e2a0a;
+    --vg-pixel-font: 'Press Start 2P', monospace;
+    /* A chunky pixel border with notched corners, plus a hard drop shadow */
+    --vg-box-border:
+        0 -5px 0 0 var(--vg-ink),
+        0 5px 0 0 var(--vg-ink),
+        -5px 0 0 0 var(--vg-ink),
+        5px 0 0 0 var(--vg-ink),
+        10px 12px 0 0 rgba(0, 0, 0, .22);
 
     body {
-        background-image: url("/resources/img/game-over-1920.jpg");
-        background-attachment: fixed;
-        background-size: cover;
-        background-color: #111111;
-        color: rgb(70, 51, 3);
-        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        background-color: var(--vg-sky);
+        color: var(--vg-ink);
+        font-family: 'VT323', monospace;
+        font-size: 22px;
+        line-height: 1.25;
+        /* The pixel fonts only come in one weight and style; don't let the browser fake bold or italic */
+        font-synthesis: none;
     }
 
-    img {
-        width: 100px;
+    /* ---------- The world behind the page (fixed to the screen, behind the content) ---------- */
+
+    /* Blocky clouds drifting across the sky */
+    body::after {
+        content: "";
+        position: fixed;
+        z-index: -2;
+        top: 70px;
+        left: 0;
+        width: calc(100% + 600px);
+        height: 90px;
+        background:
+            linear-gradient(to right, transparent 96px, #fff 96px 152px, transparent 152px 380px, #fff 380px 420px, transparent 420px) 0 8px / 600px 16px repeat-x,
+            linear-gradient(to right, transparent 64px, #fff 64px 176px, transparent 176px 356px, #fff 356px 444px, transparent 444px) 0 24px / 600px 18px repeat-x,
+            linear-gradient(to right, transparent 40px, #fff 40px 200px, transparent 200px) 0 42px / 600px 22px repeat-x;
+        animation: video-game-clouds 60s linear infinite;
+        pointer-events: none;
+    }
+
+    /* Rolling green hills, sitting on the ground */
+    main::before {
+        content: "";
+        position: fixed;
+        z-index: -2;
+        left: 0;
+        right: 0;
+        bottom: 56px;
+        height: 160px;
+        background:
+            radial-gradient(ellipse 170px 110px at 12% 100%, var(--vg-green) 0 98%, transparent 100%),
+            radial-gradient(ellipse 176px 116px at 12% 100%, var(--vg-green-dark) 0 98%, transparent 100%),
+            radial-gradient(ellipse 120px 70px at 30% 100%, var(--vg-green) 0 98%, transparent 100%),
+            radial-gradient(ellipse 126px 76px at 30% 100%, var(--vg-green-dark) 0 98%, transparent 100%),
+            radial-gradient(ellipse 210px 140px at 82% 100%, var(--vg-green) 0 98%, transparent 100%),
+            radial-gradient(ellipse 216px 146px at 82% 100%, var(--vg-green-dark) 0 98%, transparent 100%);
+        pointer-events: none;
+    }
+
+    /* Grass on top of two rows of bricks */
+    body::before {
+        content: "";
+        position: fixed;
+        z-index: -1;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 56px;
+        background:
+            linear-gradient(var(--vg-green), var(--vg-green)) 0 0 / 100% 6px no-repeat,
+            linear-gradient(var(--vg-green-dark), var(--vg-green-dark)) 0 6px / 100% 2px no-repeat,
+            linear-gradient(var(--vg-brick-dark), var(--vg-brick-dark)) 0 29px / 100% 3px no-repeat,
+            linear-gradient(var(--vg-brick-dark), var(--vg-brick-dark)) 0 53px / 100% 3px no-repeat,
+            repeating-linear-gradient(90deg, var(--vg-brick-dark) 0 3px, transparent 3px 48px) 0 8px / 100% 24px no-repeat,
+            repeating-linear-gradient(90deg, transparent 0 24px, var(--vg-brick-dark) 24px 27px, transparent 27px 48px) 0 32px / 100% 24px no-repeat,
+            var(--vg-brick);
+        pointer-events: none;
+    }
+
+    /* ---------- Navbar: a game menu ---------- */
+
+    #navbar {
+        border-bottom: 4px solid #000;
+        background-color: var(--vg-ink);
+        font-family: var(--vg-pixel-font);
+        font-size: 11px;
+    }
+
+    .site-name,
+    .site-name:hover {
+        color: var(--vg-yellow);
+        font-size: 13px;
+    }
+
+    .nav-links a,
+    .dropdown > summary {
+        color: var(--vg-white);
+        white-space: nowrap;
+    }
+
+    .nav-links a:hover,
+    .dropdown > summary:hover,
+    .nav-links a[aria-current="page"] {
+        color: var(--vg-yellow);
+    }
+
+    /* A blinking ▶ next to the page you're on */
+    .nav-links a[aria-current="page"]::before {
+        content: "▶ ";
+        animation: video-game-blink 1s steps(1) infinite;
+    }
+
+    .menu-toggle {
+        border: 2px solid var(--vg-white);
+        border-radius: 0;
+        color: var(--vg-white);
+    }
+
+    .dropdown-menu {
+        border: 4px solid var(--vg-white);
+        border-radius: 0;
+        background-color: var(--vg-ink);
+    }
+
+    .dropdown-menu button {
+        color: var(--vg-white);
+        padding: .6rem 1rem;
+    }
+
+    /* The menu cursor: a ▶ appears next to whichever item you're on */
+    .dropdown-menu button::before {
+        content: "▶ ";
+        visibility: hidden;
+    }
+
+    .dropdown-menu button:hover,
+    .dropdown-menu button:focus-visible {
+        background-color: transparent;
+        color: var(--vg-yellow);
+    }
+
+    .dropdown-menu button:hover::before,
+    .dropdown-menu button:focus-visible::before {
+        visibility: visible;
+    }
+
+    .dropdown-menu button[aria-current="true"] {
+        background-color: var(--vg-red);
+        color: var(--vg-white);
+    }
+
+    /* ---------- Text ---------- */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    .project-facts dt {
+        font-weight: normal;
+    }
+
+    /* Big titles in chunky 3D pixel letters, floating in the sky. The dark outline keeps
+       them readable when a cloud drifts behind them. */
+    .page-title,
+    .name {
+        color: var(--vg-white);
+        font-family: var(--vg-pixel-font);
+        line-height: 1.4;
+        text-shadow:
+            -3px 0 0 var(--vg-ink),
+            3px 0 0 var(--vg-ink),
+            0 -3px 0 var(--vg-ink),
+            0 3px 0 var(--vg-ink),
+            5px 5px 0 var(--vg-red),
+            8px 8px 0 var(--vg-ink);
+    }
+
+    .page-title {
+        margin: 2.5rem 0 1.75rem;
+        font-size: clamp(1.1rem, 4vw, 2.2rem);
+    }
+
+    h3,
+    .school h2 {
+        color: var(--vg-red);
+        font-family: var(--vg-pixel-font);
+        font-size: clamp(.8rem, 2vw, 1rem);
+        line-height: 1.5;
+    }
+
+    h4,
+    h5,
+    .project-facts dt {
+        margin-top: .75rem;
+        color: var(--vg-blue);
+        font-family: var(--vg-pixel-font);
+        font-size: .7rem;
+        line-height: 1.6;
+    }
+
+    .job h2 {
+        font-size: 1.5rem;
+        line-height: 1.15;
+    }
+
+    .job h2 a,
+    .job h2 > b {
+        color: var(--vg-red);
+    }
+
+    /* Justified text leaves big gaps between words in a fixed-width font */
+    .job p {
+        text-align: left;
     }
 
     a {
-        color: rgb(123, 90, 6);
-        text-decoration: none;
+        color: var(--vg-blue);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
     }
 
     a:hover {
-        color: rgb(70, 51, 3);
-        text-decoration: underline;
+        background-color: var(--vg-yellow);
+        color: var(--vg-ink);
+    }
+
+    .noShowLink,
+    .noShowLink:hover {
+        background: none;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    /* Dashed pixel dividers inside the boxes */
+    hr {
+        margin: 1.5rem 0;
+        border-top: 4px dashed var(--vg-ink);
+        opacity: .2;
+    }
+
+    /* ---------- Dialog boxes ---------- */
+
+    /* Always leave room at the sides for the chunky border and shadow */
+    .container {
+        max-width: min(1140px, calc(100% - 48px));
+        margin: 2.5rem auto 5rem;
+        padding: 1.5rem 2rem;
+        background-color: var(--vg-white);
+        box-shadow: var(--vg-box-border);
+    }
+
+    .card {
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+        background-color: var(--vg-white);
+        box-shadow:
+            0 -4px 0 0 var(--vg-ink),
+            0 4px 0 0 var(--vg-ink),
+            -4px 0 0 0 var(--vg-ink),
+            4px 0 0 0 var(--vg-ink);
+    }
+
+    .card:hover {
+        animation: video-game-bump .3s steps(2);
+    }
+
+    .card-grid {
+        gap: 2rem;
+    }
+
+    .project-list {
+        border: 4px solid var(--vg-ink);
+        border-radius: 0;
+        font-family: var(--vg-pixel-font);
+        font-size: .6rem;
+        line-height: 1.6;
+    }
+
+    .project-list a {
+        background-color: var(--vg-white);
+        color: var(--vg-ink);
+    }
+
+    .project-list a + a {
+        border-top: 4px solid var(--vg-ink);
+    }
+
+    .project-list a:hover {
+        background-color: var(--vg-yellow);
+    }
+
+    .project-list a[aria-current="true"] {
+        background-color: var(--vg-red);
+        color: var(--vg-white);
+    }
+
+    .contact-links a {
+        font-family: var(--vg-pixel-font);
+        font-size: .75rem;
+    }
+
+    .contact-links img {
+        margin-right: 12px;
+    }
+
+    /* ---------- Home page: a title screen ---------- */
+
+    /* The home page isn't one big box; its sections each get their own */
+    .personal-info {
+        background: none;
+        box-shadow: none;
+        padding-inline: 0;
+    }
+
+    .personal-info > hr,
+    .my-info > hr {
+        display: none;
     }
 
     #site-header {
         display: flex;
-        flex: 1 1;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        padding-top: 1rem;
+        text-align: center;
     }
 
-    #site-header div {
-        padding: 10px;
+    .profilePic {
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+        box-shadow: var(--vg-box-border);
+    }
+
+    .name {
+        margin-bottom: 1rem;
+        font-size: clamp(1.4rem, 5vw, 3rem);
+        animation: video-game-bob 1.4s steps(1) infinite;
+    }
+
+    .title {
+        color: var(--vg-yellow);
+        font-family: var(--vg-pixel-font);
+        font-size: clamp(.7rem, 2vw, 1rem);
+        line-height: 1.6;
+        text-shadow:
+            -2px 0 0 var(--vg-ink),
+            2px 0 0 var(--vg-ink),
+            0 -2px 0 var(--vg-ink),
+            0 2px 0 var(--vg-ink),
+            3px 3px 0 var(--vg-ink);
+    }
+
+    .emptyAfterTitle {
+        display: none;
+    }
+
+    #about-me,
+    #skills {
+        margin-bottom: 2.5rem;
+        padding: 1.5rem 2rem;
+        background-color: var(--vg-white);
+        box-shadow: var(--vg-box-border);
+    }
+
+    /* Click a heading to fold its section away; the arrow shows which way it'll go */
+    .game-accordion {
+        cursor: pointer;
+    }
+
+    .game-accordion::before {
+        content: "▼ ";
+    }
+
+    .game-accordion:has(+ .hide-game-panel)::before {
+        content: "▶ ";
     }
 
     .hide-game-panel {
         display: none;
-        overflow: hidden;
     }
 
-    .personal-info {
-        background: rgba(249, 249, 224, 0.6);
+    /* PRESS START (opens Squash the Bugs; base CSS hides it in every other theme) */
+    .game-launch {
+        display: block;
+        margin: 1rem 0 3rem;
+        text-align: center;
     }
 
-    /* Style the buttons that are used to open and close the accordion panel */
-    /* .game-accordion {
-        background-color: #eee;
-        color: #444;
+    .press-start {
+        padding: 1.1rem 1.6rem 1rem;
+        border: 0;
+        background-color: var(--vg-red);
+        color: var(--vg-white);
+        font-family: var(--vg-pixel-font);
+        font-size: clamp(.9rem, 3vw, 1.4rem);
+        box-shadow:
+            inset -6px -6px 0 0 var(--vg-red-dark),
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
         cursor: pointer;
-        padding: 18px;
-        width: 100%;
-        text-align: left;
-        border: none;
-        outline: none;
-        transition: 0.4s;
-    } */
+    }
 
-    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-    /* .active,
-    .game-accordion:hover {
-        background-color: #ccc;
-    } */
+    .press-start::before {
+        content: "▶ ";
+        animation: video-game-blink 1s steps(1) infinite;
+    }
 
-    /* Style the accordion panel. Note: hidden by default */
-    /* .game-accordion-panel {} */
+    .press-start:hover {
+        background-color: #ff3b72;
+    }
 
-    @media only screen and (max-width: 1150px) {}
+    /* Pressed in: the shading flips, like a real button */
+    .press-start:active {
+        box-shadow:
+            inset 6px 6px 0 0 var(--vg-red-dark),
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
+    }
 
-    @media only screen and (max-width: 750px) {}
+    .press-start:focus-visible {
+        outline: 4px dashed var(--vg-yellow);
+        outline-offset: 12px;
+    }
+
+    /* ---------- Smaller screens and reduced motion ---------- */
+
+    @media (max-width: 767px) {
+        body {
+            font-size: 20px;
+        }
+
+        .container {
+            max-width: calc(100% - 32px);
+            padding: 1.25rem;
+        }
+
+        .personal-info {
+            padding-inline: 0;
+        }
+
+        #about-me,
+        #skills {
+            padding: 1.25rem;
+        }
+
+        .profilePic {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation: none !important;
+        }
+    }
 }

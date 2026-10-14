@@ -1,0 +1,228 @@
+/* Squash the Bugs (see resources/js/bug-squash.js). Loaded only when the game first opens. */
+
+.bug-squash {
+    width: min(94vw, 460px);
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background-color: #6b8cff;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-synthesis: none;
+    /* Chunky pixel border with notched corners */
+    box-shadow:
+        0 -6px 0 0 #1d1d2b,
+        0 6px 0 0 #1d1d2b,
+        -6px 0 0 0 #1d1d2b,
+        6px 0 0 0 #1d1d2b;
+}
+
+.bug-squash::backdrop {
+    background-color: rgba(10, 10, 30, .7);
+}
+
+.bug-squash-inner {
+    position: relative;
+    padding: 1.25rem;
+}
+
+.bug-squash h2 {
+    margin: 0 0 1rem;
+    color: #ffd23f;
+    font: inherit;
+    font-size: 1rem;
+    text-align: center;
+    text-shadow: 3px 3px 0 #1d1d2b;
+}
+
+.bug-squash-close {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    padding: .4rem;
+    border: 0;
+    background: none;
+    color: #fff;
+    font: inherit;
+    font-size: .8rem;
+    cursor: pointer;
+}
+
+.bug-squash-close:hover,
+.bug-squash-close:focus-visible {
+    color: #ffd23f;
+}
+
+/* Score / Time / Best */
+.bug-squash-hud {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: .55rem;
+    text-align: center;
+}
+
+.bug-squash-hud b {
+    display: block;
+    margin-top: .4rem;
+    color: #ffd23f;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.bug-squash-stage {
+    position: relative;
+}
+
+/* Three rows of pipes standing on a strip of brick */
+.bug-squash-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .5rem;
+    padding: .5rem .5rem 12px;
+    background: linear-gradient(#c8501c, #c8501c) bottom / 100% 12px no-repeat;
+    outline: none;
+}
+
+.bug-squash-hole {
+    position: relative;
+    height: 104px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* The pipe: a wide rim on top of a narrower body, shaded with stripes */
+.bug-squash-hole::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 0;
+    width: 64px;
+    height: 50px;
+    translate: -50% 0;
+    background:
+        linear-gradient(to right, #13692a 0 4px, #2db84b 4px 14px, #7ee08c 14px 20px, #2db84b 20px 54px, #13692a 54px) 0 0 / 100% 14px no-repeat,
+        linear-gradient(to right, transparent 4px, #13692a 4px 8px, #2db84b 8px 16px, #7ee08c 16px 22px, #2db84b 22px 50px, #13692a 50px 60px, transparent 60px) 0 14px / 100% 36px no-repeat;
+    pointer-events: none;
+}
+
+/* The bug hides inside the pipe until it pops up */
+.bug-squash-bug {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 48px;
+    translate: -50% 0;
+    color: #8d3fd8;
+    transform-origin: 50% 100%;
+    transition: transform .12s steps(3);
+    pointer-events: none;
+}
+
+.bug-squash-bug svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    fill: currentColor;
+}
+
+.bug-squash-eye {
+    fill: #fff;
+}
+
+.is-up .bug-squash-bug {
+    transform: translateY(-52px);
+}
+
+.is-golden .bug-squash-bug {
+    color: #ffd23f;
+    filter: drop-shadow(0 0 4px #fff);
+}
+
+/* Splat */
+.is-squashed .bug-squash-bug {
+    color: #1d1d2b;
+    filter: none;
+    transform: translateY(-52px) scale(1.4, .3);
+    transition-duration: .05s;
+}
+
+/* Which number key matches this pipe (hidden on touch screens) */
+.bug-squash-key {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 16px;
+    translate: -50% 0;
+    color: rgba(255, 255, 255, .8);
+    font-size: .55rem;
+    pointer-events: none;
+}
+
+@media (hover: none) {
+    .bug-squash-key {
+        display: none;
+    }
+}
+
+/* Start / game over screen, over the pipes */
+.bug-squash-overlay {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 1rem;
+    background-color: rgba(29, 29, 43, .9);
+    text-align: center;
+}
+
+.bug-squash-overlay[hidden] {
+    display: none;
+}
+
+.bug-squash-message {
+    margin: 0;
+    font-size: .6rem;
+    line-height: 1.9;
+}
+
+.bug-squash-button {
+    padding: .9rem 1.2rem .8rem;
+    border: 0;
+    background-color: #e4205c;
+    color: #fff;
+    font: inherit;
+    font-size: .8rem;
+    box-shadow:
+        inset -5px -5px 0 0 #8c0a30,
+        0 -5px 0 0 #fff,
+        0 5px 0 0 #fff,
+        -5px 0 0 0 #fff,
+        5px 0 0 0 #fff;
+    cursor: pointer;
+}
+
+.bug-squash-button:hover {
+    background-color: #ff3b72;
+}
+
+.bug-squash-button:active {
+    box-shadow:
+        inset 5px 5px 0 0 #8c0a30,
+        0 -5px 0 0 #fff,
+        0 5px 0 0 #fff,
+        -5px 0 0 0 #fff,
+        5px 0 0 0 #fff;
+}
+
+.bug-squash-button:focus-visible {
+    outline: 3px dashed #ffd23f;
+    outline-offset: 9px;
+}

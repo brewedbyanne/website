@@ -94,6 +94,11 @@ button {
     display: none;
 }
 
+/* The PRESS START button for Squash the Bugs. Only the video game theme shows it. */
+.game-launch {
+    display: none;
+}
+
 /* ---------- Page layout ---------- */
 
 .container {

@@ -229,9 +229,20 @@ $(function () {
         updateHexSquareColor(hexcode);
     });
 
-    // Open/close a section by clicking its heading. Only the video game theme hides
-    // the panels (.hide-game-panel), so this has no visible effect in the other themes.
+    // Fold a section away by clicking its heading. Only the video game theme hides
+    // folded sections (.hide-game-panel), so this has no visible effect in the other themes.
     $(".game-accordion").on("click", function () {
         $(this).next(".game-accordion-panel").toggleClass("hide-game-panel");
+    });
+
+    // PRESS START (only the video game theme shows it). The game's code loads the first time it's pressed.
+    $("#bug-squash-start").on("click", function () {
+        if (window.BugSquash) {
+            window.BugSquash.open();
+        } else {
+            $.getScript("resources/js/bug-squash.js", function () {
+                window.BugSquash.open();
+            });
+        }
     });
 });

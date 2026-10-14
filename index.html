@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Press+Start+2P&family=Swanky+and+Moo+Moo&family=VT323&display=swap"
         rel="stylesheet">
 
     <link rel='stylesheet' href='resources/css/main.css?v=2'>
@@ -48,6 +48,11 @@
             <div class='emptyAfterTitle'></div>
         </header>
 
+        <!-- Opens Squash the Bugs (resources/js/bug-squash.js). Only the video game theme shows this. -->
+        <div class='game-launch'>
+            <button type='button' id='bug-squash-start' class='press-start'>Press Start</button>
+        </div>
+
         <hr />
 
         <!-- 
@@ -67,7 +72,7 @@
         <div class="my-info">
             <div id="about-me">
                 <h3 class="game-accordion"> About Me </h3>
-                <div class="game-accordion-panel hide-game-panel">
+                <div class="game-accordion-panel">
                     <p>
                         Software Developer (by trade). Mom (around the clock). Book Worm (by bedtime Kindle, in dark mode).
                         <!-- <a href="#" class="noShowLink" data-bs-toggle="modal" data-bs-target="#videoModal">Grammar
@@ -90,7 +95,7 @@
 
             <div id="skills">
                 <h3 class="game-accordion"> What I Do </h3>
-                <div class='game-accordion-panel hide-game-panel'>
+                <div class='game-accordion-panel'>
                     <div>
                         <h5>Front End and Back End</h5>
                         <p>I build both the screens people click around in and the services behind them, mostly
@@ -144,11 +149,6 @@
         -->
 
     </main>
-
-    <!-- Photo by <a
-        href="https://unsplash.com/@gronemo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Roméo A.</a>
-    on <a
-        href="https://unsplash.com/photos/JrZvYuBYzCU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a> -->
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
