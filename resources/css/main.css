@@ -386,6 +386,15 @@ button {
     }
 }
 
+/* Let the columns shrink below their longest word, and long links break, so nothing pokes out on phones */
+.project-tabs > * {
+    min-width: 0;
+}
+
+.project-facts a {
+    overflow-wrap: anywhere;
+}
+
 .project-list {
     display: flex;
     flex-direction: column;
