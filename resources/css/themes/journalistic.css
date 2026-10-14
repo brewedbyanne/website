@@ -1,184 +1,579 @@
-/* Newspaper style */
+/* Journalistic style: the front page of "The Whitman Times" */
 
 /* Only applies while <html data-theme="journalistic"> (see default.css for how this works) */
 :where(:root[data-theme="journalistic"]) {
+    --news-paper: #f4efe4;
+    --news-ink: #1c1b19;
+    --news-muted: #5b574f;
+    --news-rule: #cdc5b4;
+    --news-red: #a3271f;
+    --news-serif: 'Newsreader', Georgia, serif;
+    --news-sans: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+    --news-masthead: 'Grenze Gotisch', serif;
 
     body {
-        background: #F5F2E8;
-        color: #5A5A5A;
-        font-family: "Franklin Gothic", Monospace;
-        text-align: justify;
+        /* Newsprint: warm paper with a faint speckle */
+        background:
+            radial-gradient(rgba(0, 0, 0, .03) 1px, transparent 1px) 0 0 / 4px 4px,
+            var(--news-paper);
+        color: var(--news-ink);
+        font-family: var(--news-serif);
+        font-size: 18px;
+        line-height: 1.55;
     }
 
     a {
-        text-decoration: none;
-        color: #5A5A5A;
-    }
-
-    h1,
-    .nameContainer h2 {
-        font-family: 'Grenze Gotisch', cursive;
-        text-align: center;
-    }
-
-    h3 {
-        font-weight: 900;
-    }
-
-    h5,
-    .project-facts dt {
-        font-weight: 700;
+        color: inherit;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
     }
 
     a:hover {
-        color: darkred;
-        text-decoration: underline;
+        color: var(--news-red);
     }
 
-    #about-me,
-    #skills {
-        float: left;
-        margin: 20px 5px;
-        padding: 20px;
-        overflow: auto;
-        width: calc(50% - 10px);
+    :focus-visible {
+        outline: 2px solid var(--news-red);
+        outline-offset: 2px;
     }
 
-    #about-me::before {
-        content: '';
-        float: left;
-        width: 175px;
-        height: 175px;
+    hr {
+        margin: 0;
+        border-top: 1px solid var(--news-ink);
+        opacity: 1;
     }
 
-    #about-me p,
-    #skills p {
+    /* Newspaper text: justified, with hyphenation so the spacing stays even */
+    p {
         text-align: justify;
+        hyphens: auto;
     }
 
-    #site-header {
-        display: flex;
-        flex-direction: row;
-        margin-top: 20px;
-        width: 100%;
-    }
-
-    /* Full-width pages, like a broadsheet */
-    .container {
-        max-width: none;
-    }
-
-    /* Keep the floated home page columns inside the page */
-    .personal-info {
-        display: flow-root;
-    }
-
-    .name {
-        font-size: 30px;
-        margin-left: 28px;
-        margin-top: -10px;
-    }
-
-    .name::before {
-        content: 'by ';
-        font-size: 20px;
-    }
-
-    .nameContainer {
-        display: flex;
-        flex-direction: column-reverse;
-        align-items: center;
-        margin: 0 auto;
-    }
-
-    .picContainer {
-        position: relative;
-        top: 220px;
-        left: 20px;
-        width: 200px;
-    }
-
-    .title {
-        color: #6d6a6a;
-        font-size: 100px;
-        margin-left: 20px;
-    }
-
-    .emptyAfterTitle {
-        width: 200px;
-    }
+    /* ---------- Navbar: the strip above the masthead ---------- */
 
     #navbar {
-        background-color: #5A5A5A;
+        border-bottom: 1px solid var(--news-ink);
+        background-color: var(--news-paper);
+        font-family: var(--news-sans);
     }
 
-    .site-name {
-        color: #cfccc3;
+    .site-name,
+    .site-name:hover {
+        color: var(--news-ink);
+        font-family: var(--news-masthead);
+        font-size: 1.6rem;
     }
 
     .nav-links a,
     .dropdown > summary {
-        color: #F5F2E8;
+        color: var(--news-ink);
+        font-size: .75rem;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
     }
 
-    hr {
-        height: 0px;
+    .nav-links a:hover,
+    .dropdown > summary:hover {
+        color: var(--news-red);
+    }
+
+    .nav-links a[aria-current="page"] {
+        color: var(--news-ink);
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
+    }
+
+    .social-links img {
+        filter: grayscale(1) contrast(1.2);
+    }
+
+    .menu-toggle {
+        border-color: var(--news-ink);
+        border-radius: 0;
+        color: var(--news-ink);
+    }
+
+    .dropdown-menu {
+        border: 1px solid var(--news-ink);
+        border-radius: 0;
+        background-color: var(--news-paper);
+        box-shadow: 4px 4px 0 var(--news-ink);
+    }
+
+    .dropdown-menu button {
+        color: var(--news-ink);
+        font-family: var(--news-serif);
+    }
+
+    .dropdown-menu button:hover,
+    .dropdown-menu button:focus-visible {
+        background-color: var(--news-ink);
+        color: var(--news-paper);
+    }
+
+    .dropdown-menu button[aria-current="true"] {
+        background-color: transparent;
+        color: var(--news-ink);
+        font-weight: 700;
+    }
+
+    /* ---------- Mastheads ---------- */
+
+    /* The page title is set like a newspaper's nameplate, with a dateline underneath */
+    .page-title {
+        max-width: 1120px;
+        margin: 1.75rem auto 2rem;
+        padding: 0 1.5rem;
+        font-family: var(--news-masthead);
+        font-size: clamp(2.6rem, 7vw, 4.75rem);
+        font-weight: normal;
+        line-height: 1;
+    }
+
+    /* The dateline under each nameplate (on the home page, the empty spacer div after the title holds it) */
+    .page-title::after,
+    .emptyAfterTitle::before {
+        content: "Late Edition · New Jersey · “All the code that’s fit to ship”";
+    }
+
+    .page-title::after,
+    .emptyAfterTitle {
+        display: block;
+        margin-top: .9rem;
+        padding: .45rem 0;
+        border-top: 1px solid var(--news-ink);
+        border-bottom: 3px double var(--news-ink);
+        font-family: var(--news-sans);
+        font-size: .7rem;
+        font-weight: 600;
+        letter-spacing: .14em;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    /* A second title on the same page (Education) is a section head, not another masthead */
+    section + section .page-title {
+        margin-top: 3rem;
+        padding-top: .6rem;
+        border-top: 3px double var(--news-ink);
+        font-family: var(--news-sans);
+        font-size: .95rem;
+        font-weight: 800;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+    }
+
+    section + section .page-title::after {
+        display: none;
+    }
+
+    /* Section labels ("About Me", "What I Do", ...) with a thick rule above, like a news section */
+    h3 {
+        margin-bottom: 1rem;
+        padding-top: .5rem;
+        border-top: 3px solid var(--news-ink);
+        font-family: var(--news-sans);
+        font-size: .8rem;
+        font-weight: 800;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+    }
+
+    h4,
+    h5,
+    .project-facts dt {
+        margin: 1.25rem 0 .35rem;
+        font-family: var(--news-serif);
+        font-size: 1.2rem;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    /* ---------- Pages are full-width broadsheets, not boxes ---------- */
+
+    .container {
+        max-width: 1120px;
+        padding: 0 1.5rem;
+    }
+
+    /* ---------- Home: the front page ---------- */
+
+    .personal-info > hr,
+    .my-info > hr {
+        display: none;
+    }
+
+    #site-header {
+        display: grid;
+        gap: 0 2.5rem;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.75rem;
+        border-bottom: 1px solid var(--news-ink);
+    }
+
+    /* The nameplate */
+    #site-header::before {
+        content: "The Whitman Times";
+        order: -2;
+        margin-top: 1.5rem;
+        font-family: var(--news-masthead);
+        font-size: clamp(2.8rem, 9vw, 6.5rem);
+        line-height: 1;
+        text-align: center;
+    }
+
+    .emptyAfterTitle {
+        order: -1;
+        margin-bottom: 1.75rem;
+        text-align: center;
+    }
+
+    /* The lead story: the headline is your title, with your name as the byline */
+    .nameContainer {
+        order: 0;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: center;
+    }
+
+    .title {
+        margin: 0 0 1rem;
+        font-size: clamp(2.4rem, 6vw, 4.6rem);
+        font-weight: 700;
+        letter-spacing: -.015em;
+        line-height: 1.02;
+    }
+
+    .name {
         margin: 0;
-        padding: 0;
-        visibility: hidden;
+        color: var(--news-muted);
+        font-family: var(--news-sans);
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .16em;
+        text-transform: uppercase;
     }
 
-    img {
+    .name::before {
+        content: "By ";
+    }
+
+    .name b,
+    .title b {
+        font-weight: inherit;
+    }
+
+    /* The photo, printed in black and white, with a caption, to the right of the headline */
+    .picContainer {
+        order: 1;
+    }
+
+    .picContainer::after {
+        content: "Pictured: the author, caffeinated and ready to ship.";
+        display: block;
+        margin-top: .4rem;
+        padding-bottom: .4rem;
+        border-bottom: 1px solid var(--news-rule);
+        color: var(--news-muted);
+        font-family: var(--news-sans);
+        font-size: .72rem;
+        font-style: italic;
+    }
+
+    .profilePic {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.15);
+    }
+
+    .my-info {
+        display: grid;
+        gap: 2rem 2.5rem;
+        align-items: start;
+        margin-bottom: 4rem;
+    }
+
+    /* A drop cap opens the first story */
+    #about-me p:first-of-type::first-letter {
         float: left;
-        filter: grayscale(1);
+        margin: .06em .1em 0 0;
+        font-size: 4.1em;
+        font-weight: 700;
+        line-height: .8;
     }
 
-    #me,
-    #us {
-        margin-left: 5px;
-        margin-right: 20px;
-        min-width: 150px;
-        width: 150px;
+    #skills h5:first-child {
+        margin-top: 0;
     }
 
-    @media only screen and (max-width: 1150px) {
+    /* The Toolbox (the last group) is a list of names, which spreads out badly when justified */
+    #skills .game-accordion-panel > div:last-child p {
+        margin-bottom: .5rem;
+        text-align: left;
+    }
 
-        #about-me,
-        #skills,
-        .nameContainer {
-            position: relative;
-            bottom: 125px;
-        }
+    .noShowLink,
+    .noShowLink:hover,
+    .noShowLink:visited {
+        color: inherit;
+        text-decoration: none;
+    }
 
+    /* ---------- Experience: each job is an article ---------- */
+
+    .job {
+        padding: 1.75rem 0 1.25rem;
+    }
+
+    .job + hr {
+        border-top-color: var(--news-ink);
+    }
+
+    /* The headline block: company name big, department in italics, role as a small kicker */
+    .job h2 {
+        margin-bottom: 1rem;
+        color: var(--news-muted);
+        font-family: var(--news-sans);
+        font-size: .75rem;
+        font-weight: 600;
+        letter-spacing: .14em;
+        line-height: 1.6;
+        text-transform: uppercase;
+    }
+
+    .job h2 b {
+        color: var(--news-ink);
+        font-family: var(--news-serif);
+        font-size: 2.1rem;
+        font-weight: 700;
+        letter-spacing: -.01em;
+        line-height: 1.1;
+        text-transform: none;
+    }
+
+    .job h2 i {
+        color: var(--news-ink);
+        font-family: var(--news-serif);
+        font-size: 1.05rem;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
+    .job h2 a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .job h2 a:hover b {
+        color: var(--news-red);
+    }
+
+    .job h2 + p::first-letter {
+        float: left;
+        margin: .06em .1em 0 0;
+        font-size: 3.4em;
+        font-weight: 700;
+        line-height: .8;
+    }
+
+    /* ---------- Education ---------- */
+
+    .school {
+        gap: 2.5rem;
+        padding: 1.5rem 0;
+    }
+
+    /* Print the logos in black and white, straight onto the paper */
+    .school img {
+        max-width: 260px;
+        filter: grayscale(1) contrast(1.1);
+        mix-blend-mode: multiply;
+    }
+
+    .school h2 {
+        margin-bottom: .5rem;
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .school p {
+        margin-bottom: .35rem;
+        text-align: left;
+    }
+
+    /* The course cards are classified ads */
+    .card {
+        border: 1px solid var(--news-ink);
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .card-img {
+        border-bottom: 1px solid var(--news-ink);
+        filter: grayscale(1) contrast(1.1);
+        mix-blend-mode: multiply;
+    }
+
+    .card-body {
+        padding: 1rem 1.1rem 1.25rem;
+    }
+
+    .card h4 {
+        margin-top: 0;
+        font-family: var(--news-sans);
+        font-size: .8rem;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }
+
+    .card-body p {
+        margin-bottom: .35rem;
+        text-align: left;
+    }
+
+    /* ---------- Contact: a classified ad ---------- */
+
+    .container:has(> .contact-links) {
+        max-width: 760px;
+        padding: 1.5rem 2rem 1.75rem;
+        border: 3px double var(--news-ink);
+    }
+
+    .container:has(> .contact-links)::before {
+        content: "Classified · Reach the Author";
+        display: block;
+        margin-bottom: .75rem;
+        padding-bottom: .5rem;
+        border-bottom: 1px solid var(--news-ink);
+        font-family: var(--news-sans);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .18em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .contact-links li {
+        padding: .75rem 1rem;
+    }
+
+    .contact-links a {
+        font-size: 1.15rem;
+        font-weight: 600;
+    }
+
+    .contact-links img {
+        width: 40px;
+        margin-right: .75rem;
+        filter: grayscale(1) contrast(1.2);
+    }
+
+    /* ---------- Project pages (currently hidden) ---------- */
+
+    .project-list {
+        border: 1px solid var(--news-ink);
+        border-radius: 0;
+    }
+
+    .project-list a {
+        background-color: transparent;
+        color: var(--news-ink);
+    }
+
+    .project-list a + a {
+        border-top-color: var(--news-ink);
+    }
+
+    .project-list a:hover {
+        background-color: #e8e0cf;
+    }
+
+    .project-list a[aria-current="true"] {
+        background-color: var(--news-ink);
+        color: var(--news-paper);
+    }
+
+    /* ---------- Wider screens: columns ---------- */
+
+    @media (min-width: 768px) {
+
+        /* Headline on the left, photo on the right */
         #site-header {
-            flex-direction: column;
+            grid-template-columns: 2fr 1fr;
         }
 
-        .picContainer {
-            top: 250px;
+        #site-header::before,
+        .emptyAfterTitle {
+            grid-column: 1 / -1;
+        }
+
+        .school {
+            grid-template-columns: 1fr 2.5fr;
         }
     }
 
-    @media only screen and (max-width: 750px) {
+    @media (min-width: 900px) {
 
-        #about-me p,
-        #skills p {
+        /* About Me in one column; What I Do across two more, with rules between them */
+        .my-info {
+            grid-template-columns: 1fr 2fr;
+        }
+
+        #skills .game-accordion-panel {
+            columns: 2;
+            column-gap: 2.5rem;
+            column-rule: 1px solid var(--news-rule);
+        }
+
+        #skills .game-accordion-panel > div {
+            break-inside: avoid;
+        }
+
+        #skills {
+            padding-left: 2.5rem;
+            border-left: 1px solid var(--news-rule);
+        }
+
+        /* Each job's story runs in two columns under its headline */
+        .job {
+            columns: 2;
+            column-gap: 2.5rem;
+            column-rule: 1px solid var(--news-rule);
+        }
+
+        .job h2 {
+            column-span: all;
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        /* Justified text in a column this narrow leaves uneven gaps between words */
+        p {
             text-align: left;
         }
 
+        .container {
+            padding: 0 1rem;
+        }
+
+        .container:has(> .contact-links) {
+            margin-inline: 1rem;
+            padding: 1.25rem 1rem;
+        }
+
+        .page-title {
+            padding: 0 1rem;
+        }
+
         .picContainer {
-            top: 200px;
-        }
-
-        .name {
-            font-size: 50px;
-            margin-left: 20px;
-        }
-
-        .title {
-            color: #6d6a6a;
-            font-size: 50px;
-            margin-left: 20px;
+            max-width: 320px;
+            margin-top: 1.5rem;
         }
     }
 }
