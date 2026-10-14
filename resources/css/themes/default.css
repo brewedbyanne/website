@@ -2,8 +2,8 @@
 
 /*
  * Everything is nested inside this one selector, so it only applies while
- * <html data-theme="default">. :where() adds zero specificity, so the rules
- * below compete with Bootstrap exactly as if they weren't nested.
+ * <html data-theme="default">. :where() adds zero specificity, so these rules
+ * compete with main.css exactly as if they weren't nested.
  */
 :where(:root[data-theme="default"]) {
 
@@ -14,7 +14,7 @@
         font-size: 20px;
     }
 
-    div {
+    main {
         text-align: center;
     }
 
@@ -36,13 +36,10 @@
         color: #72676b;
     }
 
-    h5 {
+    h5,
+    .project-facts dt {
         color: #8b7777;
         font-weight: bold;
-    }
-
-    iframe {
-        max-width: 100%;
     }
 
     /* todo: read more about flexbox (article from work computer) */
@@ -51,20 +48,19 @@
         flex-flow: column;
     }
 
+    /* Stretch the header out to the edges of its box */
     #site-header {
         display: flex;
-        margin: -20px -60px;
+        margin: -20px -30px;
     }
 
     .container {
         background-color: #282828;
         margin: 30px auto;
-        min-width: 400px;
         padding: 30px;
-        vertical-align: middle !important;
     }
 
-    .navbar-brand {
+    .site-name {
         font-family: Swanky and Moo Moo;
         font-size: 24px;
     }
@@ -76,16 +72,20 @@
         text-decoration: none;
     }
 
-    .text-darkcolor {
+    .name,
+    .job h2 a,
+    .contact-links a {
         color: #72676b;
     }
 
-    a.text-darkcolor:hover {
+    .job h2 a:hover,
+    .contact-links a:hover {
         color: #72676b;
         text-decoration: underline;
     }
 
-    .text-lightcolor {
+    .personal-info,
+    .title {
         color: #c2B2A1;
     }
 
@@ -122,19 +122,19 @@
         -webkit-box-shadow: 0px 0px 4px 8px #99AA99;
     } */
 
-    .smaller {
+    /* A narrower box on the contact page */
+    .container:has(> .contact-links) {
         width: 80%;
     }
 
-    .top-style {
+    .contact-links img {
+        padding-right: 20px;
+    }
+
+    .page-title {
         color: darkgoldenrod;
         font-family: 'Swanky and Moo Moo';
         font-size: 64px
-    }
-
-    .show-more {
-        height: 100px;
-        width: 100px;
     }
 
     .name {
@@ -147,11 +147,7 @@
         font-size: 6vmin;
     }
 
-    .icon {
-        padding-right: 20px;
-    }
-
-    .size30 {
+    .school h2 {
         font-size: 30px;
     }
 
@@ -185,12 +181,8 @@
     }
 
     .card {
-        background: black !important;
-        padding: 5px !important;
-    }
-
-    .card-block {
-        margin-top: 20px !important;
+        background: black;
+        padding: 5px;
     }
 
     /*
@@ -225,24 +217,28 @@
         }
     }
 
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 767px) {
+
         .container {
-            margin: 30px auto;
-            min-width: 400px;
+            margin-inline: 10px;
+            padding: 20px;
         }
+
+        .container:has(> .contact-links) {
+            width: auto;
+        }
+    }
+
+    @media only screen and (max-width: 400px) {
 
         .name,
         .title {
             font-size: 24px;
         }
 
-        .navbar {
-            margin-right: -10px;
-            min-width: 400px;
-        }
-
         #site-header {
             flex-direction: column;
+            margin: 0;
         }
     }
 }

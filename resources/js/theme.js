@@ -26,7 +26,6 @@
     function markCurrentTheme() {
         document.querySelectorAll('[data-set-theme]').forEach(function (button) {
             var isCurrent = button.dataset.setTheme === root.dataset.theme;
-            button.classList.toggle('active', isCurrent);
             if (isCurrent) {
                 button.setAttribute('aria-current', 'true');
             } else {
@@ -63,7 +62,7 @@
             setTheme(button.dataset.setTheme);
         }
     });
-    document.addEventListener('show.bs.dropdown', markCurrentTheme);
+    document.addEventListener('navbar-loaded', markCurrentTheme);
 
     // Follow a theme change made in another tab of the site.
     window.addEventListener('storage', function (ev) {

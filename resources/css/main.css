@@ -1,25 +1,427 @@
-/* Shared by every theme. Theme-specific styles live in themes/. */
+/*
+ * Base styles shared by every theme: sensible defaults plus the layout pieces
+ * (navbar, cards, project tabs). The themes in themes/ restyle all of it.
+ */
 
-* {
+/* ---------- Defaults ---------- */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #fff;
+    color: #212529;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0 0 .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+/* Headings grow a little with the window, up to a fixed size on wide screens */
+h1 { font-size: clamp(1.75rem, 1.375rem + 1.5vw, 2.5rem); }
+h2 { font-size: clamp(1.5rem, 1.325rem + .9vw, 2rem); }
+h3 { font-size: clamp(1.4rem, 1.3rem + .6vw, 1.75rem); }
+h4 { font-size: clamp(1.3rem, 1.275rem + .3vw, 1.5rem); }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+p,
+ul,
+ol,
+dl {
+    margin: 0 0 1rem;
+}
+
+ul,
+ol {
+    padding-left: 2rem;
+}
+
+/* Nested lists sit snugly under their parent item */
+li > ul,
+li > ol {
+    margin-bottom: 0;
+}
+
+a {
+    color: #0d6efd;
+}
+
+a:hover {
+    color: #0a58ca;
+}
+
+img,
+svg {
+    vertical-align: middle;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+hr {
+    margin: 1rem 0;
+    border: 0;
+    border-top: 1px solid;
+    color: inherit;
+    opacity: .25;
+}
+
+button {
+    margin: 0;
+    color: inherit;
+    font: inherit;
 }
 
 .hidden {
     display: none;
 }
 
-/* Reserve the navbar's height so the page doesn't jump down when navbar.html loads in */
-#navbar {
-    min-height: 56px;
+/* ---------- Page layout ---------- */
+
+.container {
+    max-width: 1140px;
+    margin-inline: auto;
+    padding: 1rem .75rem;
 }
 
-.social {
+.page-title {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* ---------- Navbar (filled in from navbar.html) ---------- */
+
+#navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    /* Reserve the navbar's height so the page doesn't jump down when navbar.html loads in */
+    min-height: 56px;
+    padding: .5rem 1rem;
+    background-color: #212529;
+}
+
+#navbar ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.site-name {
+    margin-right: 1rem;
+    padding: .3125rem 0;
+    color: #fff;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.site-name:hover {
+    color: #fff;
+}
+
+.nav-links a,
+.dropdown > summary {
+    display: block;
+    padding: .5rem 0;
+    color: rgba(255, 255, 255, .55);
+    text-decoration: none;
+}
+
+.nav-links a:hover,
+.dropdown > summary:hover {
+    color: rgba(255, 255, 255, .75);
+}
+
+.nav-links a[aria-current="page"] {
+    color: #fff;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    padding: .5rem 0;
+}
+
+.social-links img {
+    width: 30px;
     max-height: 30px;
-    max-width: 30px;
-    top: -4px;
+}
+
+/* The ☰ button that shows/hides the menu on small screens */
+.menu-toggle {
+    padding: .25rem .75rem;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: .375rem;
+    background: transparent;
+    color: rgba(255, 255, 255, .55);
+    line-height: 1;
+    cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .site-menu {
+        flex-basis: 100%;
+    }
+
+    .menu-toggle[aria-expanded="false"] + .site-menu {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    #navbar {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+
+    .menu-toggle {
+        display: none;
+    }
+
+    .site-menu {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+    }
+
+    /* Push the social icons to the far right */
+    #navbar .nav-links {
+        display: flex;
+        margin-right: auto;
+    }
+
+    .nav-links a,
+    .dropdown > summary {
+        padding-inline: .5rem;
+    }
+
+    .social-links {
+        padding: 0;
+    }
+}
+
+/* ---------- Dropdown menu (the theme picker) ---------- */
+
+.dropdown {
     position: relative;
 }
 
-.navbar-brand {
-    padding-left: 15px;
+.dropdown > summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.dropdown > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Little ▾ after the label */
+.dropdown > summary::after {
+    content: "";
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-left: .3em solid transparent;
+}
+
+.dropdown-menu {
+    min-width: 10rem;
+    margin-top: .125rem;
+    padding: .5rem 0;
+    border: 1px solid rgba(0, 0, 0, .175);
+    border-radius: .375rem;
+    background-color: #fff;
+    text-align: left;
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: .25rem 1rem;
+    border: 0;
+    background: none;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.dropdown-menu button:hover,
+.dropdown-menu button:focus-visible {
+    background-color: #e9ecef;
+}
+
+.dropdown-menu button[aria-current="true"] {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+/* On wide screens the menu floats over the page; in the phone menu it just opens in place */
+@media (min-width: 992px) {
+    .dropdown-menu {
+        position: absolute;
+        z-index: 1000;
+        top: 100%;
+        left: 0;
+    }
+}
+
+/* ---------- Cards (education and projects pages) ---------- */
+
+.card-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, .175);
+    border-radius: .375rem;
+    background-color: #fff;
+}
+
+.card-img {
+    display: block;
+    width: 100%;
+}
+
+.card-body {
+    padding: 1rem .5rem;
+}
+
+.card-body > :last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- Education page ---------- */
+
+.school {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .school {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.school h2 {
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+/* ---------- Experience page ---------- */
+
+.job h2 {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+.job p {
+    text-align: justify;
+}
+
+/* ---------- Contact page ---------- */
+
+.contact-links {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 768px) {
+    .contact-links {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.contact-links li {
+    padding: 1rem;
+}
+
+/* ---------- Project details page: pick a project on the left, read it on the right ---------- */
+
+.project-tabs {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (min-width: 768px) {
+    .project-tabs {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, .175);
+    border-radius: .375rem;
+}
+
+.project-list a {
+    padding: .5rem 1rem;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    text-decoration: none;
+}
+
+.project-list a + a {
+    border-top: 1px solid rgba(0, 0, 0, .175);
+}
+
+.project-list a:hover {
+    background-color: #bcd0c7;
+}
+
+.project-list a[aria-current="true"] {
+    background-color: #0f5132;
+    color: #fff;
+}
+
+.project-facts dt {
+    margin-bottom: .5rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.project-facts dd {
+    margin: 0 0 1rem;
+    padding-left: 1rem;
+    font-weight: 300;
 }

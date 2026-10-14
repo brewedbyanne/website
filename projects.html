@@ -12,10 +12,6 @@
     <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
     <script src="resources/js/theme.js"></script>
 
-    <!-- Bootstrap CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
     <!-- Fonts used by the themes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +19,7 @@
         href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
         rel="stylesheet">
 
-    <link rel='stylesheet' href='resources/css/main.css'>
+    <link rel='stylesheet' href='resources/css/main.css?v=2'>
     <link rel='stylesheet' href='resources/css/themes.css'>
 
     <title>Anne Whitman - Projects</title>
@@ -31,176 +27,127 @@
 
 <body>
     <!--navbar -->
-    <nav id='navbar' class="navbar navbar-expand-lg navbar-dark bg-dark">
-    </nav>
-    <div class="my-3">
-        <h1 class='top-style text-center text-darkcolor'>Projects</h1>
-    </div>
-    <div class='container mb-3 px-5 py-3'>
-        <div class="row mb-3">
-            <h3> Work Projects </h3>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card h-100">
-                        <!-- <a href="admin/index.html" target="_blank"><img class="card-img-top"
-                                src="resources/img/RUOnlineCon.png" alt="Ru Online Con"></a> -->
-                        <div class="card-body px-2">
-                            <h4 class="card-title">Moderation Website for Mosaic App</h4>
-                            <p class="card-text">Moderation web app to accompany mobile app designed for a teacher's
+    <nav id='navbar'></nav>
+    <main>
+        <h1 class='page-title'>Projects</h1>
+        <div class='container'>
+            <section class="project-group">
+                <h3>Work Projects</h3>
+                <div class="card-grid">
+                    <article class="card">
+                        <!-- <a href="admin/index.html" target="_blank"><img class="card-img"
+                        src="resources/img/RUOnlineCon.png" alt="Ru Online Con"></a> -->
+                        <div class="card-body">
+                            <h4>Moderation Website for Mosaic App</h4>
+                            <p>Moderation web app to accompany mobile app designed for a teacher's
                                 conference.</p>
-                            <p class="card-text">The mobile app is designed for attendees to take and post pictures to
-                                earn points and form a mosaic, this web app is for moderation of those pictures</p>
+                            <p>The mobile app is designed for attendees to take and post pictures to earn
+                                points and form a mosaic, this web app is for moderation of those pictures</p>
                             <!-- <p>Use admin@admin.com/test123 to login and navigate.</p> -->
                         </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img class="card-img-top" src='resources/img/CMSCE.png' alt="Card image cap">
-                        <div class="card-body px-2">
-                            <h4 class="card-title">CMSCE</h4>
-                            <p class="card-text">Workshop registration and invoice/contract generation for Rutgers
-                                Center
-                                for Mathematics, Science, and Computer Education.</p>
+                    </article>
+                    <article class="card">
+                        <img class="card-img" src='resources/img/CMSCE.png' alt="CMSCE logo">
+                        <div class="card-body">
+                            <h4>CMSCE</h4>
+                            <p>Workshop registration and invoice/contract generation for Rutgers Center for
+                                Mathematics, Science, and Computer Education.</p>
                         </div>
-                    </div>
+                    </article>
                 </div>
-                <div class="col">
-                    <div class='card empty h-100'></div>
-                </div>
-            </div>
-            <!-- Todo: add sitecompli stuff here:
+                <!-- Todo: add sitecompli stuff here:
                 - https://www.youtube.com/watch?v=JJWCWO_L58I&ab_channel=SiteCompli
-            -->
-        </div>
-
-        <hr class="my-4">
-
-        <div class="row my-3">
-            <h3> School Projects </h3>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card h-100">
-                        <a href="projects_details.html" target="_blank"><img class="card-img-top"
-                                src="resources/img/fakeCode.jpg" alt="fake code"></a>
-                        <div class="card-body px-2">
-                            <h4 class="card-title">Full Project Website</h4>
-                            <p class="card-text"> Most of my school projects are in Java and C. Please follow this link
-                                to
-                                see more recent school projects like my HTTP Server (Java), Partial Operating System
-                                (C),
-                                and more.</p>
+                -->
+            </section>
+            <hr>
+            <section class="project-group">
+                <h3>School Projects</h3>
+                <div class="card-grid">
+                    <article class="card">
+                        <a href="projects_details.html" target="_blank"><img class="card-img"
+                        src="resources/img/fakeCode.jpg" alt="fake code"></a>
+                        <div class="card-body">
+                            <h4>Full Project Website</h4>
+                            <p>Most of my school projects are in Java and C. Please follow this link to see
+                                more recent school projects like my HTTP Server (Java), Partial Operating
+                                System (C), and more.</p>
                         </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <a href='https://github.com/aniel928/CS336' target="_blank">
-                            <img class="card-img-top" src="resources/img/ComeFlyAwayLogo.jpg"
-                                alt="Logo for flight reservation site">
+                    </article>
+                    <article class="card">
+                        <a href='https://github.com/brewedbyanne/CS336' target="_blank">
+                        <img class="card-img" src="resources/img/ComeFlyAwayLogo.jpg"
+                        alt="Logo for flight reservation site">
                         </a>
-                        <div class="card-body px-2">
-                            <h4 class="card-title">Airline Reservation</h4>
-                            <p class="card-text">Summer group project. I was in charge of the logic between pages
-                                (particularly for flight reservations). Other members handled database design and CSS.
+                        <div class="card-body">
+                            <h4>Airline Reservation</h4>
+                            <p>Summer group project. I was in charge of the logic between pages (particularly
+                                for flight reservations). Other members handled database design and CSS.</p>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <a href="https://github.com/brewedbyanne/reverseJobBoard" target="_blank"><img class="card-img"
+                        src="resources/img/rjb.jpg" alt="reverse job board logo"></a>
+                        <div class="card-body">
+                            <h4>Reverse Job Board</h4>
+                            <p>My very first website. Capstone project to graduate Brookdale Community College
+                                with an A.S. in Computer Science.</p>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <a href="https://github.com/brewedbyanne/CS213/tree/master/Chess30" target="_blank"><img
+                        class="card-img" src="resources/img/chess.jpg" alt="Chess pieces"></a>
+                        <div class="card-body">
+                            <h4>Two Player Chess</h4>
+                            <p>Coded in Java. Command line game. Includes en passant, castling (standard and
+                                Queen-side), promotion, draw, resignation, checkmate, and stalemate.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <hr>
+            <section class="project-group">
+                <h3>Personal Projects</h3>
+                <div class="card-grid">
+                    <article class="card">
+                        <a href="https://github.com/brewedbyanne/DeLitter" target="_blank">
+                        <img class="card-img" src="resources/img/deLItter.png" alt="DeLitter logo">
+                        </a>
+                        <div class="card-body">
+                            <h4>DeLitter</h4>
+                            <p>Hackathon project. Mobile application to determine location of nearest trash
+                                can / recyling receptacle. Won overall 3rd place as well as "Best
+                                Environmental Hack"</p>
+                            <p>Coded with Android Studio, uses Firebase Realtime DB for storage. Google Maps
+                                APIs used.</p>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <a href="https://github.com/brewedbyanne/ninthLife" target="_blank">
+                        <img class="card-img" src="resources/img/catdog.jpeg" alt="Cute pets">
+                        </a>
+                        <div class="card-body">
+                            <h4>Ninth Life</h4>
+                            <p>Hackathon project providing Pet Rescue as a form of Disaster Relief. Won 1st
+                                place for JP Morgan's "Best Hack for the Social Good"</p>
+                            <p>Coded with PHP, SQL, Bootstrap.
+                            <!-- DB hosted on AWS, --> Google Maps APIs used.
                             </p>
+                            <!-- <p><strong>Note: This entire website was coded in 16 hours (we have not updated it since). So
+                            beware of security risks and potential bugs while navigating. Do not use real emails or
+                            passwords.</strong></p> -->
                         </div>
-                    </div>
+                    </article>
                 </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <a href="https://github.com/aniel928/reverseJobBoard" target="_blank"><img class="card-img-top"
-                                src="resources/img/rjb.jpg" alt="reverse job board logo"></a>
-                        <div class="card-body px-2">
-                            <h4 class="card-title">Reverse Job Board</h4>
-                            <p class="card-text">My very first website. Capstone project to graduate Brookdale Community
-                                College with an A.S. in Computer Science. </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <a href="https://github.com/aniel928/CS213/tree/master/Chess30" target="_blank"><img
-                                class="card-img-top" src="resources/img/chess.jpg" alt="fake code"></a>
-                        <div class="card-body px-2">
-                            <h4 class="card-title">Two Player Chess</h4>
-                            <p class="card-text"> Coded in Java. Command line game. Includes en passant, castling
-                                (standard
-                                and Queen-side),
-                                promotion, draw, resignation, checkmate, and stalemate.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card empty h-100">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card empty h-100">
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="row mt-3">
-                <h3> Personal Projects </h3>
-                <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <div class="col">
-                        <div class="card h-100">
-                            <a href="https://github.com/aniel928/DeLitter" target="_blank">
-                                <img class="card-img-top" src="resources/img/deLItter.png" alt="DeLitter logo">
-                            </a>
-                            <div class="card-body px-2">
-                                <h4 class="card-title">DeLitter</h4>
-                                <p class="card-text">Hackathon project. Mobile application to determine location of
-                                    nearest
-                                    trash can /
-                                    recyling receptacle. Won overall 3rd place as well as "Best Environmental Hack"</p>
-                                <p>Coded with Android Studio, uses Firebase Realtime DB for storage. Google Maps APIs
-                                    used.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card h-100">
-                            <a href="https://github.com/aniel928/ninthLife" target="_blank">
-                                <img class="card-img-top" src="resources/img/catdog.jpeg" alt="Cute pets">
-                            </a>
-                            <div class="card-body px-2">
-                                <h4 class="card-title">Ninth Life</h4>
-                                <p class="card-text">Hackathon project providing Pet Rescue as a form of Disaster
-                                    Relief.
-                                    Won
-                                    1st place for JP Morgan's "Best Hack for the Social Good"</p>
-                                <p>Coded with PHP, SQL, Bootstrap.
-                                    <!-- DB hosted on AWS, --> Google Maps APIs used.
-                                </p>
-                                <!-- <p><strong>Note: This entire website was coded in 16 hours (we have not updated it since). So
-                                        beware of security risks and potential bugs while navigating. Do not use real emails or
-                                        passwords.</strong></p> -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card empty h-100"></div>
-                    </div>
-                </div>
-            </div>
+            </section>
         </div>
-    </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    </main>
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
 
-    <!-- Bootstrap: JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-
-    <!-- Site specific. Bump ?v= whenever functions.js changes, or returning visitors may get an old cached copy. -->
+    <!-- Site specific (the ?v= is explained in .htaccess) -->
     <script src="resources/js/functions.js?v=2"></script>
 </body>
 

@@ -12,10 +12,6 @@
     <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
     <script src="resources/js/theme.js"></script>
 
-    <!-- Bootstrap CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
     <!-- Fonts used by the themes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +19,7 @@
         href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
         rel="stylesheet">
 
-    <link rel='stylesheet' href='resources/css/main.css'>
+    <link rel='stylesheet' href='resources/css/main.css?v=2'>
     <link rel='stylesheet' href='resources/css/themes.css'>
 
     <title>Anne Whitman - Projects</title>
@@ -31,427 +27,396 @@
 
 <body>
     <!--navbar -->
-    <nav id='navbar' class="navbar navbar-expand-lg navbar-dark bg-dark">
-    </nav>
+    <nav id='navbar'></nav>
 
-    <!--main container-->
-    <div class='container my-5 pb-5'>
-        <!--Projects header-->
-        <div class='row'>
-            <div class='col-12'>
-                <h1>Projects</h1>
-                <p></p>
-            </div>
-        </div>
-
-        <div class="row">
-            <!--Buttons to select between options -->
-            <div class="col-md-4">
-                <div class="list-group" id="list-tab" role="tablist">
+    <main>
+        <h1 class='page-title'>Projects</h1>
+        <div class='container'>
+            <div class='project-tabs'>
+                <!-- Pick a project here to show it on the right (see showProject() in functions.js) -->
+                <nav class="project-list" aria-label="School projects">
                     <!-- <a class="list-group-item list-group-item-success list-group-item-action active"
-                        id="list-moderation-list" data-toggle="list" href="#list-moderation" role="tab"
-                        aria-controls="moderation">Moderation Web Application</a> -->
-                    <a class="list-group-item list-group-item-success list-group-item-action active" id="list-os-list"
-                        data-toggle="list" href="#list-os" role="tab" aria-controls="os">Partial Operating System</a>
-                    <a class="list-group-item list-group-item-success list-group-item-action" id="list-airline-list"
-                        data-toggle="list" href="#list-airline" role="tab" aria-controls="airline">Airline Reservation
-                        Website</a>
-                    <a class="list-group-item list-group-item-success list-group-item-action" id="list-http-list"
-                        data-toggle="list" href="#list-http" role="tab" aria-controls="http">HTTP Server</a>
-                    <a class="list-group-item list-group-item-success list-group-item-action" id="list-distributed-list"
-                        data-toggle="list" href="#list-distributed" role="tab" aria-controls="distributed">Distributed
-                        File System</a>
-                </div>
-            </div>
+                            id="list-moderation-list" data-toggle="list" href="#list-moderation" role="tab"
+                            aria-controls="moderation">Moderation Web Application</a> -->
+                    <a href="#os" aria-current="true">Partial Operating System</a>
+                    <a href="#airline">Airline Reservation Website</a>
+                    <a href="#http">HTTP Server</a>
+                    <a href="#distributed">Distributed File System</a>
+                </nav>
 
-            <!-- This is where the selected tab displays -->
-            <div class="col-md-8">
-                <div class="tab-content" id="nav-tabContent">
-
+                <div class="project-panels">
                     <!-- Web Moderation -->
-                    <!-- <div class="tab-pane fade show active" id="list-moderation" role="tabpanel"
-                        aria-labelledby="list-moderation-list">
-                        <div class='row mb-3'>
-                            <div class='col-md-12 mt-2'>
-                                <h5>Name</h5>
-                                <p class='font-weight-light pl-3'> Web Moderation for RUOnlineCon Mobile App </p>
-                                <h5>Dates Worked On:</h5>
-                                <p class='font-weight-light pl-3'>January 2018</p> -->
-                    <!-- <h5>Link</h5>
-                                <p class='font-weight-light pl-3'> <a class='text-info' target='_blank'
-                                        href='admin/index.html'>Locally Hosted Link</a><br> Use admin@admin.com /
-                                    test123 for access.</p> -->
-                    <!-- <h5>Description</h5>
-                                <div class='container font-weight-light'>
-                                    <p>This was a project I worked on during my time as a Student Application Developer
-                                        working at Rutgers University - ITaCS.</p>
-                                    <h6>Objective</h6>
-                                    <p>The main application of this department-wide project is a mobile app designed for
-                                        a teacher conference. With a theme of "Collaborate," the mobile app is designed
-                                        for attendees to take and post pictures with certain themes. By posting
-                                        pictures, they receive points and compete for prizes. Additionally, as pictures
-                                        are taken they are compiled into a mosaic on a TV screen in the main room of the
-                                        conference.</p>
-                                    <p>In order to ensure that no inappropriate pictures or comments appear on the
-                                        mosaic TV screen, there was a need for moderation of all pictures and comments.
-                                        This was achieved with a website that first requires administrator login. After
-                                        the admin logs in, they are brought to an “Admin Dashboard”. At that point the
-                                        admin has options to moderate photos, moderate comments, add objectives, and add
-                                        other administrators.</p>
-                                    <h6>Technologies</h6>
-                                    <p>The website is programmed using the following technologies:
-                                    <ul>
-                                        <li>Languages</li>
+                        <!-- <div class="tab-pane fade show active" id="list-moderation" role="tabpanel"
+                            aria-labelledby="list-moderation-list">
+                            <div class='row mb-3'>
+                                <div class='col-md-12 mt-2'>
+                                    <h5>Name</h5>
+                                    <p class='font-weight-light pl-3'> Web Moderation for RUOnlineCon Mobile App </p>
+                                    <h5>Dates Worked On:</h5>
+                                    <p class='font-weight-light pl-3'>January 2018</p> -->
+                        <!-- <h5>Link</h5>
+                                    <p class='font-weight-light pl-3'> <a class='text-info' target='_blank'
+                                            href='admin/index.html'>Locally Hosted Link</a><br> Use admin@admin.com /
+                                        test123 for access.</p> -->
+                        <!-- <h5>Description</h5>
+                                    <div class='container font-weight-light'>
+                                        <p>This was a project I worked on during my time as a Student Application Developer
+                                            working at Rutgers University - ITaCS.</p>
+                                        <h6>Objective</h6>
+                                        <p>The main application of this department-wide project is a mobile app designed for
+                                            a teacher conference. With a theme of "Collaborate," the mobile app is designed
+                                            for attendees to take and post pictures with certain themes. By posting
+                                            pictures, they receive points and compete for prizes. Additionally, as pictures
+                                            are taken they are compiled into a mosaic on a TV screen in the main room of the
+                                            conference.</p>
+                                        <p>In order to ensure that no inappropriate pictures or comments appear on the
+                                            mosaic TV screen, there was a need for moderation of all pictures and comments.
+                                            This was achieved with a website that first requires administrator login. After
+                                            the admin logs in, they are brought to an “Admin Dashboard”. At that point the
+                                            admin has options to moderate photos, moderate comments, add objectives, and add
+                                            other administrators.</p>
+                                        <h6>Technologies</h6>
+                                        <p>The website is programmed using the following technologies:
                                         <ul>
-                                            <li>Javascript</li>
-                                            <li>HTML/CSS</li>
+                                            <li>Languages</li>
+                                            <ul>
+                                                <li>Javascript</li>
+                                                <li>HTML/CSS</li>
+                                            </ul>
+                                            <li>Database</li>
+                                            <ul>
+                                                <li>Firebase Realtime Database</li>
+                                                <li>Firebase Javascript API</li>
+                                            </ul>
                                         </ul>
-                                        <li>Database</li>
+                                        <h6>Functionalities</h6>
                                         <ul>
-                                            <li>Firebase Realtime Database</li>
-                                            <li>Firebase Javascript API</li>
+                                            <li>Log-In / Log-Out Functionality</li>
+                                            <p>This was accomplished using Firebase Authentication</p>
+                                            <li>Admin Dashboard</li>
+                                            <p>The admin dashboard is just a navigation page that allows the admin to choose
+                                                what they would like to do next.</p>
+                                            <li>Photo Moderation</li>
+                                            <p>On this page, one picture is pulled at a time from the database and is
+                                                displayed on screen. The comment and the objective description are also
+                                                displayed on screen. The admin has the choice to approve the photo or to
+                                                reject it. (Rejections may occur when a photo/caption is inappropriate or if
+                                                the picture doesn't match the objective displayed.)</p>
+                                            <li>Comment Moderation</li>
+                                            <p>On this page, a picture is displayed with all comments underneath. If a
+                                                comment is not yet approved, it will have approve/reject buttons. If it is
+                                                approved, it will show without buttons. If it is rejected, it will not
+                                                display. Only pictures with at least one unmoderated comment will appear on
+                                                this page. </p>
+                                            <li>Add/View Objectives</li>
+                                            <p>A list of all objectives including any camera overlays for the application
+                                                camera. There is the opportunity to add new objectives, as well as new
+                                                categories of objectives.</p>
+                                            <li>Add/View Admins</li>
+                                            <p>A list of all current admins with options to add to and delete from the list.
+                                            </p>
                                         </ul>
-                                    </ul>
-                                    <h6>Functionalities</h6>
-                                    <ul>
-                                        <li>Log-In / Log-Out Functionality</li>
-                                        <p>This was accomplished using Firebase Authentication</p>
-                                        <li>Admin Dashboard</li>
-                                        <p>The admin dashboard is just a navigation page that allows the admin to choose
-                                            what they would like to do next.</p>
-                                        <li>Photo Moderation</li>
-                                        <p>On this page, one picture is pulled at a time from the database and is
-                                            displayed on screen. The comment and the objective description are also
-                                            displayed on screen. The admin has the choice to approve the photo or to
-                                            reject it. (Rejections may occur when a photo/caption is inappropriate or if
-                                            the picture doesn't match the objective displayed.)</p>
-                                        <li>Comment Moderation</li>
-                                        <p>On this page, a picture is displayed with all comments underneath. If a
-                                            comment is not yet approved, it will have approve/reject buttons. If it is
-                                            approved, it will show without buttons. If it is rejected, it will not
-                                            display. Only pictures with at least one unmoderated comment will appear on
-                                            this page. </p>
-                                        <li>Add/View Objectives</li>
-                                        <p>A list of all objectives including any camera overlays for the application
-                                            camera. There is the opportunity to add new objectives, as well as new
-                                            categories of objectives.</p>
-                                        <li>Add/View Admins</li>
-                                        <p>A list of all current admins with options to add to and delete from the list.
                                         </p>
-                                    </ul>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div> -->
+                        </div> -->
 
                     <!--Operating System 416 -->
-                    <div class="tab-pane fade show active" id="list-os" role="tabpanel" aria-labelledby="list-os-list">
-                        <div class='row mb-3'>
-                            <div class='col-md-12 mt-2 font-weight-light'>
-                                <h5>Name</h5>
-                                <p class='font-weight-light pl-3'>Partial Operating System</p>
-                                <h5>Dates Worked On:</h5>
-                                <p class='font-weight-light pl-3'> October 2017 - December 2017 </p>
-                                <h5>Github Link</h5>
-                                <p><a href="https://github.com/aniel928/CS416">https://github.com/aniel928/CS416</a></p>
-                                <h5>Description</h5>
-                                <p class='font-weight-light pl-3'> As part of my Operating Systems class, we were
-                                    assigned a semester long project to build components of an operating system. This
-                                    project was broken down into three segments:
+                    <article class="project" id="os">
+                        <dl class="project-facts">
+                            <dt>Name</dt>
+                            <dd>Partial Operating System</dd>
+                            <dt>Dates Worked On:</dt>
+                            <dd>October 2017 - December 2017</dd>
+                            <dt>Github Link</dt>
+                            <dd><a href="https://github.com/brewedbyanne/CS416">https://github.com/brewedbyanne/CS416</a></dd>
+                            <dt>Description</dt>
+                            <dd>
+                                <p>As part of my Operating Systems class, we were assigned a semester long project to build
+                                    components of an operating system. This project was broken down into three segments:</p>
                                 <ul>
-                                    <li>Asst1: Scheduler and User Threads Library</li>
-                                    <p> The objective here was to build a user thread/mutex library and multi-level
-                                        priority queue with built in priority inversion.
-                                    <ul>
-                                        <li>Priorities and Quantums/TimeSlices:</li>
-                                        <p>We implemented a multi-level priority queue with 4 levels total (0-3). All
-                                            newly created threads start in level 0. Each level received 2^priority
-                                            quantums (1, 2, 4, and 8 respectively). Every maintenance cycle we put 38
-                                            threads from level 0, 17 threads from level 1, 7 threads from level 2, and 2
-                                            threads from level 3 into the running queue.</p>
-                                        <li>Promotion/Demotion</li>
-                                        <p>After each thread finishes its quantum, it is demoted to the next queue
-                                            (unless it is already in the lowest queue). If a thread yields, it does not
-                                            demote. If a thread is placed onto a waiting queue (through a join or mutex
-                                            lock), it is placed back into the same priority queue it was in prior to
-                                            locking. If a thread has been on a given priority queue for more than 5
-                                            maintenance cycles, it is promoted up one level.</p>
-                                        <li>Maintenance</li>
-                                        <p>The maintenance cycle is used to increase priority levels of threads who have
-                                            been in the cycle for too long. We determined that any thread that has been
-                                            inactive for 5 cycles will have their priority level increased. Once it is
-                                            increased it is relocated in the multi-level priority queue. After all
-                                            threads have been placed into their appropriate location, the
-                                            createRunning() method is called, which pulls a specified amount of threads
-                                            from each priority level and adds them into a queue which will be used for
-                                            execution.</p>
-                                        <li>Handling​ ​Priority​ ​Inversion</li>
-                                        <p>Priority inversion was handled using Priority Inheritance (PInh). With PInh,
-                                            when there is a low priority thread locking a mutex and a higher priority
-                                            thread enters, then the low priority thread “inherits” the higher one’s
-                                            priority. It then runs inside the higher priority queue (never being demoted
-                                            to a lower queue) until it unlocks the mutex to allow the higher priority
-                                            thread into the lock. This will prevent the high priority thread from
-                                            waiting a large amount of time for the low priority thread to run and
-                                            release the lock.
+                                    <li>Asst1: Scheduler and User Threads Library
+                                        <p>The objective here was to build a user thread/mutex library and multi-level
+                                            priority queue with built in priority inversion.</p>
                                         <ul>
-                                            <li>Implementation</li>
-                                            <p>Inside the mutex_lock function, when a thread (A) is passed to the
-                                                waiting queue, the priority of A is compared to the priority of the
-                                                mutex owner (B). If A’s priority is less than B’s then A will be added
-                                                to the end of the waiting queue. However if A’s is greater than B’s then
-                                                PInh is set in place. Thread A will be placed at the head of the waiting
-                                                queue instead of the tail and B will be forced to run at level 0
-                                                (highest priority) without being demoted to a lower priority over time,
-                                                until it is able to finish and release the mutex. At that point A is a
-                                                able to gain control of the mutex and and can run normally.</p>
-                                        </ul>
-                                        </p>
-                                        </li>
-                                    </ul>
-                                    <li>Asst2: Psuedo-Virtual Memory</li>
-                                    <p>The objective was to take our previous project and build in virtual memory. We
-                                        were allowed to keep OS space and User space separate, but all malloc calls
-                                        would redirect back to our user thread library and be handled through our own
-                                        virtual memory structures.
-                                    <ul>
-                                        <li>MetaData Structure:</li>
-                                        <p>For OS region and shared region: A struct containing an int to check if used,
-                                            an int to record size, and a pointer to the next metadata.</p>
-                                        <p>For user region: A struct containing a boolean to check if used, an int to
-                                            record size, an int to record number of pages, and a pointer to the next
-                                            metadata.</p>
-                                        <li>Page Tables: </li>
-                                        <p>Internal: each thread has a page table associated with their TCB which holds
-                                            the page index, the maxsize currently free in that page, an offset in the
-                                            swap file that defaults to -1 when not being used, and a pointer to the next
-                                        </p>
-                                        <p>External: a 2-dimensional global array, each row holds data about a specific
-                                            page, the first column holds which page owns it (defaults to -1, when freed
-                                            set to -2 to guarantee segfault handler), second column holds how many
-                                            malloc calls are currently using it (so it won't be deleted prematurely).
-                                        </p>
-                                        <li>Basic Logic/Design of user section:</li>
-                                        <ul>
-                                            <li>First our program checks to see how many pages the allocation needs.
+                                            <li>Priorities and Quantums/TimeSlices:
+                                                <p>We implemented a multi-level priority queue with 4 levels total (0-3). All
+                                                    newly created threads start in level 0. Each level received 2^priority
+                                                    quantums (1, 2, 4, and 8 respectively). Every maintenance cycle we put 38
+                                                    threads from level 0, 17 threads from level 1, 7 threads from level 2, and 2
+                                                    threads from level 3 into the running queue.</p>
                                             </li>
-                                            <li>If it needs more than one page, it allocates fresh pages to the thread.
+                                            <li>Promotion/Demotion
+                                                <p>After each thread finishes its quantum, it is demoted to the next queue
+                                                    (unless it is already in the lowest queue). If a thread yields, it does not
+                                                    demote. If a thread is placed onto a waiting queue (through a join or mutex
+                                                    lock), it is placed back into the same priority queue it was in prior to
+                                                    locking. If a thread has been on a given priority queue for more than 5
+                                                    maintenance cycles, it is promoted up one level.</p>
                                             </li>
-                                            <li>If it needs less than one page, it first checks to see if there is room
-                                                in an existing page.</li>
-                                            <li>If there is, it squeezes it into an existing page.</li>
-                                            <li>If there isn't, it creates a new one.</li>
-                                            <li>Once the new space is allocated, we write to the internal page table and
-                                                external page table</li>
-                                            <li>if it was written to a page that already held something, we increment
-                                                the counter in external as well so when it's time to free we know that
-                                                more than one thing is using that page. </li>
-                                        </ul>
-                                    </ul>
-                                    <li>Asst3: User Space File System (using FUSE)</li>
-                                    <p>The assignment was to build separately from the other projects a user-space file
-                                        system (using FUSE). We had to replicate the following commands:
-                                    <ul>
-                                        <li>touch filename</li>
-                                        <li> echo 'text' >> filename</li>
-                                        <li>cat filename</li>
-                                        <li>rm filename</li>
-                                    </ul>
-                                    </p>
-                                    <p>We also built in directory functions (mkdir, rmdir, and being able to navigate
-                                        around) for extra credit.</p>
-                                    <ul>
-                                        <li>Metadata about the file:</li>
-                                        <p>blocks[INODEBLOCKS + DATABLOCKS] is an array of chars (acting as block
-                                            indices), partitioned into two regions. The first region references inodes
-                                            and the second references data blocks.</p>
-                                        <li>Extensions/Improvements:</li>
-                                        <p>The Extension/Improvement we decided to implement was directory support. We
-                                            also implemented the Extended Directory Operations for extra credit. </p>
-                                        <li>Structs and Enums:</li>
-                                        <p>Boolean Enum:
-                                        <ul>
-                                            <li>FALSE (as 0)</li>
-                                            <li>TRUE (as 1)</li>
-                                        </ul>
-                                        </p>
-                                        <p>Filetype Enum:
-                                        <ul>
-                                            <li>FILE_NODE</li>
-                                            <li>DIR_NODE</li>
-                                        </ul>
-                                        </p>
-                                        <p>Inode struct:<br>
-                                            The inode struct is exactly 512 bytes (the size of one block) and contains:
-                                        <ul>
-                                            <li>An integer representing the size of the file it references</li>
-                                            <li>An integer representing:
+                                            <li>Maintenance
+                                                <p>The maintenance cycle is used to increase priority levels of threads who have
+                                                    been in the cycle for too long. We determined that any thread that has been
+                                                    inactive for 5 cycles will have their priority level increased. Once it is
+                                                    increased it is relocated in the multi-level priority queue. After all
+                                                    threads have been placed into their appropriate location, the
+                                                    createRunning() method is called, which pulls a specified amount of threads
+                                                    from each priority level and adds them into a queue which will be used for
+                                                    execution.</p>
+                                            </li>
+                                            <li>Handling Priority Inversion
+                                                <p>Priority inversion was handled using Priority Inheritance (PInh). With PInh,
+                                                    when there is a low priority thread locking a mutex and a higher priority
+                                                    thread enters, then the low priority thread “inherits” the higher one’s
+                                                    priority. It then runs inside the higher priority queue (never being demoted
+                                                    to a lower queue) until it unlocks the mutex to allow the higher priority
+                                                    thread into the lock. This will prevent the high priority thread from
+                                                    waiting a large amount of time for the low priority thread to run and
+                                                    release the lock.</p>
                                                 <ul>
-                                                    <li>For Files: the number of data blocks a file is currently
-                                                        referencing</li>
-                                                    <li>For Directories: the number of files/directories inside of that
-                                                        directory.</li>
+                                                    <li>Implementation
+                                                        <p>Inside the mutex_lock function, when a thread (A) is passed to the
+                                                            waiting queue, the priority of A is compared to the priority of the
+                                                            mutex owner (B). If A’s priority is less than B’s then A will be added
+                                                            to the end of the waiting queue. However if A’s is greater than B’s then
+                                                            PInh is set in place. Thread A will be placed at the head of the waiting
+                                                            queue instead of the tail and B will be forced to run at level 0
+                                                            (highest priority) without being demoted to a lower priority over time,
+                                                            until it is able to finish and release the mutex. At that point A is a
+                                                            able to gain control of the mutex and and can run normally.</p>
+                                                    </li>
                                                 </ul>
                                             </li>
-                                            <li>An integer array of all data blocks the file references (empty for
-                                                directories)</li>
-                                            <li>An integer representing links to the file<br>
-                                                <ul>
-                                                    <li>We did not implement links for files, but this is incremented
-                                                        for directories everytime a directory is made inside of it
-                                                        (because of the ‘..’ inside the new directory) and decremented
-                                                        everytime a directory is removed from within.</li>
-                                                </ul>
-                                            </li>
-                                            <li>A filetype value which is used to distinguish if the inode is used for a
-                                                file or a directory
-                                                <ul>
-                                                    <li>we declared an enum for this that can be found at the top of the
-                                                        file below the include header section. </li>
-                                                </ul>
-                                            </li>
-                                            <li>A mode_t value which is used to store the read, write, and execute
-                                                capabilities of a file as well as S_IFDIR or S_IFREG which gives further
-                                                information for files vs directories.</li>
-                                            <li>A time_t value used for the time that the file was created</li>
-                                            <li>A time_t value used for the time that the file was last modified</li>
-                                            <li>A time_t value used for the time that the file was last accessed</li>
-                                            <li>An integer representing userId of the owner of the file.</li>
-                                            <li>An integer representing the groupId of the owner of the file.</li>
-                                            <li>Char array of 50 characters used to store the path.</li>
                                         </ul>
-                                        </p>
-                                    </ul>
-                                    </p>
-                            </div>
-                        </div>
-                    </div>
+                                    </li>
+                                    <li>Asst2: Psuedo-Virtual Memory
+                                        <p>The objective was to take our previous project and build in virtual memory. We
+                                            were allowed to keep OS space and User space separate, but all malloc calls
+                                            would redirect back to our user thread library and be handled through our own
+                                            virtual memory structures.</p>
+                                        <ul>
+                                            <li>MetaData Structure:
+                                                <p>For OS region and shared region: A struct containing an int to check if used,
+                                                    an int to record size, and a pointer to the next metadata.</p>
+                                                <p>For user region: A struct containing a boolean to check if used, an int to
+                                                    record size, an int to record number of pages, and a pointer to the next
+                                                    metadata.</p>
+                                            </li>
+                                            <li>Page Tables:
+                                                <p>Internal: each thread has a page table associated with their TCB which holds
+                                                    the page index, the maxsize currently free in that page, an offset in the
+                                                    swap file that defaults to -1 when not being used, and a pointer to the next
+                                                </p>
+                                                <p>External: a 2-dimensional global array, each row holds data about a specific
+                                                    page, the first column holds which page owns it (defaults to -1, when freed
+                                                    set to -2 to guarantee segfault handler), second column holds how many
+                                                    malloc calls are currently using it (so it won't be deleted prematurely).
+                                                </p>
+                                            </li>
+                                            <li>Basic Logic/Design of user section:
+                                                <ul>
+                                                    <li>First our program checks to see how many pages the allocation needs.</li>
+                                                    <li>If it needs more than one page, it allocates fresh pages to the thread.</li>
+                                                    <li>If it needs less than one page, it first checks to see if there is room
+                                                        in an existing page.</li>
+                                                    <li>If there is, it squeezes it into an existing page.</li>
+                                                    <li>If there isn't, it creates a new one.</li>
+                                                    <li>Once the new space is allocated, we write to the internal page table and
+                                                        external page table</li>
+                                                    <li>if it was written to a page that already held something, we increment
+                                                        the counter in external as well so when it's time to free we know that
+                                                        more than one thing is using that page.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>Asst3: User Space File System (using FUSE)
+                                        <p>The assignment was to build separately from the other projects a user-space file
+                                            system (using FUSE). We had to replicate the following commands:</p>
+                                        <ul>
+                                            <li>touch filename</li>
+                                            <li>echo 'text' &gt;&gt; filename</li>
+                                            <li>cat filename</li>
+                                            <li>rm filename</li>
+                                        </ul>
+                                        <p>We also built in directory functions (mkdir, rmdir, and being able to navigate
+                                            around) for extra credit.</p>
+                                        <ul>
+                                            <li>Metadata about the file:
+                                                <p>blocks[INODEBLOCKS + DATABLOCKS] is an array of chars (acting as block
+                                                    indices), partitioned into two regions. The first region references inodes
+                                                    and the second references data blocks.</p>
+                                            </li>
+                                            <li>Extensions/Improvements:
+                                                <p>The Extension/Improvement we decided to implement was directory support. We
+                                                    also implemented the Extended Directory Operations for extra credit.</p>
+                                            </li>
+                                            <li>Structs and Enums:
+                                                <p>Boolean Enum:</p>
+                                                <ul>
+                                                    <li>FALSE (as 0)</li>
+                                                    <li>TRUE (as 1)</li>
+                                                </ul>
+                                                <p>Filetype Enum:</p>
+                                                <ul>
+                                                    <li>FILE_NODE</li>
+                                                    <li>DIR_NODE</li>
+                                                </ul>
+                                                <p>Inode struct:<br>
+                                                    The inode struct is exactly 512 bytes (the size of one block) and contains:</p>
+                                                <ul>
+                                                    <li>An integer representing the size of the file it references</li>
+                                                    <li>An integer representing:
+                                                        <ul>
+                                                            <li>For Files: the number of data blocks a file is currently
+                                                                referencing</li>
+                                                            <li>For Directories: the number of files/directories inside of that
+                                                                directory.</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>An integer array of all data blocks the file references (empty for
+                                                        directories)</li>
+                                                    <li>An integer representing links to the file<br>
+                                                        <ul>
+                                                            <li>We did not implement links for files, but this is incremented
+                                                                for directories everytime a directory is made inside of it
+                                                                (because of the ‘..’ inside the new directory) and decremented
+                                                                everytime a directory is removed from within.</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>A filetype value which is used to distinguish if the inode is used for a
+                                                        file or a directory
+                                                        <ul>
+                                                            <li>we declared an enum for this that can be found at the top of the
+                                                                file below the include header section.</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>A mode_t value which is used to store the read, write, and execute
+                                                        capabilities of a file as well as S_IFDIR or S_IFREG which gives further
+                                                        information for files vs directories.</li>
+                                                    <li>A time_t value used for the time that the file was created</li>
+                                                    <li>A time_t value used for the time that the file was last modified</li>
+                                                    <li>A time_t value used for the time that the file was last accessed</li>
+                                                    <li>An integer representing userId of the owner of the file.</li>
+                                                    <li>An integer representing the groupId of the owner of the file.</li>
+                                                    <li>Char array of 50 characters used to store the path.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    </article>
 
                     <!--Airline Reservation Website 336-->
-                    <div class="tab-pane fade" id="list-airline" role="tabpanel" aria-labelledby="list-airline-list">
-                        <div class='row mb-3'>
-                            <div class='col-sm-12 mt-2'>
-                                <h5>Name</h5>
-                                <p class='font-weight-light pl-3'> Airline Reservation Website</p>
-                                <h5>Dates Worked On:</h5>
-                                <p class='font-weight-light pl-3'> July 2017 - August 2017 </p>
-                                <!-- <h5>Link</h5>
-                                <p class='font-weight-light pl-3'> <a class='text-info'
-                                        href='http://ec2-13-58-6-109.us-east-2.compute.amazonaws.com:8080/airlineProj'>External
-                                        Link</a></p> -->
-
-                                <h5>Description</h5>
-                                <p class='font-weight-light pl-3'>As part of my "Principles to Information Management"
-                                    (Databases) class, we were required to build an airline reservation website from
-                                    scratch using HTML and JSP. The website and database for this project were both
-                                    hosted on Amazon (AWS). </p>
-                                <p class='font-weight-light pl-3'> The requirements for this website were very similar
-                                    to a site like 'Expedia' or 'Travelocity'. There were two types of users and each
-                                    page showed only data meant for those specific roles.
+                    <article class="project" id="airline" hidden>
+                        <dl class="project-facts">
+                            <dt>Name</dt>
+                            <dd>Airline Reservation Website</dd>
+                            <dt>Dates Worked On:</dt>
+                            <dd>July 2017 - August 2017</dd>
+                            <!-- <h5>Link</h5>
+                            <p class='font-weight-light pl-3'> <a class='text-info'
+                                    href='http://ec2-13-58-6-109.us-east-2.compute.amazonaws.com:8080/airlineProj'>External
+                                    Link</a></p> -->
+                            <dt>Description</dt>
+                            <dd>
+                                <p>As part of my "Principles to Information Management" (Databases) class, we were required
+                                    to build an airline reservation website from scratch using HTML and JSP. The website and
+                                    database for this project were both hosted on Amazon (AWS).</p>
+                                <p>The requirements for this website were very similar to a site like 'Expedia' or
+                                    'Travelocity'. There were two types of users and each page showed only data meant for those
+                                    specific roles.</p>
                                 <ul>
-                                    <li>Customer</li>
-                                    <p class='font-weight-light'> Customers should be able to book a flight (one-way,
-                                        round-trip, or multi-city destination), review reservations (past and future),
-                                        change flight preferences/personal information, and see a list of popular
-                                        flights. </p>
-                                    <li>Employees</li>
-                                    <p class='font-weight-light'>Employees could also book flights for a customer, but
-                                        could also suggest flights based on customer history, print a mailing list, and
-                                        view sales/revenue information.</p>
+                                    <li>Customer
+                                        <p>Customers should be able to book a flight (one-way, round-trip, or multi-city
+                                            destination), review reservations (past and future), change flight
+                                            preferences/personal information, and see a list of popular flights.</p>
+                                    </li>
+                                    <li>Employees
+                                        <p>Employees could also book flights for a customer, but could also suggest flights
+                                            based on customer history, print a mailing list, and view sales/revenue
+                                            information.</p>
+                                    </li>
                                 </ul>
-                                </p>
-                                <p class='font-weight-light'> This project was assigned over a 4-5 week period to groups
-                                    containing four students each. My specific role in the group was the flight
-                                    reservations portion, which was the bulk of the site. One team member handled
-                                    building the tables in SQL (something I am comfortable doing from other projects and
-                                    work experience). Another team member handled searching and printing flight
-                                    information and revenue information. The last team member handled registration and
-                                    customer profiles.</p>
-                            </div>
-                        </div>
-                    </div>
+                                <p>This project was assigned over a 4-5 week period to groups containing four students each.
+                                    My specific role in the group was the flight reservations portion, which was the bulk of
+                                    the site. One team member handled building the tables in SQL (something I am comfortable
+                                    doing from other projects and work experience). Another team member handled searching and
+                                    printing flight information and revenue information. The last team member handled
+                                    registration and customer profiles.</p>
+                            </dd>
+                        </dl>
+                    </article>
 
                     <!--HTTP Server 352 -->
-                    <div class="tab-pane fade" id="list-http" role="tabpanel" aria-labelledby="list-http-list">
-                        <div class='row mb-3'>
-                            <div class='col-md-12 mt-2'>
-                                <h5>Name</h5>
-                                <p class='font-weight-light pl-3'> HTTP Server </p>
-                                <h5>Description</h5>
-                                <p class='font-weight-light pl-3'> This project was assigned over a six week period. Our
-                                    assignment was to design a fully functioning HTTP 1.0 Server in Java allowing GET,
-                                    POST, and HEAD requests on both text and binary files. The last portion of the
-                                    assignment included creating simple CGI scripts written in Python. One script used
-                                    cookies to store cart information (on a shopping website), and the other calculated
-                                    an MD5 hash on files and allowed comparison of an MD5 hash and a file to make sure
-                                    they matched. </p>
-                            </div>
-                        </div>
-                    </div>
+                    <article class="project" id="http" hidden>
+                        <dl class="project-facts">
+                            <dt>Name</dt>
+                            <dd>HTTP Server</dd>
+                            <dt>Description</dt>
+                            <dd>
+                                <p>This project was assigned over a six week period. Our assignment was to design a fully
+                                    functioning HTTP 1.0 Server in Java allowing GET, POST, and HEAD requests on both text and
+                                    binary files. The last portion of the assignment included creating simple CGI scripts
+                                    written in Python. One script used cookies to store cart information (on a shopping
+                                    website), and the other calculated an MD5 hash on files and allowed comparison of an MD5
+                                    hash and a file to make sure they matched.</p>
+                            </dd>
+                        </dl>
+                    </article>
 
                     <!-- Distributed File System 214 -->
-                    <div class="tab-pane fade" id="list-distributed" role="tabpanel"
-                        aria-labelledby="list-distributed-list">
-                        <div class='row mb-3'>
-                            <div class='col-md-12 mt-2'>
-                                <h5>Name</h5>
-                                <p class='font-weight-light pl-3'> Distributed File System </p>
-                                <h5>Description</h5>
-                                <p class='font-weight-light pl-3'> As part of my Systems Programming class we were
-                                    required to build a program in C to manage files across a socket connection. We were
-                                    tasked with programming both the client and server sides of the project. This
-                                    project was assigned over a four week period to groups containing two students. My
-                                    partner and I split the work into client/server portions, and I handled the server
-                                    side.</p>
-                                <p class='font-weight-light pl-3'>The main way we accomplished this was to include
-                                    functions to replace open(), read(), write(), and close() with netopen(), netread(),
-                                    netwrite(), and netclose(). Everytime a file needed to be accessed or modified in
-                                    any way, the client side would redirect the request (using macros) over the socket.
-                                </p>
-                                <p class='font-weight-light pl-3'>Part of this project also required coming up with a
-                                    communication protocol. The protocol we designed was communicating messages across
-                                    the server in the format of [size of message],[2-digit-command][command specific
-                                    info]. Here are a few examples:
+                    <article class="project" id="distributed" hidden>
+                        <dl class="project-facts">
+                            <dt>Name</dt>
+                            <dd>Distributed File System</dd>
+                            <dt>Description</dt>
+                            <dd>
+                                <p>As part of my Systems Programming class we were required to build a program in C to manage
+                                    files across a socket connection. We were tasked with programming both the client and
+                                    server sides of the project. This project was assigned over a four week period to groups
+                                    containing two students. My partner and I split the work into client/server portions, and
+                                    I handled the server side.</p>
+                                <p>The main way we accomplished this was to include functions to replace open(), read(),
+                                    write(), and close() with netopen(), netread(), netwrite(), and netclose(). Everytime a
+                                    file needed to be accessed or modified in any way, the client side would redirect the
+                                    request (using macros) over the socket.</p>
+                                <p>Part of this project also required coming up with a communication protocol. The protocol
+                                    we designed was communicating messages across the server in the format of [size of
+                                    message],[2-digit-command][command specific info]. Here are a few examples:</p>
                                 <ul>
-                                    <li>13,OP1./pathname => where 13 is the size of the message after the comma, OP
-                                        means open, 1 is the flag (O_RDONLY), and ./pathname is the pathname to open.
-                                    </li>
-                                    <li>7,RD-6,10 => where 7 is the size of the message after the first comma, RD means
-                                        read, -6 is the file descriptor, and 10 is the number of bytes to read in from
-                                        that file.</li>
-                                    <li>21,WR-6,well hello there => where 21 is the size of the message after the first
-                                        comma, WR is the command to write, -6 is the file descriptor, and “well hello
-                                        there” is what is to be written into that file.</li>
-                                    <li>4,CL-6 => where 4 is the size of the message after the first comma, CL is the
+                                    <li>13,OP1./pathname =&gt; where 13 is the size of the message after the comma, OP means
+                                        open, 1 is the flag (O_RDONLY), and ./pathname is the pathname to open.</li>
+                                    <li>7,RD-6,10 =&gt; where 7 is the size of the message after the first comma, RD means
+                                        read, -6 is the file descriptor, and 10 is the number of bytes to read in from that
+                                        file.</li>
+                                    <li>21,WR-6,well hello there =&gt; where 21 is the size of the message after the first
+                                        comma, WR is the command to write, -6 is the file descriptor, and “well hello there” is
+                                        what is to be written into that file.</li>
+                                    <li>4,CL-6 =&gt; where 4 is the size of the message after the first comma, CL is the
                                         command to close, and -6 is the file descriptor.</li>
                                 </ul>
-                                </p>
-                                <p class='font-weight-light pl-3'>You'll notice above that all of the file descriptors
-                                    were negative. This was on purpose to ensure that if a user program on the client
-                                    side tried to open the FD, it would not accidentally open the wrong file. One the FD
-                                    was passed back to the server side, the server took the inverse of the FD and
-                                    retrieved the proper file.</p>
-                            </div>
-                        </div>
-                    </div>
+                                <p>You'll notice above that all of the file descriptors were negative. This was on purpose to
+                                    ensure that if a user program on the client side tried to open the FD, it would not
+                                    accidentally open the wrong file. One the FD was passed back to the server side, the
+                                    server took the inverse of the FD and retrieved the proper file.</p>
+                            </dd>
+                        </dl>
+                    </article>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    </main>
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
 
-    <!-- Bootstrap: JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-
-    <!-- Site specific. Bump ?v= whenever functions.js changes, or returning visitors may get an old cached copy. -->
+    <!-- Site specific (the ?v= is explained in .htaccess) -->
     <script src="resources/js/functions.js?v=2"></script>
 </body>
 

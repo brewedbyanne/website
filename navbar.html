@@ -1,50 +1,45 @@
-<a class="navbar-brand" href="index.html">Anne L. Whitman</a>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+<a class="site-name" href="index.html">Anne L. Whitman</a>
+
+<!-- Only shown on small screens, where the menu below is folded away until this is clicked -->
+<button class="menu-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Toggle navigation">
+    <svg viewBox="0 0 30 30" width="30" height="30" aria-hidden="true">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M4 7h22M4 15h22M4 23h22" />
+    </svg>
 </button>
 
-<div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li id='home' class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
-        </li>
-        <li id='projects' class="nav-item">
-            <a class="nav-link" href="projects.html">Projects</a>
-        </li>
-        <li id='education' class="nav-item">
-            <a class="nav-link" href="education.html"> Education</a>
-        </li>
-        <li id='experience' class="nav-item">
-            <a class="nav-link" href="experience.html"> Experience</a>
-        </li>
-        <li id='contact' class="nav-item">
-            <a class="nav-link" href="contact.html"> Contact Me</a>
-        </li>
-        <li id='changeStyle' class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">This site is ugly</a>
-            <!-- Each data-set-theme matches a file in resources/css/themes/ (see theme.js) -->
-            <div class="dropdown-menu">
-                <button type="button" class="dropdown-item" data-set-theme="default">Default</button>
-                <button type="button" class="dropdown-item" data-set-theme="journalistic">Journalistic</button>
-                <button type="button" class="dropdown-item" data-set-theme="video-game">Video Game</button>
-            </div>
+<div class="site-menu" id="site-menu">
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="education.html">Education</a></li>
+        <li><a href="experience.html">Experience</a></li>
+        <li><a href="contact.html">Contact Me</a></li>
+        <li>
+            <details class="dropdown">
+                <summary>This site is ugly</summary>
+                <!-- Each data-set-theme matches a file in resources/css/themes/ (see theme.js) -->
+                <div class="dropdown-menu">
+                    <button type="button" data-set-theme="default">Default</button>
+                    <button type="button" data-set-theme="journalistic">Journalistic</button>
+                    <button type="button" data-set-theme="video-game">Video Game</button>
+                </div>
+            </details>
         </li>
     </ul>
-    <ul id='social-list' class='my-2 my-lg-0 navbar-nav'>
-        <li id='github'>
-            <a class='nav-link' href="https://www.github.com/aniel928" target='_blank'>
-                <img class='social' src='resources/img/git-icon.svg'>
+    <ul class="social-links">
+        <li>
+            <a href="https://github.com/brewedbyanne" target="_blank">
+                <img src="resources/img/git-icon.svg" alt="GitHub">
             </a>
         </li>
-        <li id='linkedin'>
-            <a class='nav-link' href="https://www.linkedin.com/in/anne-whitman" target='_blank'>
-                <img class='social' src='resources/img/linkedin-icon.png'>
+        <li>
+            <a href="https://www.linkedin.com/in/anne-whitman" target="_blank">
+                <img src="resources/img/linkedin-icon.png" alt="LinkedIn">
             </a>
         </li>
-        <li id='twitter'>
-            <a class='nav-link' href="https://www.twitter.com/annielostheri" target='_blank'>
-                <img class='social' src='resources/img/twitter-icon.png'>
+        <li>
+            <a href="https://www.twitter.com/annielostheri" target="_blank">
+                <img src="resources/img/twitter-icon.png" alt="Twitter">
             </a>
         </li>
     </ul>

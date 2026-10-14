@@ -12,10 +12,6 @@
     <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
     <script src="resources/js/theme.js"></script>
 
-    <!-- Bootstrap CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
     <!-- Fonts used by the themes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,34 +19,34 @@
         href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
         rel="stylesheet">
 
-    <link rel='stylesheet' href='resources/css/main.css'>
+    <link rel='stylesheet' href='resources/css/main.css?v=2'>
     <link rel='stylesheet' href='resources/css/themes.css'>
 
     <title>Anne Whitman - Home</title>
 </head>
 
 <body>
-    <nav id='navbar' class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+    <nav id='navbar'></nav>
 
-    <div class='personal-info container text-lightcolor'>
+    <main class='personal-info container'>
 
         <!-- todo: mobile looks weird, need flex-flow column and different margins probably -->
-        <div id='site-header'>
+        <header id='site-header'>
             <div class='picContainer'>
                 <!-- <figure> -->
-                <img id='me' class='img-fluid profilePic' src='resources/img/anne.jpg' alt=''>
-                <img id='us' class='img-fluid profilePic hidden' src='resources/img/curious.jpg' alt=''>
+                <img id='me' class='profilePic' src='resources/img/anne.jpg' alt='Me smiling into the camera.'>
+                <img id='us' class='profilePic hidden' src='resources/img/curious.jpg' alt='Me peering over the edge of a cliff.'>
                 <!-- <figcaption>Getting naturey.</figcaption> -->
                 <!-- </figure> -->
             </div>
 
             <div class='nameContainer'>
-                <h1 class='name text-darkcolor'><b>Anne L. Whitman</b></h1>
-                <h2 class='title text-lightcolor'><b>Full Stack Engineer</b></h2>
+                <h1 class='name'><b>Anne L. Whitman</b></h1>
+                <h2 class='title'><b>Full Stack Engineer</b></h2>
             </div>
 
             <div class='emptyAfterTitle'></div>
-        </div>
+        </header>
 
         <hr />
 
@@ -134,7 +130,7 @@
             </div>
         -->
 
-    </div>
+    </main>
 
     <!-- Photo by <a
         href="https://unsplash.com/@gronemo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Roméo A.</a>
@@ -146,12 +142,7 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
 
-    <!-- Bootstrap: JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-
-    <!-- Site specific. Bump ?v= whenever functions.js changes, or returning visitors may get an old cached copy. -->
+    <!-- Site specific (the ?v= is explained in .htaccess) -->
     <script src="resources/js/functions.js?v=2"></script>
 </body>
 

@@ -12,10 +12,6 @@
     <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
     <script src="resources/js/theme.js"></script>
 
-    <!-- Bootstrap CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
     <!-- Fonts used by the themes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,113 +19,86 @@
         href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
         rel="stylesheet">
 
-    <link rel='stylesheet' href='resources/css/main.css'>
+    <link rel='stylesheet' href='resources/css/main.css?v=2'>
     <link rel='stylesheet' href='resources/css/themes.css'>
 
     <title>Anne Whitman - Education</title>
 </head>
 
 <body>
-    <nav id='navbar' class="navbar navbar-expand-lg navbar-dark bg-dark">
-    </nav>
-    <div class="mt-3">
-        <h1 class='top-style text-center text-darkcolor'>University Education</h1>
-    </div>
-    <div class='container my-3 py-3'>
-        <div class='row'>
-            <div class='col-md-4'>
-                <img class='img-fluid' src="resources/img/rutgers.png">
-            </div>
-            <div class='col-md-6'><br>
-                <p class='lead size30'><b>Rutgers University</b><br></p>
-                <p><i>New Brunswick, NJ</i><br></p>
-                <p><b><i>Bachelor of Science</i></b><br>
-                    Major: Computer Science<br>
-                    GPA: 3.843<br></p>
-                <p><b>May 2018</b></p>
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class='row'>
-            <div class='col-md-4'><br>
-                <img class='img-fluid' src="resources/img/brookdale.png">
-            </div>
-            <div class='col-md-6'>
-                <p class='lead size30'><b>Brookdale Community College</b><br></p>
-                <p><i>Lincroft, NJ</i><br></p>
-                <p><b><i>Associate of Science</i></b><br>
-                    Major: Computer Science<br>
-                    Gpa: 3.92<br></p>
-                <p><b>May 2016</b></p>
-            </div>
-        </div>
-    </div>
-    <h1 class='top-style text-center text-darkcolor'>Non-University Training</h1>
-    <div class='container my-3 py-3'>
-        <div class="row row-cols-1 row-cols-md-3">
-            <div class="col">
-                <div class="card bg-dark text-white h-100">
-                    <img class="card-img-top" src="resources/img/teamTreeHouse.png" alt="Full Stack Track">
-                    <div class="card-body px-2">
-                        <h4 class="card-title">Team Treehouse</h4>
-                        <p class="card-text">Full Stack Development Track</p>
-                        <p class="card-text"><i>(In progress.)</i></p>
-                        <p class="card-text">
-                            <a href="https://teamtreehouse.com/tracks/full-stack-javascript">
-                                <small>Click for more info.</small>
-                            </a>
-                        </p>
+    <nav id='navbar'></nav>
+    <main>
+        <section>
+            <h1 class='page-title'>University Education</h1>
+            <div class='container schools'>
+                <article class='school'>
+                    <img src="resources/img/rutgers.png" alt="Rutgers University logo">
+                    <div>
+                        <h2>Rutgers University</h2>
+                        <p><i>New Brunswick, NJ</i></p>
+                        <p><b><i>Bachelor of Science</i></b><br>
+                            Major: Computer Science<br>
+                            GPA: 3.843</p>
+                        <p><b>May 2018</b></p>
                     </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card bg-dark text-white h-100">
-                    <img class="card-img-top" src="resources/img/teamTreeHouse2.png"
-                        alt="Front End Web Development Track">
-                    <div class="card-body px-2">
-                        <h4 class="card-title"> Team Treehouse</h4>
-                        <p class="card-text"> Front End Web Development Track</p>
-                        <p class="card-text"><i>(In progress.)</i></p>
-                        <p class="card-text">
-                            <a href="https://teamtreehouse.com/tracks/front-end-web-development">
-                                <small>Click for more info</small>
-                            </a>
-                        </p>
+                </article>
+                <hr>
+                <article class='school'>
+                    <img src="resources/img/brookdale.png" alt="Brookdale Community College logo">
+                    <div>
+                        <h2>Brookdale Community College</h2>
+                        <p><i>Lincroft, NJ</i></p>
+                        <p><b><i>Associate of Science</i></b><br>
+                            Major: Computer Science<br>
+                            Gpa: 3.92</p>
+                        <p><b>May 2016</b></p>
                     </div>
-                </div>
+                </article>
             </div>
-            <div class="col">
-                <div class="card bg-dark text-white h-100">
-                    <img class="card-img-top" src="resources/img/teamtreehouse3.png" alt="Learn Python Track">
-                    <div class="card-body px-2">
-                        <h4 class="card-title">Team Treehouse</h4>
-                        <p class="card-text">Learn Python Track</p>
-                        <p class="card-text">(Queued.)</p>
-                        <p class="card-text">
-                            <a href="https://teamtreehouse.com/tracks/learn-python">
-                                <small>Click for more info</small>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </section>
 
+        <section>
+            <h1 class='page-title'>Non-University Training</h1>
+            <div class='container'>
+                <div class='card-grid'>
+                    <article class="card">
+                        <img class="card-img" src="resources/img/teamTreeHouse.png" alt="Full Stack Track">
+                        <div class="card-body">
+                            <h4>Team Treehouse</h4>
+                            <p>Full Stack Development Track</p>
+                            <p><i>(In progress.)</i></p>
+                            <p><a href="https://teamtreehouse.com/tracks/full-stack-javascript"><small>Click for more info.</small></a></p>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <img class="card-img" src="resources/img/teamTreeHouse2.png" alt="Front End Web Development Track">
+                        <div class="card-body">
+                            <h4>Team Treehouse</h4>
+                            <p>Front End Web Development Track</p>
+                            <p><i>(In progress.)</i></p>
+                            <p><a href="https://teamtreehouse.com/tracks/front-end-web-development"><small>Click for more info</small></a></p>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <img class="card-img" src="resources/img/teamtreehouse3.png" alt="Learn Python Track">
+                        <div class="card-body">
+                            <h4>Team Treehouse</h4>
+                            <p>Learn Python Track</p>
+                            <p>(Queued.)</p>
+                            <p><a href="https://teamtreehouse.com/tracks/learn-python"><small>Click for more info</small></a></p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
 
-    <!-- Bootstrap: JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-
-    <!-- Site specific. Bump ?v= whenever functions.js changes, or returning visitors may get an old cached copy. -->
+    <!-- Site specific (the ?v= is explained in .htaccess) -->
     <script src="resources/js/functions.js?v=2"></script>
 </body>
 

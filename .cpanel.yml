@@ -2,6 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/aniel928/public_html
+    - /bin/cp .htaccess $DEPLOYPATH
     - /bin/cp contact.html $DEPLOYPATH
     - /bin/cp education.html $DEPLOYPATH
     - /bin/cp experience.html $DEPLOYPATH

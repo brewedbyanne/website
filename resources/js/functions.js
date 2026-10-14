@@ -74,17 +74,72 @@ const gettingToKnowMe = {
 };
 
 // Load the shared navbar into every page and highlight the link for the page we're on.
-// Bump ?v= whenever navbar.html changes, or returning visitors may get an old cached copy.
+// (The ?v= is explained in .htaccess.)
 function loadNavbar() {
     $("#navbar").load("navbar.html?v=2", function () {
-        // $("#github, #twitter, #linkedin").hide();
-
-        // $("#navbar").hover(function () {
-        //     $("#github, #twitter, #linkedin").fadeToggle(500);
-        // });
-
         const currentPage = location.pathname.split("/").pop() || "index.html";
-        $(this).find(`.nav-link[href="${currentPage}"]`).addClass("active").attr("aria-current", "page");
+        $(this).find(`.nav-links a[href="${currentPage}"]`).attr("aria-current", "page");
+
+        // Lets theme.js highlight the current theme in the menu
+        document.dispatchEvent(new Event("navbar-loaded"));
+    });
+}
+
+function setNavbarListeners() {
+    // The ☰ button on small screens. CSS shows or hides the menu based on aria-expanded.
+    $(document).on("click", ".menu-toggle", function () {
+        const isOpen = $(this).attr("aria-expanded") === "true";
+        $(this).attr("aria-expanded", String(!isOpen));
+    });
+
+    // The theme menu is a <details> element, so the browser opens and closes it when its label
+    // is clicked. Also close it after a choice is made, on a click anywhere else, or on Escape.
+    $(document).on("click", function (ev) {
+        $("details.dropdown[open]").each(function () {
+            if (!this.contains(ev.target) || $(ev.target).closest(".dropdown-menu button").length) {
+                this.open = false;
+            }
+        });
+    });
+    $(document).on("keydown", function (ev) {
+        if (ev.key === "Escape") {
+            $("details.dropdown[open]").each(function () {
+                this.open = false;
+                $(this).children("summary").trigger("focus");
+            });
+        }
+    });
+}
+
+// Project details page: show one project at a time. Each link points at its project's id,
+// so a link like projects_details.html#http opens straight to that project.
+function showProject(id) {
+    const $project = $(".project").filter(function () {
+        return this.id === id;
+    });
+    if (!$project.length) {
+        return;
+    }
+
+    $(".project").prop("hidden", true);
+    $project.prop("hidden", false);
+    $(".project-list a").removeAttr("aria-current").filter(`[href="#${id}"]`).attr("aria-current", "true");
+}
+
+function setProjectListeners() {
+    $(".project-list").on("click", "a", function (ev) {
+        ev.preventDefault();
+        const id = this.hash.slice(1);
+        showProject(id);
+        history.replaceState(null, "", "#" + id);
+    });
+
+    // Opening the page with a #project, or changing the # by hand
+    if (location.hash) {
+        showProject(location.hash.slice(1));
+    }
+    $(window).on("hashchange", function () {
+        showProject(location.hash.slice(1));
     });
 }
 
@@ -163,6 +218,8 @@ function setStoryListeners() {
 // Theme switching lives in theme.js (it has to run earlier than this file).
 $(function () {
     loadNavbar();
+    setNavbarListeners();
+    setProjectListeners();
     startAnimations();
     setStoryListeners();
 

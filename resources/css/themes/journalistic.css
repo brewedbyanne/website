@@ -7,9 +7,7 @@
         background: #F5F2E8;
         color: #5A5A5A;
         font-family: "Franklin Gothic", Monospace;
-        min-width: 405px;
         text-align: justify;
-        width: 100%;
     }
 
     a {
@@ -18,7 +16,7 @@
     }
 
     h1,
-    h2 {
+    .nameContainer h2 {
         font-family: 'Grenze Gotisch', cursive;
         text-align: center;
     }
@@ -27,7 +25,8 @@
         font-weight: 900;
     }
 
-    h5 {
+    h5,
+    .project-facts dt {
         font-weight: 700;
     }
 
@@ -41,7 +40,7 @@
         float: left;
         margin: 20px 5px;
         padding: 20px;
-        overflow: scroll;
+        overflow: auto;
         width: calc(50% - 10px);
     }
 
@@ -64,15 +63,14 @@
         width: 100%;
     }
 
-    #social-list {
-        display: flex;
-        flex-direction: row;
+    /* Full-width pages, like a broadsheet */
+    .container {
+        max-width: none;
     }
 
-    .container {
-        display: inline-block;
-        min-width: 100%;
-        width: 100%;
+    /* Keep the floated home page columns inside the page */
+    .personal-info {
+        display: flow-root;
     }
 
     .name {
@@ -110,17 +108,17 @@
         width: 200px;
     }
 
-    .navbar-dark.bg-dark {
-        background-color: #5A5A5A !important;
+    #navbar {
+        background-color: #5A5A5A;
     }
 
-    .navbar-brand {
+    .site-name {
         color: #cfccc3;
     }
 
-    .nav-link {
+    .nav-links a,
+    .dropdown > summary {
         color: #F5F2E8;
-        padding: 5px 15px;
     }
 
     hr {

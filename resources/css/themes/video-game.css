@@ -8,15 +8,12 @@
         background-attachment: fixed;
         background-size: cover;
         background-color: #111111;
+        color: rgb(70, 51, 3);
         font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     }
 
     img {
         width: 100px;
-    }
-
-    div {
-        color: rgb(70, 51, 3);
     }
 
     a {
