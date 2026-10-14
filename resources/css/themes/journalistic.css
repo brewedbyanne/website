@@ -1,0 +1,186 @@
+/* Newspaper style */
+
+/* Only applies while <html data-theme="journalistic"> (see default.css for how this works) */
+:where(:root[data-theme="journalistic"]) {
+
+    body {
+        background: #F5F2E8;
+        color: #5A5A5A;
+        font-family: "Franklin Gothic", Monospace;
+        min-width: 405px;
+        text-align: justify;
+        width: 100%;
+    }
+
+    a {
+        text-decoration: none;
+        color: #5A5A5A;
+    }
+
+    h1,
+    h2 {
+        font-family: 'Grenze Gotisch', cursive;
+        text-align: center;
+    }
+
+    h3 {
+        font-weight: 900;
+    }
+
+    h5 {
+        font-weight: 700;
+    }
+
+    a:hover {
+        color: darkred;
+        text-decoration: underline;
+    }
+
+    #about-me,
+    #skills {
+        float: left;
+        margin: 20px 5px;
+        padding: 20px;
+        overflow: scroll;
+        width: calc(50% - 10px);
+    }
+
+    #about-me::before {
+        content: '';
+        float: left;
+        width: 175px;
+        height: 175px;
+    }
+
+    #about-me p,
+    #skills p {
+        text-align: justify;
+    }
+
+    #site-header {
+        display: flex;
+        flex-direction: row;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    #social-list {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .container {
+        display: inline-block;
+        min-width: 100%;
+        width: 100%;
+    }
+
+    .name {
+        font-size: 30px;
+        margin-left: 28px;
+        margin-top: -10px;
+    }
+
+    .name::before {
+        content: 'by ';
+        font-size: 20px;
+    }
+
+    .nameContainer {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        margin: 0 auto;
+    }
+
+    .picContainer {
+        position: relative;
+        top: 220px;
+        left: 20px;
+        width: 200px;
+    }
+
+    .title {
+        color: #6d6a6a;
+        font-size: 100px;
+        margin-left: 20px;
+    }
+
+    .emptyAfterTitle {
+        width: 200px;
+    }
+
+    .navbar-dark.bg-dark {
+        background-color: #5A5A5A !important;
+    }
+
+    .navbar-brand {
+        color: #cfccc3;
+    }
+
+    .nav-link {
+        color: #F5F2E8;
+        padding: 5px 15px;
+    }
+
+    hr {
+        height: 0px;
+        margin: 0;
+        padding: 0;
+        visibility: hidden;
+    }
+
+    img {
+        float: left;
+        filter: grayscale(1);
+    }
+
+    #me,
+    #us {
+        margin-left: 5px;
+        margin-right: 20px;
+        min-width: 150px;
+        width: 150px;
+    }
+
+    @media only screen and (max-width: 1150px) {
+
+        #about-me,
+        #skills,
+        .nameContainer {
+            position: relative;
+            bottom: 125px;
+        }
+
+        #site-header {
+            flex-direction: column;
+        }
+
+        .picContainer {
+            top: 250px;
+        }
+    }
+
+    @media only screen and (max-width: 750px) {
+
+        #about-me p,
+        #skills p {
+            text-align: left;
+        }
+
+        .picContainer {
+            top: 200px;
+        }
+
+        .name {
+            font-size: 50px;
+            margin-left: 20px;
+        }
+
+        .title {
+            color: #6d6a6a;
+            font-size: 50px;
+            margin-left: 20px;
+        }
+    }
+}

@@ -1,0 +1,75 @@
+/* Game style */
+
+/* Only applies while <html data-theme="video-game"> (see default.css for how this works) */
+:where(:root[data-theme="video-game"]) {
+
+    body {
+        background-image: url("/resources/img/game-over-1920.jpg");
+        background-attachment: fixed;
+        background-size: cover;
+        background-color: #111111;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+
+    img {
+        width: 100px;
+    }
+
+    div {
+        color: rgb(70, 51, 3);
+    }
+
+    a {
+        color: rgb(123, 90, 6);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: rgb(70, 51, 3);
+        text-decoration: underline;
+    }
+
+    #site-header {
+        display: flex;
+        flex: 1 1;
+    }
+
+    #site-header div {
+        padding: 10px;
+    }
+
+    .hide-game-panel {
+        display: none;
+        overflow: hidden;
+    }
+
+    .personal-info {
+        background: rgba(249, 249, 224, 0.6);
+    }
+
+    /* Style the buttons that are used to open and close the accordion panel */
+    /* .game-accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+    } */
+
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    /* .active,
+    .game-accordion:hover {
+        background-color: #ccc;
+    } */
+
+    /* Style the accordion panel. Note: hidden by default */
+    /* .game-accordion-panel {} */
+
+    @media only screen and (max-width: 1150px) {}
+
+    @media only screen and (max-width: 750px) {}
+}

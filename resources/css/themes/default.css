@@ -1,0 +1,248 @@
+/* Default style - dark gray / brown */
+
+/*
+ * Everything is nested inside this one selector, so it only applies while
+ * <html data-theme="default">. :where() adds zero specificity, so the rules
+ * below compete with Bootstrap exactly as if they weren't nested.
+ */
+:where(:root[data-theme="default"]) {
+
+    body {
+        background-color: #585858;
+        color: #d0bf9b;
+        font-family: 'Overlock';
+        font-size: 20px;
+    }
+
+    div {
+        text-align: center;
+    }
+
+    a {
+        color: darkgoldenrod;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #8b7777;
+        text-decoration: underline;
+    }
+
+    hr {
+        border-top: 1px solid #625241;
+    }
+
+    h3 {
+        color: #72676b;
+    }
+
+    h5 {
+        color: #8b7777;
+        font-weight: bold;
+    }
+
+    iframe {
+        max-width: 100%;
+    }
+
+    /* todo: read more about flexbox (article from work computer) */
+    #skills div {
+        display: flex;
+        flex-flow: column;
+    }
+
+    #site-header {
+        display: flex;
+        margin: -20px -60px;
+    }
+
+    .container {
+        background-color: #282828;
+        margin: 30px auto;
+        min-width: 400px;
+        padding: 30px;
+        vertical-align: middle !important;
+    }
+
+    .navbar-brand {
+        font-family: Swanky and Moo Moo;
+        font-size: 24px;
+    }
+
+    .noShowLink,
+    .noShowLink:hover,
+    .noShowLink:visited {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .text-darkcolor {
+        color: #72676b;
+    }
+
+    a.text-darkcolor:hover {
+        color: #72676b;
+        text-decoration: underline;
+    }
+
+    .text-lightcolor {
+        color: #c2B2A1;
+    }
+
+    .profilePic {
+        margin: 15px;
+        max-width: 100%;
+    }
+
+    .picContainer {
+        float: left;
+        margin: auto;
+        max-width: 300px;
+        min-width: 300px;
+    }
+
+    .nameContainer {
+        display: grid;
+        left: -15px;
+        float: left;
+        margin: auto;
+        padding: 0 20px 0;
+    }
+
+    .nameContainer h1,
+    .nameContainer h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* .main {
+        box-shadow: 0px 0px 4px 8px #99AA99;
+        -moz-box-shadow: 0px 0px 4px 8px #99AA99;
+        -webkit-box-shadow: 0px 0px 4px 8px #99AA99;
+    } */
+
+    .smaller {
+        width: 80%;
+    }
+
+    .top-style {
+        color: darkgoldenrod;
+        font-family: 'Swanky and Moo Moo';
+        font-size: 64px
+    }
+
+    .show-more {
+        height: 100px;
+        width: 100px;
+    }
+
+    .name {
+        font-family: "Swanky and Moo Moo";
+        font-size: 96px;
+    }
+
+    .title {
+        font-family: "Swanky and Moo Moo";
+        font-size: 6vmin;
+    }
+
+    .icon {
+        padding-right: 20px;
+    }
+
+    .size30 {
+        font-size: 30px;
+    }
+
+    .hex-square {
+        border: 1px solid black;
+        background: #FFFFFF;
+        height: 100px;
+        margin: 10px auto;
+        width: 100px;
+    }
+
+    .story-container {
+        background: #FCF5F5;
+        border: 1px solid #72676b;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .story-text-container {
+        padding: 30px;
+        color: #72676B;
+    }
+
+    .story-button-container button {
+        margin: 20px;
+        color: #72676b;
+        border: 1px solid #72676b;
+        border-radius: 5px;
+        background: #E9E1D1;
+        padding: 3px 20px;
+    }
+
+    .card {
+        background: black !important;
+        padding: 5px !important;
+    }
+
+    .card-block {
+        margin-top: 20px !important;
+    }
+
+    /*
+    media queries at bottom.
+    solve mobile / small screen in regular css
+    bigger screens go into media queries as a general rule
+    @media screen and (min-width: 421px) {
+        ...
+    }
+    */
+
+    @media only screen and (max-width: 1200px) {
+
+        .name,
+        .title {
+            font-size: 72px;
+        }
+
+    }
+
+    @media only screen and (max-width: 990px) {
+
+        .name,
+        .title {
+            font-size: 36px;
+        }
+
+        .picContainer {
+            min-width: 150px;
+            max-width: 150px;
+            padding: 10px;
+        }
+    }
+
+    @media only screen and (max-width: 400px) {
+        .container {
+            margin: 30px auto;
+            min-width: 400px;
+        }
+
+        .name,
+        .title {
+            font-size: 24px;
+        }
+
+        .navbar {
+            margin-right: -10px;
+            min-width: 400px;
+        }
+
+        #site-header {
+            flex-direction: column;
+        }
+    }
+}

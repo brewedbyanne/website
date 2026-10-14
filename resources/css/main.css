@@ -1,9 +1,16 @@
+/* Shared by every theme. Theme-specific styles live in themes/. */
+
 * {
     box-sizing: border-box;
 }
 
 .hidden {
     display: none;
+}
+
+/* Reserve the navbar's height so the page doesn't jump down when navbar.html loads in */
+#navbar {
+    min-height: 56px;
 }
 
 .social {

@@ -73,22 +73,22 @@ const gettingToKnowMe = {
     },
 };
 
-function startAnimations() {
-    // load in navbar and set active tab
-    $("#navbar").load("navbar.html", function () {
+// Load the shared navbar into every page and highlight the link for the page we're on.
+// Bump ?v= whenever navbar.html changes, or returning visitors may get an old cached copy.
+function loadNavbar() {
+    $("#navbar").load("navbar.html?v=2", function () {
         // $("#github, #twitter, #linkedin").hide();
 
         // $("#navbar").hover(function () {
         //     $("#github, #twitter, #linkedin").fadeToggle(500);
         // });
 
-        $("#home").addClass("active");
+        const currentPage = location.pathname.split("/").pop() || "index.html";
+        $(this).find(`.nav-link[href="${currentPage}"]`).addClass("active").attr("aria-current", "page");
     });
+}
 
-    // enable popovers and tooltips where they exist.
-    $('[data-bs-toggle="popover"]').popover();
-    $('[data-toggle="tooltip"]').tooltip();
-
+function startAnimations() {
     // when hovering over the main picture, toggle back and forth between pictures.
     $(".profilePic").mouseenter(function () {
         $("#us").show();
@@ -120,7 +120,6 @@ function updateHexSquareColor(hexcode) {
 }
 
 function getRandomIndexFromArray(arr) {
-    debugger;
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -161,10 +160,9 @@ function setStoryListeners() {
     });
 }
 
+// Theme switching lives in theme.js (it has to run earlier than this file).
 $(function () {
-    $("link[title='switcheroo']").attr("href", (localStorage.getItem('cssSelection') || 'resources/css/style1.css'));
-    $('body').removeClass('hidden');
-
+    loadNavbar();
     startAnimations();
     setStoryListeners();
 
@@ -174,14 +172,9 @@ $(function () {
         updateHexSquareColor(hexcode);
     });
 
-    // todo: move to separate file when moving to themes.
-    $('#navbar').on('click', '.change-style', function (ev) {
-        ev.preventDefault();
-        const newStyleSheet = 'resources/css/' + $(this).data("style-ref");
-        $("link[title='switcheroo']").attr("href", newStyleSheet);
-
-        localStorage.setItem('cssSelection', newStyleSheet);
+    // Open/close a section by clicking its heading. Only the video game theme hides
+    // the panels (.hide-game-panel), so this has no visible effect in the other themes.
+    $(".game-accordion").on("click", function () {
+        $(this).next(".game-accordion-panel").toggleClass("hide-game-panel");
     });
-
-
 });

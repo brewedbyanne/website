@@ -1,0 +1,14 @@
+/*
+ * Every theme is loaded on every page. Each one is scoped to
+ * <html data-theme="...">, so only the active theme's rules match, and
+ * switching themes is just changing that attribute: nothing to download,
+ * so there's no flash.
+ *
+ * To add a theme:
+ *   1. Copy one of the files in themes/ and change the name in its :where(...) wrapper.
+ *   2. Import it below.
+ *   3. Add a button for it to the "This site is ugly" menu in navbar.html.
+ */
+@import url("themes/default.css");
+@import url("themes/journalistic.css");
+@import url("themes/video-game.css");

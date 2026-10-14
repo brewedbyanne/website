@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="default">
 
 <head>
     <!-- Required meta tags -->
@@ -9,36 +9,30 @@
     <!-- favicon -->
     <link rel="icon" type="image/x-icon" href="/resources/img/favicon.ico">
 
-    <!-- Bootstrap CSS -->
+    <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
+    <script src="resources/js/theme.js"></script>
+
     <!-- Bootstrap CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 
-    <!-- Fonts -->
+    <!-- Fonts used by the themes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Arima+Madurai:wght@100;200;300;400;500;700;800;900&family=Baloo+2:wght@400;500;600;700;800&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
-        rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Arima+Madurai:wght@100;200;300;400;500;700;800;900&family=Baloo+2:wght@400;500;600;700;800&family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Swanky+and+Moo+Moo&display=swap"
         rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel='stylesheet' href='resources/css/main.css'>
-
-    <link title="switcheroo" rel='stylesheet'>
+    <link rel='stylesheet' href='resources/css/themes.css'>
 
     <title>Anne Whitman - Home</title>
 </head>
 
-<body class="hidden">
+<body>
     <nav id='navbar' class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
 
-    <div class='container text-lightcolor'>
+    <div class='personal-info container text-lightcolor'>
 
         <!-- todo: mobile looks weird, need flex-flow column and different margins probably -->
         <div id='site-header'>
@@ -49,7 +43,6 @@
                 <!-- <figcaption>Getting naturey.</figcaption> -->
                 <!-- </figure> -->
             </div>
-
 
             <div class='nameContainer'>
                 <h1 class='name text-darkcolor'><b>Anne L. Whitman</b></h1>
@@ -75,14 +68,14 @@
             </div>
         -->
 
-        <div id="about-me">
-            <h3 class=""> About Me </h3>
-            <div class=''>
-                <div class=''>
+        <div class="my-info">
+            <div id="about-me">
+                <h3 class="game-accordion"> About Me </h3>
+                <div class="game-accordion-panel hide-game-panel">
                     <p>
                         Software Developer (by trade). Book Worm (by train ride).
                         <!-- <a href="#" class="noShowLink" data-bs-toggle="modal" data-bs-target="#videoModal">Grammar
-                            Snob.</a> -->
+                        Snob.</a> -->
                         <a href="https://www.youtube.com/watch?v=8Gv0H-vPoDc" target="_blank" class="noShowLink">Grammar
                             Snob (by genetics).</a>
                         Craft Beer Enthusiast (by weekend). Harry Potter Nerd (for life). Caffeine
@@ -96,29 +89,37 @@
                     </p>
                 </div>
             </div>
+
+            <hr />
+
+            <div id="skills">
+                <h3 class="game-accordion"> Languages / Programs / Skills </h3>
+                <div class='game-accordion-panel hide-game-panel'>
+                    <div>
+                        <h5>Worked with Heavily and Recently</h5>
+                        <p>PHP • MySQL • React • JavaScript • jQuery • HTML • CSS • Git </p>
+                        <p>IntelliJ • MySQL Workbench </p>
+                        <p>macOS • Linux/Ubuntu • Docker Container Environment • Virtual Machine Environment</p>
+                        <p>Bootstrap • HandleBars.js</p>
+                    </div>
+                    <div>
+                        <h5>Worked with in the Past</h5>
+                        <p>Java • C • Python • JSP • Firebase Database</p>
+                        <p>Laravel Framework • Eclipse </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
         </div>
 
-        <hr />
+        <!-- Add some game stuff here -->
 
-        <img id="newpaper-image" class="hidden" href="">
+        <!-- Dynamic die roller -->
 
-        <div id="skills">
-            <h3> Languages / Programs / Skills </h3>
-            <div>
-                <h5>Worked with Heavily and Recently</h5>
-                <p>PHP • MySQL • React • JavaScript • jQuery • HTML • CSS • Git </p>
-                <p>IntelliJ • MySQL Workbench </p>
-                <p>macOS • Linux/Ubuntu • Docker Container Environment • Virtual Machine Environment</p>
-                <p>Bootstrap • HandleBars.js</p>
-            </div>
-            <div>
-                <h5>Worked with in the Past</h5>
-                <p>Java • C • Python • JSP • Firebase Database</p>
-                <p>Laravel Framework • Eclipse </p>
-            </div>
-        </div>
+        <!-- Rock Paper Scissors Lizard Spock -->
 
-        <hr />
+        <!-- Flashcard-like game with Q & A about me -->
 
         <!--
             Todo: hide for now - move to some sort of tools links later
@@ -135,6 +136,11 @@
 
     </div>
 
+    <!-- Photo by <a
+        href="https://unsplash.com/@gronemo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Roméo A.</a>
+    on <a
+        href="https://unsplash.com/photos/JrZvYuBYzCU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a> -->
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
@@ -145,8 +151,8 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
 
-    <!-- Site specific -->
-    <script src="resources/js/functions.js"></script>
+    <!-- Site specific. Bump ?v= whenever functions.js changes, or returning visitors may get an old cached copy. -->
+    <script src="resources/js/functions.js?v=2"></script>
 </body>
 
 </html>

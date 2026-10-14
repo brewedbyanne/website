@@ -1,4 +1,3 @@
-<!doctype html>
 <a class="navbar-brand" href="index.html">Anne L. Whitman</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +23,11 @@
         </li>
         <li id='changeStyle' class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">This site is ugly</a>
+            <!-- Each data-set-theme matches a file in resources/css/themes/ (see theme.js) -->
             <div class="dropdown-menu">
-                <a href="#" class="drop-down-item change-style" data-style-ref="style1.css">Default</a>
-                <a href="#" class="drop-down-item change-style" data-style-ref="style2.css">Journalistic</a>
+                <button type="button" class="dropdown-item" data-set-theme="default">Default</button>
+                <button type="button" class="dropdown-item" data-set-theme="journalistic">Journalistic</button>
+                <button type="button" class="dropdown-item" data-set-theme="video-game">Video Game</button>
             </div>
         </li>
     </ul>
