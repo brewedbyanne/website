@@ -13,7 +13,7 @@
     }
 }
 
-/* The ▶ cursor and PRESS START blink like a title screen */
+/* The ▶ cursors on the menu and game buttons blink like a title screen */
 @keyframes video-game-blink {
     50% {
         opacity: 0;
@@ -48,6 +48,14 @@
     --vg-brick: #c8501c;
     --vg-brick-dark: #6e2a0a;
     --vg-pixel-font: 'Press Start 2P', monospace;
+    /*
+     * The ▶ and ▼ arrows, drawn as stepped pixel triangles. The pixel font has no arrow
+     * characters, so the browser would borrow smaller ones from another font that sit too low.
+     */
+    --vg-arrow-right: polygon(0 0, 25% 0, 25% 14.29%, 50% 14.29%, 50% 28.57%, 75% 28.57%, 75% 42.86%, 100% 42.86%,
+            100% 57.14%, 75% 57.14%, 75% 71.43%, 50% 71.43%, 50% 85.71%, 25% 85.71%, 25% 100%, 0 100%);
+    --vg-arrow-down: polygon(0 0, 100% 0, 100% 25%, 85.71% 25%, 85.71% 50%, 71.43% 50%, 71.43% 75%, 57.14% 75%,
+            57.14% 100%, 42.86% 100%, 42.86% 75%, 28.57% 75%, 28.57% 50%, 14.29% 50%, 14.29% 25%, 0 25%);
     /* A chunky pixel border with notched corners, plus a hard drop shadow */
     --vg-box-border:
         0 -5px 0 0 var(--vg-ink),
@@ -151,9 +159,26 @@
         color: var(--vg-yellow);
     }
 
+    /*
+     * Every ▶ in this theme: 7 of the font's pixels tall and 4 wide, sitting 1 pixel above the
+     * line, exactly like the font's capital letters (each font pixel is 1/8 of the font size)
+     */
+    .nav-links a[aria-current="page"]::before,
+    .dropdown-menu button::before,
+    .game-accordion::before,
+    .game-button::before {
+        content: "";
+        display: inline-block;
+        width: .5em;
+        height: .875em;
+        margin-right: .75em;
+        vertical-align: .125em;
+        background-color: currentColor;
+        clip-path: var(--vg-arrow-right);
+    }
+
     /* A blinking ▶ next to the page you're on */
     .nav-links a[aria-current="page"]::before {
-        content: "▶ ";
         animation: video-game-blink 1s steps(1) infinite;
     }
 
@@ -176,7 +201,6 @@
 
     /* The menu cursor: a ▶ appears next to whichever item you're on */
     .dropdown-menu button::before {
-        content: "▶ ";
         visibility: hidden;
     }
 
@@ -431,26 +455,36 @@
         cursor: pointer;
     }
 
+    /* ▼ while open: 7 font pixels wide and 4 tall, centered on the letters */
     .game-accordion::before {
-        content: "▼ ";
+        width: .875em;
+        height: .5em;
+        vertical-align: .3125em;
+        clip-path: var(--vg-arrow-down);
     }
 
+    /* ▶ while folded */
     .game-accordion:has(+ .hide-game-panel)::before {
-        content: "▶ ";
+        width: .5em;
+        height: .875em;
+        vertical-align: .125em;
+        clip-path: var(--vg-arrow-right);
     }
 
     .hide-game-panel {
         display: none;
     }
 
-    /* PRESS START (opens Squash the Bugs; base CSS hides it in every other theme) */
+    /* The game buttons (Squash the Bugs, Make Way!); base CSS hides them in every other theme */
     .game-launch {
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem 2.5rem;
         margin: 1rem 0 3rem;
-        text-align: center;
     }
 
-    .press-start {
+    .game-button {
         padding: 1.1rem 1.6rem 1rem;
         border: 0;
         background-color: var(--vg-red);
@@ -466,17 +500,16 @@
         cursor: pointer;
     }
 
-    .press-start::before {
-        content: "▶ ";
+    .game-button::before {
         animation: video-game-blink 1s steps(1) infinite;
     }
 
-    .press-start:hover {
+    .game-button:hover {
         background-color: #ff3b72;
     }
 
     /* Pressed in: the shading flips, like a real button */
-    .press-start:active {
+    .game-button:active {
         box-shadow:
             inset 6px 6px 0 0 var(--vg-red-dark),
             0 -6px 0 0 var(--vg-ink),
@@ -485,9 +518,36 @@
             6px 0 0 0 var(--vg-ink);
     }
 
-    .press-start:focus-visible {
+    .game-button:focus-visible {
         outline: 4px dashed var(--vg-yellow);
         outline-offset: 12px;
+    }
+
+    /* Make Way! is a link to its own page, in grass green */
+    .make-way-launch {
+        display: inline-block;
+        background-color: var(--vg-green);
+        text-decoration: none;
+        box-shadow:
+            inset -6px -6px 0 0 var(--vg-green-dark),
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
+    }
+
+    .make-way-launch:hover {
+        background-color: #3fd060;
+        color: var(--vg-white);
+    }
+
+    .make-way-launch:active {
+        box-shadow:
+            inset 6px 6px 0 0 var(--vg-green-dark),
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
     }
 
     /* ---------- Smaller screens and reduced motion ---------- */

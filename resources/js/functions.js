@@ -235,7 +235,7 @@ $(function () {
         $(this).next(".game-accordion-panel").toggleClass("hide-game-panel");
     });
 
-    // PRESS START (only the video game theme shows it). The game's code loads the first time it's pressed.
+    // The Squash the Bugs button (only the video game theme shows it). The game's code loads the first time it's pressed.
     $("#bug-squash-start").on("click", function () {
         if (window.BugSquash) {
             window.BugSquash.open();

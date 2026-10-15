@@ -1,0 +1,15 @@
+{
+    "name": "Make Way!",
+    "short_name": "Make Way!",
+    "description": "Clear the traffic jam: tap a car to drive it away.",
+    "start_url": "make-way.html",
+    "scope": "make-way",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#7ec0ee",
+    "theme_color": "#7ec0ee",
+    "icons": [
+        { "src": "resources/img/make-way-icon-192.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "resources/img/make-way-icon-512.png", "sizes": "512x512", "type": "image/png" }
+    ]
+}

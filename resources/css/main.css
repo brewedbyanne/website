@@ -94,7 +94,7 @@ button {
     display: none;
 }
 
-/* The PRESS START button for Squash the Bugs. Only the video game theme shows it. */
+/* The buttons that open the games. Only the video game theme shows them. */
 .game-launch {
     display: none;
 }

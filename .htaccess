@@ -1,3 +1,8 @@
+# The "Add to Home Screen" app file for Make Way! (make-way.webmanifest)
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+</IfModule>
+
 # Make browsers check for a newer copy of pages, styles and scripts on every visit.
 # When nothing changed the server answers with a quick "304 Not Modified", so this costs
 # almost nothing, but a deploy shows up right away and a page never mixes old and new files.
@@ -6,7 +11,7 @@
 # The ?v=2 on main.css, functions.js and navbar.html is only for visitors who still have
 # the 2023 copies cached from before this file existed. Future changes don't need a bump.
 <IfModule mod_headers.c>
-    <FilesMatch "\.(html|css|js)$">
+    <FilesMatch "\.(html|css|js|webmanifest)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
 </IfModule>

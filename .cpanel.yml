@@ -7,6 +7,8 @@ deployment:
     - /bin/cp education.html $DEPLOYPATH
     - /bin/cp experience.html $DEPLOYPATH
     - /bin/cp index.html $DEPLOYPATH
+    - /bin/cp make-way.html $DEPLOYPATH
+    - /bin/cp make-way.webmanifest $DEPLOYPATH
     - /bin/cp navbar.html $DEPLOYPATH
     - /bin/cp projects_details.html $DEPLOYPATH
     - /bin/cp projects.html $DEPLOYPATH
