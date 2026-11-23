@@ -255,6 +255,9 @@
             tough: isCount(savedMath.tough) ? savedMath.tough : 0, // took 3 or more tries, in a row
             solved: isCount(savedMath.solved) ? savedMath.solved : 0,
         },
+        // The board size step (see levelConfig) of the last level finished, and of this one
+        boardStep: isCount(saved.boardStep) ? saved.boardStep : 0,
+        step: 0,
         hearts: MAX_HEARTS,
         bonks: 0, // this level
         problem: null, // the math problem on screen
@@ -276,6 +279,7 @@
             muted: state.muted,
             started: state.started,
             math: { ...savedMath, ...state.math },
+            boardStep: state.boardStep,
         });
         storageSet(SAVE_KEY, JSON.stringify(saved));
     }
@@ -288,8 +292,10 @@
     // ---------- Levels ----------
 
     // How big each level is. Boards grow slowly, and lie the long way on a sideways screen.
-    function levelConfig(level, landscape) {
-        let cols, rows, count;
+    // From level 21, step counts the rows and columns added to an 8 by 8 board, and maxStep can
+    // hold it back (see startLevel).
+    function levelConfig(level, landscape, maxStep = Infinity) {
+        let cols, rows, count, step = 0;
         if (level <= 2) {
             [cols, rows, count] = [4, 4, 2 + level];
         } else if (level <= 5) {
@@ -301,12 +307,19 @@
         } else if (level <= 20) {
             [cols, rows, count] = [7, 8, 12 + Math.floor((level - 15) / 2)];
         } else {
-            [cols, rows, count] = [8, 8, 15 + Math.min(5, Math.floor((level - 21) / 3))];
+            // From 8 by 8, the board gains a row or column every 6 levels (about two the long way for
+            // every one across, to suit an iPad's shape) until it's 13 by 22 at level 141. Any bigger
+            // and the squares would get fiddly to tap. It also gets more crowded up to level 39.
+            step = Math.min(20, Math.floor((level - 21) / 6), maxStep);
+            cols = Math.min(13, 8 + Math.floor(step / 3));
+            rows = 8 + Math.ceil(step * 2 / 3);
+            const crowding = Math.min(0.31, 0.24 + (level - 21) * 0.004);
+            count = Math.round(cols * rows * crowding);
         }
         if (landscape && rows > cols) {
             [cols, rows] = [rows, cols];
         }
-        return { cols, rows, count };
+        return { cols, rows, count, step };
     }
 
     function emptyGrid(cols, rows) {
@@ -920,7 +933,11 @@
 
     function startLevel() {
         const landscape = window.innerWidth > window.innerHeight;
-        const { cols, rows, count } = levelConfig(state.level, landscape);
+        // Never more than one row or column bigger than the last board finished. Boards normally
+        // grow slower than that anyway; this is for when he's suddenly behind, like when bigger
+        // boards arrived in November 2026 and he was already past level 100 on 8 by 8.
+        const { cols, rows, count, step } = levelConfig(state.level, landscape, state.boardStep + 1);
+        state.step = step;
         state.cols = cols;
         state.rows = rows;
         state.driven = 0;
@@ -1095,7 +1112,8 @@
 
     function restartHintTimer() {
         clearTimeout(state.hintTimer);
-        state.hintTimer = setTimeout(showHint, 8000);
+        // Big boards take longer to look over, so the sparkle waits longer before giving one away
+        state.hintTimer = setTimeout(showHint, state.level <= 20 ? 8000 : 20000);
     }
 
     // ---------- Finishing a level ----------
@@ -1104,6 +1122,7 @@
         clearTimeout(state.hintTimer);
         const finished = state.level;
         state.level++;
+        state.boardStep = state.step;
         saveProgress();
         sound.win();
         confetti();
