@@ -1,8 +1,8 @@
 /*
- * Squash the Bugs: a tiny whack-a-mole game for the video game theme.
+ * Squash the Bugs: a tiny whack-a-mole game.
  *
- * functions.js loads this file the first time someone presses its button on the
- * home page. Bugs climb out of pipes; tap or click them (or press 1-9, which match
+ * functions.js loads this file the first time someone presses its Play button on
+ * the games page. Bugs climb out of pipes; tap or click them (or press 1-9, which match
  * the pipes in reading order) before they crawl back in and ship to production.
  * Golden bugs are worth 3 points, and the bugs speed up as the clock runs down.
  */

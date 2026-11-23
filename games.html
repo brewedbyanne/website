@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="/resources/img/favicon.ico">
+
+    <!-- Puts the saved theme in place before the page is drawn. Must stay in <head> and not be deferred. -->
+    <script src="resources/js/theme.js"></script>
+
+    <!-- Fonts used by the themes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Grenze+Gotisch&family=Libre+Franklin:wght@400;600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Press+Start+2P&family=Swanky+and+Moo+Moo&family=VT323&display=swap"
+        rel="stylesheet">
+
+    <link rel='stylesheet' href='resources/css/main.css?v=2'>
+    <link rel='stylesheet' href='resources/css/themes.css'>
+
+    <title>Anne Whitman - Games</title>
+</head>
+
+<body>
+    <nav id='navbar'></nav>
+    <main>
+        <h1 class='page-title'>Games</h1>
+
+        <!--
+            Every game on the site, in every theme. (The video game theme's home page links here.)
+            Tapping anywhere on a card plays it: see .game-card-play in main.css.
+        -->
+        <div class='container'>
+            <div class='card-grid game-cards'>
+                <article class='card game-card bug-squash-card'>
+                    <div class='game-card-art'>
+                        <img src='resources/img/bug-squash-icon.svg' alt=''>
+                    </div>
+                    <div class='card-body'>
+                        <h4>Squash the Bugs</h4>
+                        <p>Bugs are climbing out of the pipes. Squash as many as you can in 30 seconds before they ship to production.</p>
+                        <!-- functions.js opens the game, loading resources/js/bug-squash.js the first time -->
+                        <button type='button' id='bug-squash-start' class='game-button game-card-play'>Play</button>
+                    </div>
+                </article>
+
+                <article class='card game-card make-way-card'>
+                    <div class='game-card-art'>
+                        <img src='resources/img/make-way-icon-512.png' alt=''>
+                    </div>
+                    <div class='card-body'>
+                        <h4>Make Way!</h4>
+                        <p>A traffic-jam puzzle for kids. Slide the cars and trucks out of the way so your ride can get through. The boards grow as you level up.</p>
+                        <a class='game-button make-way-launch game-card-play' href='make-way.html'>Play</a>
+                    </div>
+                </article>
+
+                <article class='card game-card word-mine-card'>
+                    <div class='game-card-art'>
+                        <img src='resources/img/word-mine-icon-512.png' alt=''>
+                    </div>
+                    <div class='card-body'>
+                        <h4>Word Mine</h4>
+                        <p>A spelling game for early readers. Hear a word, spell it and dig up a gem. It moves up or down a level as you go, and there's a mystery word mode too.</p>
+                        <a class='game-button word-mine-launch game-card-play' href='word-mine.html'>Play</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+
+    <!-- Site specific (the ?v= is explained in .htaccess) -->
+    <script src="resources/js/functions.js?v=2"></script>
+</body>
+
+</html>

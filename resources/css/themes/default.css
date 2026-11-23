@@ -441,6 +441,19 @@
         width: 48px;
     }
 
+    /* ---------- Games ---------- */
+
+    .game-card-play {
+        border-color: var(--cafe-accent);
+        color: var(--cafe-accent);
+        transition: background-color .2s, color .2s;
+    }
+
+    .game-card:hover .game-card-play {
+        background-color: var(--cafe-accent);
+        color: var(--cafe-bg);
+    }
+
     /* ---------- Project pages (currently hidden) ---------- */
 
     .project-list {

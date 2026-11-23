@@ -77,7 +77,8 @@ const gettingToKnowMe = {
 // (The ?v= is explained in .htaccess.)
 function loadNavbar() {
     $("#navbar").load("navbar.html?v=2", function () {
-        const currentPage = location.pathname.split("/").pop() || "index.html";
+        // The games page is also at /games (see .htaccess), so compare names without ".html"
+        const currentPage = (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") + ".html";
         $(this).find(`.nav-links a[href="${currentPage}"]`).attr("aria-current", "page");
 
         // Lets theme.js highlight the current theme in the menu
@@ -235,7 +236,7 @@ $(function () {
         $(this).next(".game-accordion-panel").toggleClass("hide-game-panel");
     });
 
-    // The Squash the Bugs button (only the video game theme shows it). The game's code loads the first time it's pressed.
+    // The Squash the Bugs button on the games page. The game's code loads the first time it's pressed.
     $("#bug-squash-start").on("click", function () {
         if (window.BugSquash) {
             window.BugSquash.open();

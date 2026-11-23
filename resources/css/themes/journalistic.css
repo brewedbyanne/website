@@ -473,6 +473,41 @@
         filter: grayscale(1) contrast(1.2);
     }
 
+    /* ---------- Games: printed in black and white, in color when you point at one ---------- */
+
+    /* (.game-card in front so this beats each game's own color in main.css) */
+    .game-card .game-card-art {
+        border-bottom: 1px solid var(--news-ink);
+        background: none;
+    }
+
+    .game-card-art img {
+        border-radius: 0;
+        box-shadow: none;
+        filter: grayscale(1) contrast(1.1);
+        transition: filter .3s;
+    }
+
+    .game-card:hover .game-card-art img {
+        filter: none;
+    }
+
+    .game-card-play {
+        padding: .45rem 1.1rem;
+        border-width: 1px;
+        border-radius: 0;
+        font-family: var(--news-sans);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }
+
+    .game-card:hover .game-card-play {
+        background-color: var(--news-ink);
+        color: var(--news-paper);
+    }
+
     /* ---------- Project pages (currently hidden) ---------- */
 
     .project-list {

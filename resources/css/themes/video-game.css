@@ -475,7 +475,7 @@
         display: none;
     }
 
-    /* The game buttons (Squash the Bugs, Make Way!, Word Mine); base CSS hides them in every other theme */
+    /* The home page's Play Games button; base CSS hides it in every other theme */
     .game-launch {
         display: flex;
         flex-wrap: wrap;
@@ -484,13 +484,19 @@
         margin: 1rem 0 3rem;
     }
 
+    /* ---------- Games page ---------- */
+
+    /* Chunky pixel buttons: Play Games on the home page and the Play buttons on the games page */
     .game-button {
+        display: inline-block;
         padding: 1.1rem 1.6rem 1rem;
         border: 0;
+        border-radius: 0;
         background-color: var(--vg-red);
         color: var(--vg-white);
         font-family: var(--vg-pixel-font);
         font-size: clamp(.9rem, 3vw, 1.4rem);
+        text-decoration: none;
         box-shadow:
             inset -6px -6px 0 0 var(--vg-red-dark),
             0 -6px 0 0 var(--vg-ink),
@@ -506,6 +512,7 @@
 
     .game-button:hover {
         background-color: #ff3b72;
+        color: var(--vg-white);
     }
 
     /* Pressed in: the shading flips, like a real button */
@@ -523,11 +530,9 @@
         outline-offset: 12px;
     }
 
-    /* Make Way! is a link to its own page, in grass green */
+    /* Make Way!'s Play button, in grass green */
     .make-way-launch {
-        display: inline-block;
         background-color: var(--vg-green);
-        text-decoration: none;
         box-shadow:
             inset -6px -6px 0 0 var(--vg-green-dark),
             0 -6px 0 0 var(--vg-ink),
@@ -538,7 +543,6 @@
 
     .make-way-launch:hover {
         background-color: #3fd060;
-        color: var(--vg-white);
     }
 
     .make-way-launch:active {
@@ -550,11 +554,9 @@
             6px 0 0 0 var(--vg-ink);
     }
 
-    /* Word Mine, the spelling game, in its amethyst purple */
+    /* Word Mine's Play button, in its amethyst purple */
     .word-mine-launch {
-        display: inline-block;
         background-color: #7b5cff;
-        text-decoration: none;
         box-shadow:
             inset -6px -6px 0 0 #4a2bc4,
             0 -6px 0 0 var(--vg-ink),
@@ -565,7 +567,6 @@
 
     .word-mine-launch:hover {
         background-color: #8f74ff;
-        color: var(--vg-white);
     }
 
     .word-mine-launch:active {
@@ -575,6 +576,26 @@
             0 6px 0 0 var(--vg-ink),
             -6px 0 0 0 var(--vg-ink),
             6px 0 0 0 var(--vg-ink);
+    }
+
+    /* Square pixel icons with a hard shadow, on a band with an ink edge */
+    .game-card-art {
+        box-shadow: 0 4px 0 0 var(--vg-ink);
+    }
+
+    .game-card-art img {
+        border-radius: 0;
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, .25);
+    }
+
+    /* Room for the Play buttons' chunky borders */
+    .game-cards .card-body {
+        padding: 1.25rem 1.25rem 1.75rem;
+    }
+
+    .game-card-play {
+        margin-top: .5rem;
+        margin-left: 6px;
     }
 
     /* ---------- Smaller screens and reduced motion ---------- */

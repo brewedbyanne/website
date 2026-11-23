@@ -485,6 +485,38 @@
         text-shadow: 0 0 6px rgba(255, 255, 255, .6);
     }
 
+    /* ---------- Games: faded until you point at one, like the other cards ---------- */
+
+    /* (.game-card in front so this beats each game's own color in main.css) */
+    .game-card .game-card-art {
+        border-bottom: 1px solid rgba(255, 42, 109, .35);
+        background: rgba(255, 255, 255, .03);
+    }
+
+    .game-card-art img {
+        box-shadow: 0 0 18px rgba(45, 226, 230, .35);
+        filter: saturate(.75) contrast(1.05);
+        transition: filter .3s;
+    }
+
+    .game-card:hover .game-card-art img {
+        filter: none;
+    }
+
+    .game-card-play {
+        border-color: var(--ud-cyan);
+        color: var(--ud-cyan);
+        box-shadow: 0 0 10px rgba(45, 226, 230, .4);
+        text-shadow: 0 0 6px rgba(45, 226, 230, .7);
+        transition: background-color .3s, color .3s;
+    }
+
+    .game-card:hover .game-card-play {
+        background-color: var(--ud-cyan);
+        color: #120a1c;
+        text-shadow: none;
+    }
+
     /* ---------- Smaller screens and reduced motion ---------- */
 
     @media (max-width: 767px) {

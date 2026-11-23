@@ -1,3 +1,11 @@
+# annelwhitman.com/games shows the games page (games.html). /games/ goes to /games, since
+# the page's links are relative and would point inside a games/ folder that isn't there.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^games/$ /games [R=301,L]
+    RewriteRule ^games$ games.html [L]
+</IfModule>
+
 # The "Add to Home Screen" app files for Make Way! and Word Mine (*.webmanifest)
 <IfModule mod_mime.c>
     AddType application/manifest+json .webmanifest

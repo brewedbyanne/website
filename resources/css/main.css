@@ -94,7 +94,7 @@ button {
     display: none;
 }
 
-/* The buttons that open the games. Only the video game theme shows them. */
+/* The home page's button to the games page. Only the video game theme shows it. */
 .game-launch {
     display: none;
 }
@@ -375,6 +375,69 @@ button {
 
 .contact-links li {
     padding: 1rem;
+}
+
+/* ---------- Games page ---------- */
+
+/* The whole card is the button: the Play button's ::after stretches over it */
+.game-card {
+    position: relative;
+}
+
+.game-card-play::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+/* Each game's icon, like an app icon, on a band of that game's color */
+.game-card-art {
+    display: flex;
+    justify-content: center;
+    padding: 1.75rem 1rem;
+}
+
+.game-card-art img {
+    width: min(160px, 50%);
+    border-radius: 22%;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+}
+
+/* A deeper blue than the icon's sky, so the icon stands out */
+.bug-squash-card .game-card-art {
+    background-color: #3f5fd6;
+}
+
+.make-way-card .game-card-art {
+    background-color: #7ec0ee;
+}
+
+.word-mine-card .game-card-art {
+    background-color: #b9a6ff;
+}
+
+.game-cards .card-body {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Keeps the Play buttons lined up along the bottom of the cards */
+.game-cards .card-body p {
+    flex-grow: 1;
+}
+
+.game-card-play {
+    display: inline-block;
+    padding: .5rem 1.5rem;
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    background: none;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /* ---------- Project details page: pick a project on the left, read it on the right ---------- */
