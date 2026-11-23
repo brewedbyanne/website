@@ -13,37 +13,6 @@
 (function () {
     'use strict';
 
-    // ---------- Saved progress (kept on this device only) ----------
-
-    const store = {
-        get(key, fallback) {
-            try {
-                const value = localStorage.getItem('makeWay.' + key);
-                return value === null ? fallback : JSON.parse(value);
-            } catch (e) {
-                return fallback;
-            }
-        },
-        set(key, value) {
-            try {
-                localStorage.setItem('makeWay.' + key, JSON.stringify(value));
-            } catch (e) { }
-        },
-    };
-
-    const state = {
-        level: store.get('level', 1),
-        ride: store.get('ride', 'cars'),
-        name: store.get('name', ''),
-        muted: store.get('muted', false),
-        cols: 0,
-        rows: 0,
-        pieces: [],
-        grid: [],
-        driven: 0,
-        hintTimer: null,
-    };
-
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const DIRS = { right: [1, 0], left: [-1, 0], up: [0, -1], down: [0, 1] };
     const ART = 16; // art pixels per board square
@@ -101,6 +70,116 @@
             bumps: ['Clunk! Something is in the way.', 'Bonk! That tunnel is blocked.', 'Oops! Try a different cart.'],
         },
     };
+
+    // ---------- Saved progress (kept on this device only) ----------
+    //
+    // Progress is one object in localStorage under makeWay.save, with a version number. When a
+    // change to the game needs the save to change shape, bump SAVE_VERSION and add a step to
+    // UPGRADES that turns the old shape into the new one. Before a save is upgraded, a copy of
+    // it is put aside under makeWay.backup.v<old version> and never written again, so a bad
+    // upgrade can be repaired by a later one. Nothing here ever deletes anything.
+
+    const SAVE_KEY = 'makeWay.save';
+    const SAVE_VERSION = 2;
+
+    // Each step turns a save of version n into version n + 1
+    const UPGRADES = {
+        // Version 1 kept each setting under its own key (see readFirstSave). Those keys stay where
+        // they are, and get read again if makeWay.save is ever missing or damaged.
+        1: save => save,
+    };
+
+    function storageGet(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function storageSet(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) { }
+    }
+
+    function parse(text) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Version 1 saved makeWay.level, makeWay.ride and so on separately
+    function readFirstSave() {
+        let save = null;
+        ['level', 'ride', 'name', 'muted', 'started'].forEach(field => {
+            const value = parse(storageGet('makeWay.' + field));
+            if (value !== null) {
+                save = save || { version: 1 };
+                save[field] = value;
+            }
+        });
+        return save;
+    }
+
+    function loadSave() {
+        let save = parse(storageGet(SAVE_KEY));
+        if (!save || typeof save !== 'object' || Array.isArray(save)) {
+            // Nothing saved yet means a new player
+            save = readFirstSave() || { version: SAVE_VERSION };
+        }
+        if (!Number.isInteger(save.version) || save.version < 1) {
+            save.version = 1;
+        }
+        if (save.version < SAVE_VERSION) {
+            while (save.version < SAVE_VERSION) {
+                const backupKey = 'makeWay.backup.v' + save.version;
+                if (storageGet(backupKey) === null) {
+                    storageSet(backupKey, JSON.stringify(save));
+                }
+                save = { ...UPGRADES[save.version](save), version: save.version + 1 };
+            }
+            storageSet(SAVE_KEY, JSON.stringify(save));
+        }
+        return save;
+    }
+
+    const saved = loadSave();
+
+    // Only take values from the save that make sense, so a damaged save can't break the game
+    const state = {
+        level: Number.isInteger(saved.level) && saved.level >= 1 ? saved.level : 1,
+        ride: Object.keys(RIDES).includes(saved.ride) ? saved.ride : 'cars',
+        name: typeof saved.name === 'string' ? saved.name.slice(0, 16) : '',
+        muted: saved.muted === true,
+        started: saved.started === true,
+        cols: 0,
+        rows: 0,
+        pieces: [],
+        grid: [],
+        driven: 0,
+        hintTimer: null,
+    };
+
+    // Anything in the save this version of the game doesn't know about (from a newer version, say,
+    // if a change ever has to be rolled back) is written back untouched
+    function saveProgress() {
+        Object.assign(saved, {
+            level: state.level,
+            ride: state.ride,
+            name: state.name,
+            muted: state.muted,
+            started: state.started,
+        });
+        storageSet(SAVE_KEY, JSON.stringify(saved));
+    }
+
+    // Ask the browser to keep the save even if the iPad runs low on space
+    if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().catch(() => { });
+    }
 
     // ---------- Levels ----------
 
@@ -857,7 +936,7 @@
         clearTimeout(state.hintTimer);
         const finished = state.level;
         state.level++;
-        store.set('level', state.level);
+        saveProgress();
         sound.win();
         confetti();
 
@@ -955,9 +1034,8 @@
         if (action.dataset.action === 'start') {
             const input = el.panel.querySelector('input');
             state.name = input.value.trim().slice(0, 16);
-            store.set('name', state.name);
-            store.set('ride', state.ride);
-            store.set('started', true);
+            state.started = true;
+            saveProgress();
             hidePanel();
             redrawRides();
             if (state.level === 1 && !state.driven) {
@@ -987,7 +1065,7 @@
         sound.wake();
         if (action.dataset.action === 'sound') {
             state.muted = !state.muted;
-            store.set('muted', state.muted);
+            saveProgress();
             updateBar();
         } else if (action.dataset.action === 'hint') {
             sound.click();
@@ -1004,7 +1082,7 @@
 
     updateBar();
     startLevel();
-    if (!store.get('started', false)) {
+    if (!state.started) {
         // The very first time: say hello and pick a ride
         clearTimeout(state.hintTimer);
         showRidePicker(true);
