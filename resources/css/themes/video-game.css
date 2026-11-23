@@ -475,7 +475,7 @@
         display: none;
     }
 
-    /* The game buttons (Squash the Bugs, Make Way!); base CSS hides them in every other theme */
+    /* The game buttons (Squash the Bugs, Make Way!, Word Mine); base CSS hides them in every other theme */
     .game-launch {
         display: flex;
         flex-wrap: wrap;
@@ -544,6 +544,33 @@
     .make-way-launch:active {
         box-shadow:
             inset 6px 6px 0 0 var(--vg-green-dark),
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
+    }
+
+    /* Word Mine, the spelling game, in its amethyst purple */
+    .word-mine-launch {
+        display: inline-block;
+        background-color: #7b5cff;
+        text-decoration: none;
+        box-shadow:
+            inset -6px -6px 0 0 #4a2bc4,
+            0 -6px 0 0 var(--vg-ink),
+            0 6px 0 0 var(--vg-ink),
+            -6px 0 0 0 var(--vg-ink),
+            6px 0 0 0 var(--vg-ink);
+    }
+
+    .word-mine-launch:hover {
+        background-color: #8f74ff;
+        color: var(--vg-white);
+    }
+
+    .word-mine-launch:active {
+        box-shadow:
+            inset 6px 6px 0 0 #4a2bc4,
             0 -6px 0 0 var(--vg-ink),
             0 6px 0 0 var(--vg-ink),
             -6px 0 0 0 var(--vg-ink),

@@ -1,4 +1,4 @@
-# The "Add to Home Screen" app file for Make Way! (make-way.webmanifest)
+# The "Add to Home Screen" app files for Make Way! and Word Mine (*.webmanifest)
 <IfModule mod_mime.c>
     AddType application/manifest+json .webmanifest
 </IfModule>

@@ -1,0 +1,697 @@
+/*
+ * Word Mine (see resources/js/word-mine.js): bright and bubbly, in a sparkly amethyst geode. Letters are
+ * chunky rounded gem blocks: emerald when they're right, gold when they go somewhere else and stone when
+ * they're not in the word.
+ */
+
+:root {
+    --ink: #2a2350;
+    --muted: #6d6593;
+    --lavender: #efe9ff;
+    --lilac: #dccfff;
+    --line: #cbbdff;
+    --amethyst: #7b5cff;
+    --amethyst-light: #a58cff;
+    --amethyst-dark: #5636d9;
+    --emerald: #2fc26b;
+    --emerald-light: #63e091;
+    --emerald-dark: #1e9a50;
+    --gold: #ffc53d;
+    --gold-light: #ffe07a;
+    --gold-dark: #e09c00;
+    --stone: #9a9cad;
+    --stone-light: #b4b6c5;
+    --stone-dark: #75778a;
+    --red: #ff5a5f;
+    /* Andika was made for children learning to read: an "a" and "g" like the ones he writes */
+    --read: 'Andika', 'Trebuchet MS', sans-serif;
+    --round: 'Fredoka', 'Trebuchet MS', sans-serif;
+    /* Letter blocks and keys shrink to fit shorter screens */
+    --tile: clamp(38px, min(6.2vh, 10.5vw), 62px);
+    --key: clamp(42px, 6.4vh, 60px);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Never join letters together (like "fi"): every letter counts in a spelling game */
+* {
+    font-variant-ligatures: none !important;
+}
+
+/* Behave like an app on an iPad: no rubber-band scrolling, text selection, zooming or long-press menus */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Inside a geode: soft lavender, with a few sparkles */
+body {
+    background:
+        radial-gradient(circle at 12% 22%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 86% 30%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 82%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 24% 70%, #fff 0 1.5px, transparent 2.5px),
+        radial-gradient(ellipse at 50% 0%, #faf8ff 0%, var(--lavender) 45%, var(--lilac) 100%);
+    background-color: var(--lavender);
+    color: var(--ink);
+    font-family: var(--read);
+}
+
+/* Crystals growing up from the bottom corners */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    bottom: -10px;
+    width: min(300px, 30vw);
+    height: min(340px, 42vh);
+    background: linear-gradient(170deg, #d8c9ff, var(--amethyst-light) 60%, var(--amethyst));
+    opacity: .35;
+    clip-path: polygon(0 100%, 8% 42%, 16% 100%, 22% 18%, 34% 100%, 40% 0, 52% 100%, 60% 34%, 70% 100%, 78% 55%, 88% 100%);
+    pointer-events: none;
+}
+
+body::before {
+    left: -20px;
+}
+
+body::after {
+    right: -20px;
+    transform: scaleX(-1);
+}
+
+.word-mine {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    height: 100dvh;
+    padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ---------- Top bar ---------- */
+
+.wm-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem 1rem;
+    /* Reaches up under the iPad's clock and battery, which show in white */
+    padding: calc(.6rem + env(safe-area-inset-top)) 1rem .6rem;
+    border-radius: 0 0 26px 26px;
+    background: linear-gradient(var(--amethyst), #6a48f5);
+    box-shadow: 0 5px 0 var(--amethyst-dark);
+}
+
+.wm-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+    color: #fff;
+    font: 700 26px/1 var(--round);
+    text-shadow: 0 3px 0 var(--amethyst-dark);
+}
+
+/* A cut emerald */
+.wm-gem {
+    width: 30px;
+    height: 26px;
+    background: linear-gradient(135deg, #b8ffd2 0%, var(--emerald-light) 35%, var(--emerald) 60%, var(--emerald-dark) 100%);
+    clip-path: polygon(22% 0, 78% 0, 100% 34%, 50% 100%, 0 34%);
+    filter: drop-shadow(0 3px 0 var(--amethyst-dark));
+}
+
+.wm-buttons {
+    display: flex;
+    gap: .5rem;
+}
+
+/* Spelling or Mystery word: a pill with the picked one lit up */
+.wm-modes {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, .18);
+}
+
+/* ---------- Buttons: round, and they press down ---------- */
+
+.wm-button {
+    min-height: 46px;
+    padding: .55rem 1.15rem;
+    border: 0;
+    border-radius: 999px;
+    background-color: #fff;
+    color: var(--ink);
+    font: 600 17px/1 var(--round);
+    box-shadow: 0 4px 0 var(--line);
+    cursor: pointer;
+}
+
+.wm-button:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--line);
+}
+
+.wm-button:focus-visible,
+.wm-key:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+.wm-button:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+.wm-mode {
+    min-height: 40px;
+    background-color: transparent;
+    color: #fff;
+    box-shadow: none;
+}
+
+.wm-mode:active:not(:disabled) {
+    box-shadow: none;
+}
+
+.wm-mode--picked {
+    background-color: #fff;
+    color: var(--amethyst-dark);
+    box-shadow: 0 3px 0 var(--amethyst-dark);
+}
+
+/* The big "go" buttons are emerald */
+.wm-go {
+    min-height: 56px;
+    padding: .8rem 2rem;
+    background-color: var(--emerald);
+    color: #fff;
+    font-size: 22px;
+    text-shadow: 0 2px 0 var(--emerald-dark);
+    box-shadow: 0 5px 0 var(--emerald-dark);
+}
+
+.wm-go:active:not(:disabled) {
+    box-shadow: 0 2px 0 var(--emerald-dark);
+}
+
+/* Only with a mouse: on an iPad, a tapped button would keep this color */
+@media (hover: hover) {
+    .wm-button:hover:not(:disabled):not(.wm-mode):not(.wm-go) {
+        background-color: #f6f3ff;
+    }
+
+    .wm-mode:hover:not(.wm-mode--picked) {
+        background-color: rgba(255, 255, 255, .15);
+    }
+
+    .wm-go:hover {
+        background-color: #38d077;
+    }
+}
+
+/* ---------- The clue: the sentence (or the mystery clue), on a white card ---------- */
+
+.wm-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1rem 1rem .75rem;
+}
+
+.wm-clue {
+    width: min(900px, 100%);
+    margin: 0 auto;
+    padding: .8rem 1.25rem 1rem;
+    border-radius: 24px;
+    background-color: #fff;
+    box-shadow: 0 6px 0 var(--line);
+    text-align: center;
+}
+
+.wm-level {
+    margin: 0 0 .25rem;
+    color: var(--amethyst-dark);
+    font: 600 16px var(--round);
+}
+
+.wm-sentence {
+    margin: 0 0 .7rem;
+    font: 700 clamp(24px, 3vw, 34px)/1.35 var(--read);
+}
+
+/* The word's spot in the sentence: always the same width, so it doesn't give the length away */
+.wm-blank {
+    display: inline-block;
+    width: 4.6em;
+    height: 1.15em;
+    margin: 0 .15em;
+    border: 3px dashed var(--amethyst-light);
+    border-radius: 12px;
+    background-color: #f4f0ff;
+    vertical-align: -.25em;
+}
+
+.wm-blank--shown {
+    width: auto;
+    height: auto;
+    padding: 0 .3em;
+    border-style: solid;
+    border-color: var(--amethyst);
+    background-color: var(--amethyst);
+    color: #fff;
+    vertical-align: baseline;
+}
+
+.wm-clue-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .7rem;
+}
+
+.wm-clue-buttons .wm-row--small {
+    margin: 0 .5rem 0 0;
+}
+
+.wm-clue .wm-button {
+    background-color: #f1ecff;
+}
+
+.wm-tip {
+    max-width: 40em;
+    margin: .8rem auto 0;
+    padding: .55rem .9rem;
+    border: 2px solid var(--gold-light);
+    border-radius: 16px;
+    background-color: #fff7d9;
+    font: 700 19px/1.35 var(--read);
+}
+
+.wm-tip::before {
+    content: "💡 ";
+}
+
+/* ---------- The board: rows of letter blocks ---------- */
+
+.wm-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 0;
+    padding: .6rem 0;
+}
+
+.wm-row {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+}
+
+.wm-row--small {
+    --tile: 36px;
+    margin: .4rem 0 .6rem;
+}
+
+.wm-row--big {
+    --tile: clamp(46px, 8vw, 66px);
+    margin: .5rem 0 1rem;
+}
+
+.wm-tile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--tile);
+    height: var(--tile);
+    border-radius: calc(var(--tile) * .24);
+    background-color: rgba(255, 255, 255, .55);
+    color: var(--ink);
+    font: 700 calc(var(--tile) * .58)/1 var(--read);
+    box-shadow: inset 0 0 0 3px var(--line);
+}
+
+/* Where the next letter goes */
+.wm-tile--cursor::after {
+    content: "";
+    position: absolute;
+    left: 28%;
+    right: 28%;
+    bottom: 18%;
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--amethyst);
+    animation: wm-blink 1s steps(1) infinite;
+}
+
+@keyframes wm-blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.wm-tile--typed {
+    background-color: #fff;
+    box-shadow: inset 0 0 0 3px var(--amethyst-light), 0 4px 0 var(--line);
+}
+
+/* The gem blocks: shiny on top, a darker edge underneath */
+.wm-tile--right,
+.wm-tile--elsewhere,
+.wm-tile--wrong,
+.wm-tile--extra {
+    color: #fff;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, .18);
+}
+
+.wm-tile--right {
+    background: linear-gradient(var(--emerald-light), var(--emerald));
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, .4), 0 5px 0 var(--emerald-dark);
+}
+
+.wm-tile--elsewhere {
+    background: linear-gradient(var(--gold-light), var(--gold));
+    color: #5a3c00;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .45);
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, .5), 0 5px 0 var(--gold-dark);
+}
+
+/* Stone, speckled like the real thing */
+.wm-tile--wrong,
+.wm-tile--extra {
+    background:
+        radial-gradient(circle at 26% 30%, rgba(255, 255, 255, .22) 0 7%, transparent 8%),
+        radial-gradient(circle at 72% 68%, rgba(0, 0, 0, .12) 0 8%, transparent 9%),
+        radial-gradient(circle at 70% 24%, rgba(0, 0, 0, .1) 0 5%, transparent 6%),
+        linear-gradient(var(--stone-light), var(--stone));
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, .25), 0 5px 0 var(--stone-dark);
+}
+
+/* An extra letter is crossed out in red: take it out */
+.wm-tile--extra::after {
+    content: "";
+    position: absolute;
+    inset: 14%;
+    background:
+        linear-gradient(45deg, transparent 45%, var(--red) 45% 56%, transparent 56%),
+        linear-gradient(-45deg, transparent 45%, var(--red) 45% 56%, transparent 56%);
+    opacity: .9;
+}
+
+/* A missing letter is an empty, dashed slot */
+.wm-tile--missing {
+    border: 3px dashed var(--amethyst);
+    background-color: rgba(255, 255, 255, .7);
+    color: var(--amethyst);
+    box-shadow: none;
+}
+
+/* ---------- Messages ---------- */
+
+.wm-message {
+    min-height: 1.4em;
+    max-width: 44em;
+    margin: 0 auto .7rem;
+    font: 500 21px/1.3 var(--round);
+    text-align: center;
+}
+
+/* ---------- The keyboard ---------- */
+
+.wm-keyboard {
+    display: grid;
+    gap: 9px;
+    width: min(780px, 100%);
+    margin: 0 auto;
+}
+
+.wm-key-row {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+}
+
+.wm-key {
+    display: grid;
+    place-items: center;
+    flex: 1;
+    max-width: 66px;
+    height: var(--key);
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background-color: #fff;
+    color: var(--ink);
+    font: 700 calc(var(--key) * .48)/1 var(--read);
+    box-shadow: 0 4px 0 var(--line);
+    cursor: pointer;
+}
+
+.wm-key:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--line);
+}
+
+.wm-key--wide {
+    flex: 1.7;
+    max-width: 116px;
+}
+
+.wm-key--check {
+    background-color: var(--emerald);
+    color: #fff;
+    font: 600 18px/1 var(--round);
+    text-shadow: 0 2px 0 var(--emerald-dark);
+    box-shadow: 0 4px 0 var(--emerald-dark);
+}
+
+.wm-key--erase {
+    background-color: #f1ecff;
+}
+
+.wm-key--erase svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Keys remember what each letter turned out to be */
+.wm-key--right {
+    background: linear-gradient(var(--emerald-light), var(--emerald));
+    color: #fff;
+    box-shadow: 0 4px 0 var(--emerald-dark);
+}
+
+.wm-key--elsewhere {
+    background: linear-gradient(var(--gold-light), var(--gold));
+    color: #5a3c00;
+    box-shadow: 0 4px 0 var(--gold-dark);
+}
+
+.wm-key--wrong {
+    background: linear-gradient(var(--stone-light), var(--stone));
+    color: rgba(255, 255, 255, .85);
+    box-shadow: 0 4px 0 var(--stone-dark);
+}
+
+/* ---------- Panels: starting, a word found, how to play, grown-ups ---------- */
+
+.wm-overlay {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background-color: rgba(42, 35, 80, .45);
+}
+
+.wm-overlay[hidden] {
+    display: none;
+}
+
+.wm-panel {
+    width: min(720px, 100%);
+    max-height: 100%;
+    overflow: auto;
+    padding: 1.5rem 1.5rem 1.75rem;
+    border-radius: 30px;
+    background-color: #fff;
+    color: var(--ink);
+    text-align: center;
+    box-shadow: 0 10px 0 var(--line), 0 30px 60px rgba(42, 35, 80, .25);
+}
+
+.wm-panel-title {
+    margin: 0 0 .5rem;
+    color: var(--amethyst);
+    font: 700 32px/1.2 var(--round);
+}
+
+.wm-big {
+    margin: .25rem 0 .75rem;
+    font: 600 clamp(22px, 3vw, 27px)/1.3 var(--round);
+}
+
+.wm-note {
+    max-width: 36em;
+    margin: 0 auto .75rem;
+    font: 400 19px/1.4 var(--read);
+}
+
+.wm-news {
+    display: inline-block;
+    margin: 0 0 1rem;
+    padding: .4rem 1rem;
+    border-radius: 999px;
+    background-color: var(--gold-light);
+    font: 600 21px var(--round);
+}
+
+.wm-panel .wm-go {
+    margin-top: .5rem;
+}
+
+.wm-name {
+    display: grid;
+    justify-items: center;
+    gap: .4rem;
+    margin: .5rem 0 1rem;
+    font: 600 22px var(--round);
+}
+
+.wm-name input {
+    width: min(340px, 100%);
+    padding: .5rem .75rem;
+    border: 3px solid var(--line);
+    border-radius: 16px;
+    background-color: #faf8ff;
+    color: var(--ink);
+    font: 700 26px var(--read);
+    text-align: center;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.wm-name input:focus {
+    border-color: var(--amethyst);
+    outline: none;
+}
+
+.wm-legend {
+    display: grid;
+    justify-content: center;
+    gap: .1rem;
+    margin: .5rem 0 1rem;
+}
+
+.wm-legend-line {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    font: 700 18px var(--read);
+    text-align: left;
+}
+
+.wm-legend-line .wm-row--small {
+    margin: .2rem 0;
+}
+
+/* Grown-ups: the levels to pick from */
+.wm-level-options {
+    display: grid;
+    gap: .5rem;
+    margin-bottom: 1rem;
+}
+
+.wm-level-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .65rem 1.1rem;
+    border: 0;
+    border-radius: 16px;
+    background-color: #f4f0ff;
+    color: var(--ink);
+    font: 600 19px var(--round);
+    text-align: left;
+    box-shadow: 0 4px 0 var(--line);
+    cursor: pointer;
+}
+
+.wm-level-option--picked {
+    background-color: var(--amethyst);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--amethyst-dark);
+}
+
+.wm-level-example {
+    font: 400 17px var(--read);
+    white-space: nowrap;
+    opacity: .8;
+}
+
+/* Gems when a word is found */
+.wm-confetti {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 600px) {
+    .wm-title {
+        font-size: 21px;
+    }
+
+    .wm-button {
+        min-height: 40px;
+        padding: .45rem .8rem;
+        font-size: 15px;
+    }
+
+    .wm-mode {
+        min-height: 36px;
+    }
+
+    .wm-go {
+        font-size: 19px;
+    }
+
+    .wm-key-row {
+        gap: 4px;
+    }
+
+    .wm-key {
+        border-radius: 10px;
+    }
+
+    .wm-key--check {
+        font-size: 14px;
+    }
+}

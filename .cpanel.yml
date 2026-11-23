@@ -12,4 +12,6 @@ deployment:
     - /bin/cp navbar.html $DEPLOYPATH
     - /bin/cp projects_details.html $DEPLOYPATH
     - /bin/cp projects.html $DEPLOYPATH
+    - /bin/cp word-mine.html $DEPLOYPATH
+    - /bin/cp word-mine.webmanifest $DEPLOYPATH
     - /bin/cp -R resources $DEPLOYPATH

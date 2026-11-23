@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Sized like an app: no pinch-zoom or double-tap zoom getting in the way of little fingers -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+    <!-- "Add to Home Screen" on an iPad opens this full screen, like an app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Word Mine">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#7b5cff">
+    <link rel="manifest" href="word-mine.webmanifest">
+    <link rel="apple-touch-icon" href="resources/img/word-mine-icon-180.png">
+    <link rel="icon" type="image/png" href="resources/img/word-mine-icon-180.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="resources/css/word-mine.css">
+
+    <title>Word Mine</title>
+</head>
+
+<body>
+    <!-- Everything inside is built by resources/js/word-mine.js -->
+    <div id="word-mine" class="word-mine">
+        <noscript>Word Mine needs JavaScript to play.</noscript>
+    </div>
+
+    <script src="resources/js/word-mine-words.js"></script>
+    <script src="resources/js/word-mine.js"></script>
+</body>
+
+</html>
