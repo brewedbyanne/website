@@ -1,5 +1,5 @@
 /*
- * Make Way! A traffic-jam puzzle for kids (opened from the video game theme).
+ * Make Way! A traffic-jam puzzle for kids (opened from the games page, games.html).
  *
  * The board is full of cars (or trains, ducks or mine carts), each pointing one way.
  * Tap one and it drives off the board, unless something is in its way, in which case it
@@ -7,6 +7,9 @@
  * board waits while a math problem fills them back up (grown-ups set the math level by
  * holding down the title). Clear every ride to finish the level. Levels are generated,
  * and grow slowly.
+ *
+ * Every level earns coins, and coins buy new rides in the shop (on the "Change ride" panel).
+ * The shop's rides cost a lot on purpose, so there's always something to save up for.
  *
  * A puzzle like this can never get stuck: driving a ride off only frees up space, so
  * any ride with a clear road is always a good move. The generator only has to make sure
@@ -83,7 +86,103 @@
             full: 'Drill powered up!',
             bumps: ['Clunk! Something is in the way.', 'Bonk! That tunnel is blocked.', 'Oops! Try a different cart.'],
         },
+
+        // ---------- The shop: rides with a price have to be bought with coins first ----------
+
+        dragons: {
+            label: 'Dragons',
+            place: 'Lava Cave',
+            about: 'Baby dragons flying out of a lava cave.',
+            price: 150,
+            noun: 'dragon',
+            shout: 'Rawr!',
+            skill: 'dragon flying',
+            way: 'path',
+            resume: 'Wings out{, name}!',
+            board: 'lava',
+            tutorial: 'Tap a dragon to fly it out of the cave. If another dragon is in the way, it goes BONK and costs a heart!',
+            empty: 'The dragons are sleepy!',
+            refill: 'Solve this to warm up their fire:',
+            full: 'Fire breath ready! Rawr!',
+            bumps: ['Rawr! Someone is in the way.', 'Bonk! That path is blocked.', 'Oops! Try a different dragon.'],
+        },
+        kitties: {
+            label: 'Kitties',
+            place: 'Kitty Garden',
+            about: 'Extra long kitties stretching through a flower garden.',
+            price: 200,
+            noun: 'kitty',
+            shout: 'Meow!',
+            skill: 'cat herding',
+            way: 'path',
+            resume: 'Whiskers ready{, name}!',
+            board: 'garden',
+            tutorial: 'Tap a kitty to send it out of the garden. If another kitty is in the way, it goes BONK and costs a heart!',
+            empty: 'The kitties are napping!',
+            refill: 'Solve this to give them a treat:',
+            full: 'Purr! Wide awake!',
+            bumps: ['Meow! Someone is in the way.', 'Bonk! That path is blocked.', 'Oops! Try a different kitty.'],
+        },
+        piggies: {
+            label: 'Piggies',
+            place: 'Piggy Farm',
+            about: 'Tractors pulling wagons full of piglets out of the mud.',
+            price: 200,
+            noun: 'tractor',
+            shout: 'Oink!',
+            skill: 'farming',
+            way: 'lane',
+            resume: 'Tractors on{, name}!',
+            board: 'farm',
+            tutorial: 'Tap a tractor to pull the piglets out of the mud. If something is in the way, it goes BONK and costs a heart!',
+            empty: 'The tractors ran out of fuel!',
+            refill: 'Solve this to fill them up:',
+            full: 'Oink oink! Let\'s go!',
+            bumps: ['Oink! Something is in the way.', 'Bonk! That lane is blocked.', 'Oops! Try a different tractor.'],
+        },
+        popstars: {
+            label: 'Pop Stars',
+            place: 'Pop Star Stage',
+            about: 'Sparkly tour buses on a stage full of spotlights.',
+            price: 250,
+            noun: 'tour bus',
+            shout: 'Encore!',
+            skill: 'rock star',
+            way: 'road',
+            resume: 'Showtime{, name}!',
+            board: 'stage',
+            tutorial: 'Tap a tour bus to drive the band to the next show. If something is in the way, it goes BONK and costs a heart!',
+            empty: 'The band needs a break!',
+            refill: 'Solve this to warm up the band:',
+            full: 'The crowd goes wild!',
+            bumps: ['Oops! Wrong note. Something is in the way.', 'Bonk! That road is blocked.', 'Oops! Try a different tour bus.'],
+        },
+        fuzzballs: {
+            label: 'Fuzzballs',
+            place: 'Fuzzball Cave',
+            about: 'Round, fuzzy one-eyed monsters and their babies, in a cozy glowing cave.',
+            price: 300,
+            noun: 'fuzzball family',
+            shout: 'Wheee!',
+            skill: 'monster wrangling',
+            way: 'path',
+            resume: 'Roll out, fuzzballs{, name}!',
+            board: 'cave',
+            tutorial: 'Tap a big fuzzball to lead its babies out of the cave. If someone is in the way, they go BONK and it costs a heart!',
+            empty: 'The fuzzballs are sleepy!',
+            refill: 'Solve this to wake them up:',
+            full: 'Fuzzballs are wide awake! Wheee!',
+            bumps: ['Boing! Someone is in the way.', 'Bonk! That path is blocked.', 'Oops! Try a different fuzzball.'],
+        },
     };
+
+    // ---------- Coins ----------
+
+    const COINS_PER_LEVEL = 1;
+    const COINS_FOR_PERFECT = 1; // no bonks
+    const COINS_EVERY_FIFTH = 5; // a bonus on levels 5, 10, 15... (these used to earn a trophy)
+
+    const isForSale = key => Boolean(RIDES[key].price);
 
     // ---------- Math problems (they refill the hearts) ----------
     //
@@ -171,13 +270,19 @@
     // be repaired by a later one. Nothing here ever deletes anything.
 
     const SAVE_KEY = 'makeWay.save';
-    const SAVE_VERSION = 2;
+    const SAVE_VERSION = 3;
 
     // Each step turns a save of version n into version n + 1
     const UPGRADES = {
         // Version 1 kept each setting under its own key (see readFirstSave). Those keys stay where
         // they are, and get read again if makeWay.save is ever missing or damaged.
         1: save => save,
+        // Version 3 swapped trophies (one every 5 levels, counted from the level) for coins.
+        // Every trophy already earned turns into the 5 coins those levels earn now.
+        2: save => {
+            const level = Number.isInteger(save.level) && save.level >= 1 ? save.level : 1;
+            return { ...save, coins: COINS_EVERY_FIFTH * Math.floor((level - 1) / 5), owned: [] };
+        },
     };
 
     function storageGet(key) {
@@ -241,10 +346,17 @@
     const savedMath = saved.math && typeof saved.math === 'object' ? saved.math : {};
     const isCount = n => Number.isInteger(n) && n >= 0;
 
+    // Rides bought in the shop. Names this version doesn't know (from a newer version, say) are
+    // kept, so they're still there if that version comes back.
+    const owned = Array.isArray(saved.owned) ? saved.owned.filter(key => typeof key === 'string') : [];
+    const canRide = key => Object.prototype.hasOwnProperty.call(RIDES, key) && (!isForSale(key) || owned.includes(key));
+
     // Only take values from the save that make sense, so a damaged save can't break the game
     const state = {
         level: Number.isInteger(saved.level) && saved.level >= 1 ? saved.level : 1,
-        ride: Object.keys(RIDES).includes(saved.ride) ? saved.ride : 'cars',
+        ride: canRide(saved.ride) ? saved.ride : 'cars',
+        coins: isCount(saved.coins) ? saved.coins : 0,
+        owned,
         name: typeof saved.name === 'string' ? saved.name.slice(0, 16) : '',
         muted: saved.muted === true,
         started: saved.started === true,
@@ -280,6 +392,8 @@
             started: state.started,
             math: { ...savedMath, ...state.math },
             boardStep: state.boardStep,
+            coins: state.coins,
+            owned: state.owned,
         });
         storageSet(SAVE_KEY, JSON.stringify(saved));
     }
@@ -649,7 +763,303 @@
         }
     }
 
-    const DRAW = { cars: drawCar, trains: drawTrain, ducks: drawDucks, carts: drawCarts };
+    // Seen from above: a head with horns in front, wings out to the sides and a pointy tail behind
+    function drawDragon(p, len, color) {
+        const W = len * ART;
+        const dark = shade(color, -80), light = shade(color, 60);
+        const wing = shade(color, -35), belly = '#ffe3a3';
+
+        // Wings, one pair per two squares of dragon: widest where they join the body and swept
+        // back toward the tail, with a bony edge along the front
+        for (let w = 0; w < Math.max(1, Math.floor(len / 2)); w++) {
+            const wx = W - 24 - w * 24;
+            [[3, -1], [12, 1]].forEach(([join, outward]) => {
+                [[0, 10], [1, 8], [2, 6], [3, 3]].forEach(([i, width]) => {
+                    const x = wx - i * 2, y = join + outward * i;
+                    p.rect(x, y, width, 1, wing);
+                    p.rect(x + width - 1, y, 1, 1, dark);
+                });
+            });
+        }
+
+        // The tail, ending in a little spade
+        p.rect(3, 7, 4, 2, dark);
+        p.rect(0, 6, 3, 4, dark);
+        p.rect(1, 7, 1, 2, color);
+
+        // A long body with a row of spikes down the back, pointing toward the tail
+        p.rect(6, 4, W - 16, 8, dark);
+        p.rect(7, 5, W - 18, 6, color);
+        p.rect(7, 5, W - 18, 1, light);
+        for (let x = 8; x < W - 12; x += 3) {
+            p.rect(x, 7, 1, 2, belly);
+            p.rect(x + 1, 6, 1, 4, belly);
+        }
+
+        // The head: horns pointing back, two eyes on top and a snout with nostrils
+        const hx = W - 10;
+        p.rect(hx - 1, 3, 3, 1, '#f5e6c8');
+        p.rect(hx - 3, 2, 2, 1, '#f5e6c8');
+        p.rect(hx - 1, 12, 3, 1, '#f5e6c8');
+        p.rect(hx - 3, 13, 2, 1, '#f5e6c8');
+        p.ellipse(hx + 4, 8, 5.2, 5, dark);
+        p.ellipse(hx + 4, 8, 4.4, 4.2, color);
+        p.rect(hx + 1, 4, 3, 1, light);
+        p.rect(hx + 8, 6, 2, 4, color);
+        p.rect(hx + 8, 6, 2, 1, dark);
+        p.rect(hx + 8, 9, 2, 1, dark);
+        [5, 9].forEach(y => {
+            p.rect(hx + 3, y, 2, 2, '#ffffff');
+            p.rect(hx + 4, y, 1, 2, '#1b1b1b');
+        });
+        p.rect(W - 1, 7, 1, 2, '#ff8f00'); // a puff of fire on the nose
+    }
+
+    // Cat coats, picked by the piece's color so the same color always gets the same cat:
+    // [fur, outline, markings, pattern]
+    const CATS = {
+        red: ['#e8913a', '#8a4a12', '#c0661c', 'tabby'], // orange tabby
+        blue: ['#9aa0a6', '#4e5257', '#6f747a', 'tabby'], // gray tabby
+        yellow: ['#f3dcae', '#a88a58', '#e2c48c', 'plain'], // cream
+        green: ['#33302e', '#111111', '#4a4644', 'plain'], // black
+        orange: ['#d9772b', '#7f3d0f', '#f2a865', 'plain'], // ginger
+        purple: ['#f4f4f4', '#9a9a9a', '#dadada', 'plain'], // white
+        teal: ['#2f2f2f', '#111111', '#f4f4f4', 'tuxedo'], // black with a white chest and paws
+        pink: ['#f4f4f4', '#9a9a9a', '#e8913a', 'calico'], // white with orange and black patches
+    };
+
+    // An extra long kitty seen from above: pointy ears, whiskers, a curly tail, and a collar
+    // and bell in the piece's color, so the colors still tell the pieces apart
+    function drawKitty(p, len, color, colorName) {
+        const W = len * ART;
+        const [fur, dark, mark, pattern] = CATS[colorName] || CATS.red;
+        const paws = pattern === 'tuxedo' ? mark : fur;
+
+        // A thin tail, curling up at the end
+        p.rect(1, 8, 3, 2, dark);
+        p.rect(0, 5, 2, 4, dark);
+        p.rect(1, 4, 2, 1, dark);
+        p.rect(1, 6, 1, 2, mark === fur ? dark : mark);
+
+        // Four paws poking out the sides
+        [5, W - 14].forEach(x => {
+            p.rect(x, 2, 3, 2, dark);
+            p.rect(x + 1, 2, 1, 1, paws);
+            p.rect(x, 12, 3, 2, dark);
+            p.rect(x + 1, 13, 1, 1, paws);
+        });
+
+        // The long body, with its markings
+        p.rect(3, 4, W - 10, 8, dark);
+        p.rect(4, 5, W - 12, 6, fur);
+        if (pattern === 'tabby') {
+            for (let x = 6; x < W - 9; x += 3) {
+                p.rect(x, 5, 1, 2, mark);
+                p.rect(x, 9, 1, 2, mark);
+            }
+        } else if (pattern === 'calico') {
+            for (let x = 5, i = 0; x < W - 11; x += 5, i++) {
+                p.rect(x, i % 2 ? 5 : 8, 3, 3, i % 3 === 1 ? '#33302e' : mark);
+            }
+        } else if (pattern === 'tuxedo') {
+            p.rect(W - 12, 6, 3, 4, mark); // white chest
+        }
+
+        // The head, with ears, eyes, a pink nose and whiskers
+        const hx = W - 11;
+        p.rect(hx - 1, 4, 1, 8, color); // collar
+        p.rect(hx - 1, 7, 1, 2, '#ffd23f'); // bell
+        p.ellipse(hx + 5, 8, 4.6, 4.4, dark);
+        p.ellipse(hx + 5, 8, 3.9, 3.7, fur);
+        if (pattern === 'tuxedo') {
+            p.rect(hx + 7, 6, 2, 4, mark); // white muzzle
+        } else if (pattern === 'tabby') {
+            p.rect(hx + 2, 7, 2, 1, mark); // stripes on the forehead
+            p.rect(hx + 2, 9, 2, 1, mark);
+        } else if (pattern === 'calico') {
+            p.rect(hx + 2, 5, 3, 2, '#33302e');
+            p.rect(hx + 2, 9, 2, 2, mark);
+        }
+        // Pointy ears on top of the head, pink inside, leaning back a little
+        [[4, -1], [11, 1]].forEach(([y, out]) => {
+            p.rect(hx + 1, y, 5, 1, dark);
+            p.rect(hx + 1, y + out, 4, 1, dark);
+            p.rect(hx + 1, y + out * 2, 2, 1, dark);
+            p.rect(hx + 2, y + out, 2, 1, '#ff9eb5');
+            p.rect(hx + 2, y, 3, 1, fur);
+        });
+        [5, 9].forEach(y => {
+            p.rect(hx + 6, y, 2, 2, '#a5d64a'); // green eyes with slit pupils
+            p.rect(hx + 7, y, 1, 2, '#111111');
+        });
+        p.rect(W - 2, 7, 1, 2, '#ff8fab'); // nose
+        // Whiskers, fanning out from the nose
+        const whisker = pattern === 'plain' && fur === '#f4f4f4' ? '#9a9a9a' : '#f4f4f4';
+        [[6, -1], [9, 1]].forEach(([y, out]) => {
+            p.rect(W - 3, y, 1, 1, whisker);
+            p.rect(W - 2, y + out, 1, 1, whisker);
+            p.rect(W - 1, y + out * 2, 1, 1, whisker);
+        });
+    }
+
+    const PIG = '#ffb3c6', PIG_DARK = '#d9708f', SNOUT = '#ff8fab';
+
+    // A tractor in the piece's color, pulling a wagon with a piglet in it for every other square
+    function drawPiggies(p, len, color) {
+        for (let i = 0; i < len - 1; i++) {
+            const x = i * ART;
+            [3, 10].forEach(wx => {
+                p.rect(x + wx, 1, 3, 2, TIRE);
+                p.rect(x + wx, 13, 3, 2, TIRE);
+            });
+            p.rect(x + 1, 2, 14, 12, '#6b4a2b');
+            p.rect(x + 2, 3, 12, 10, '#c29b5f');
+            for (let px = x + 5; px < x + 14; px += 4) {
+                p.rect(px, 3, 1, 10, '#a77f45'); // planks
+            }
+            p.rect(x + 3, 10, 3, 2, '#7a5532'); // a splash of mud
+            p.rect(x + 15, 7, 1, 2, '#555555'); // hitch
+
+            // The piglet, nose to the front, with a curly tail
+            p.ellipse(x + 7, 8, 4.4, 3.5, PIG_DARK);
+            p.ellipse(x + 7, 8, 3.8, 2.9, PIG);
+            p.rect(x + 2, 7, 1, 1, PIG_DARK);
+            p.rect(x + 1, 8, 1, 1, PIG_DARK);
+            p.ellipse(x + 11.5, 8, 2.8, 2.8, PIG_DARK);
+            p.ellipse(x + 11.5, 8, 2.2, 2.2, PIG);
+            p.rect(x + 10, 4, 2, 2, PIG_DARK); // ears
+            p.rect(x + 10, 10, 2, 2, PIG_DARK);
+            p.rect(x + 13, 7, 2, 2, SNOUT);
+            p.rect(x + 14, 7, 1, 1, '#c2185b');
+            p.rect(x + 14, 8, 1, 1, '#c2185b');
+            p.rect(x + 11, 6, 1, 1, '#1b1b1b');
+            p.rect(x + 11, 9, 1, 1, '#1b1b1b');
+        }
+
+        // The tractor: big back wheels, little front wheels, a seat and a long hood
+        const x = (len - 1) * ART;
+        const dark = shade(color, -70), light = shade(color, 50);
+        p.rect(x, 7, 1, 2, '#555555');
+        p.rect(x + 1, 0, 6, 4, TIRE);
+        p.rect(x + 1, 12, 6, 4, TIRE);
+        [2, 4, 6].forEach(tx => {
+            p.rect(x + tx, 0, 1, 4, '#4a4a4a'); // treads
+            p.rect(x + tx, 12, 1, 4, '#4a4a4a');
+        });
+        p.rect(x + 11, 2, 3, 2, TIRE);
+        p.rect(x + 11, 12, 3, 2, TIRE);
+        p.rect(x + 1, 4, 14, 8, dark);
+        p.rect(x + 2, 5, 12, 6, color);
+        p.rect(x + 8, 5, 6, 1, light);
+        p.rect(x + 3, 6, 3, 4, '#2b2b2b'); // seat
+        p.rect(x + 6, 7, 1, 2, '#1b1b1b'); // steering wheel
+        p.rect(x + 10, 7, 2, 2, '#4a4a4a'); // exhaust pipe
+        p.rect(x + 14, 5, 1, 2, HEADLIGHT);
+        p.rect(x + 14, 9, 1, 2, HEADLIGHT);
+    }
+
+    // A tour bus in the piece's color, covered in stars and music notes
+    function drawTourBus(p, len, color) {
+        const W = len * ART;
+        const dark = shade(color, -80), light = shade(color, 50);
+        [5, W - 10].forEach(x => {
+            p.rect(x, 1, 5, 2, TIRE);
+            p.rect(x, 13, 5, 2, TIRE);
+        });
+        p.rect(1, 2, W - 2, 12, dark);
+        p.rect(2, 3, W - 4, 10, color);
+        p.rect(2, 3, W - 4, 1, light);
+        p.rect(2, 12, W - 4, 1, '#ffffff'); // a shiny stripe down each side
+        p.rect(2, 3, W - 4, 1, '#ffffff');
+
+        // Decorations along the roof: a star, then a note, then a star...
+        for (let x = 4, i = 0; x + 5 < W - 11; x += 7, i++) {
+            if (i % 2 === 0) {
+                p.rect(x + 2, 5, 1, 5, '#ffd23f');
+                p.rect(x, 7, 5, 1, '#ffd23f');
+                p.rect(x + 1, 6, 3, 3, '#ffd23f');
+                p.rect(x + 2, 7, 1, 1, '#ffffff');
+            } else {
+                p.rect(x + 3, 5, 1, 4, '#ffffff'); // a music note
+                p.rect(x + 3, 5, 2, 1, '#ffffff');
+                p.rect(x + 1, 8, 3, 2, '#ffffff');
+            }
+        }
+
+        p.rect(W - 11, 4, 3, 8, GLASS);
+        p.rect(W - 10, 5, 1, 2, '#ffffff');
+        [[1, 2], [W - 2, 2], [1, 13], [W - 2, 13]].forEach(([x, y]) => p.clear(x, y));
+        p.rect(W - 3, 3, 2, 2, HEADLIGHT);
+        p.rect(W - 3, 11, 2, 2, HEADLIGHT);
+        p.rect(1, 3, 2, 2, '#ff4fd8'); // pink taillights
+        p.rect(1, 11, 2, 2, '#ff4fd8');
+    }
+
+    // A round, soft body with a fluffy, scalloped edge, two little paws reaching forward and a
+    // few strands of lighter fur
+    function fuzzyBall(p, cx, cy, r, fur, dark, light) {
+        const pawX = Math.round(cx + r * 0.35);
+        p.ellipse(pawX + 0.5, cy - r + 0.2, 1.6, 1.4, dark);
+        p.ellipse(pawX + 0.5, cy + r - 0.2, 1.6, 1.4, dark);
+        p.ellipse(cx, cy, r + 0.6, r + 0.6, dark);
+        // Clumps of fur around the edge, so the outline is soft and lumpy instead of perfectly round
+        for (let a = 0; a < 10; a++) {
+            const angle = (a + 0.5) / 10 * Math.PI * 2;
+            p.ellipse(cx + Math.cos(angle) * (r - 0.4), cy + Math.sin(angle) * (r - 0.4), 1.5, 1.5, dark);
+        }
+        p.ellipse(cx, cy, r - 0.3, r - 0.3, fur);
+        for (let a = 0; a < 10; a++) {
+            const angle = (a + 0.5) / 10 * Math.PI * 2;
+            p.ellipse(cx + Math.cos(angle) * (r - 0.9), cy + Math.sin(angle) * (r - 0.9), 1.1, 1.1, fur);
+        }
+        [[-0.55, -0.4], [-0.15, -0.6], [-0.6, 0.2], [-0.2, 0.5]].forEach(([fx, fy]) => {
+            p.rect(Math.round(cx + fx * r), Math.round(cy + fy * r), 1, 2, light);
+        });
+    }
+
+    // One big eye, looking straight ahead (the babies' are smaller and plainer)
+    function fuzzEye(p, x, big) {
+        const r = big ? 3.5 : 2.5;
+        p.ellipse(x + 9.5, 8, r, r, '#1b1b1b');
+        p.ellipse(x + 9.5, 8, r - 0.7, r - 0.7, '#ffffff');
+        p.rect(x + 9, 7, 2, 2, '#1b1b1b');
+        if (big) {
+            p.rect(x + 9, 6, 2, 1, '#1b1b1b');
+            p.rect(x + 9, 9, 2, 1, '#1b1b1b');
+            p.rect(x + 8, 7, 1, 2, '#1b1b1b');
+            p.rect(x + 9, 7, 1, 1, '#ffffff');
+        }
+    }
+
+    // Fuzzballs: original round, shaggy monsters, each with one big eye and one buck tooth.
+    // A big one with little horns leads, and baby fuzzballs follow along behind.
+    function drawFuzzballs(p, len, color) {
+        const dark = shade(color, -75), light = shade(color, 55);
+
+        for (let i = 0; i < len - 1; i++) {
+            const x = i * ART;
+            fuzzyBall(p, x + 8, 8, 4.4, color, dark, light);
+            fuzzEye(p, x, false);
+        }
+
+        const x = (len - 1) * ART;
+        // Two little round horns
+        p.rect(x + 9, 1, 2, 2, '#f5e6c8');
+        p.rect(x + 9, 13, 2, 2, '#f5e6c8');
+        fuzzyBall(p, x + 7.5, 8, 5.6, color, dark, light);
+        fuzzEye(p, x, true);
+        // A smile with one buck tooth
+        p.rect(x + 13, 6, 1, 4, dark);
+        p.rect(x + 12, 5, 1, 1, dark);
+        p.rect(x + 12, 10, 1, 1, dark);
+        p.rect(x + 13, 7, 1, 2, '#ffffff');
+    }
+
+    const DRAW = {
+        cars: drawCar, trains: drawTrain, ducks: drawDucks, carts: drawCarts,
+        dragons: drawDragon, kitties: drawKitty, piggies: drawPiggies, popstars: drawTourBus,
+        fuzzballs: drawFuzzballs,
+    };
 
     // Draw a piece's sprite into a canvas turned to face its direction
     function spriteFor(piece, ride) {
@@ -669,7 +1079,7 @@
             ctx.translate(0, W);
             ctx.rotate(-Math.PI / 2);
         }
-        DRAW[ride](painter(ctx), piece.len, piece.color);
+        DRAW[ride](painter(ctx), piece.len, piece.color, piece.colorName);
         return canvas;
     }
 
@@ -742,6 +1152,20 @@
                 } else if (ride === 'ducks') {
                     tone({ freq: 880, to: 400, dur: 0.11 });
                     tone({ freq: 860, to: 380, dur: 0.11, delay: 0.15 });
+                } else if (ride === 'dragons') {
+                    noise({ dur: 0.25, vol: 0.08 }); // whoosh
+                    tone({ freq: 140, to: 70, dur: 0.3, type: 'sawtooth', vol: 0.08 }); // rawr
+                } else if (ride === 'kitties') {
+                    tone({ freq: 520, to: 880, dur: 0.12, type: 'triangle', vol: 0.12 }); // mee-ow
+                    tone({ freq: 880, to: 440, dur: 0.22, type: 'triangle', vol: 0.12, delay: 0.12 });
+                } else if (ride === 'piggies') {
+                    tone({ freq: 260, to: 170, dur: 0.12, type: 'sawtooth', vol: 0.07 }); // oink oink
+                    tone({ freq: 250, to: 160, dur: 0.14, type: 'sawtooth', vol: 0.07, delay: 0.16 });
+                } else if (ride === 'fuzzballs') {
+                    tone({ freq: 220, to: 660, dur: 0.12, type: 'triangle', vol: 0.12 }); // boing boing
+                    tone({ freq: 260, to: 780, dur: 0.12, type: 'triangle', vol: 0.12, delay: 0.14 });
+                } else if (ride === 'popstars') {
+                    [523, 659, 784, 1047].forEach((freq, i) => tone({ freq, dur: 0.08, vol: 0.06, delay: i * 0.06 }));
                 } else {
                     noise({ dur: 0.06 });
                     noise({ dur: 0.06, delay: 0.12 });
@@ -768,6 +1192,11 @@
             },
             click() {
                 tone({ freq: 660, dur: 0.05, vol: 0.05 });
+            },
+            // A coin pinging into the pile
+            coin(delay = 0) {
+                tone({ freq: 988, dur: 0.07, vol: 0.06, delay });
+                tone({ freq: 1319, dur: 0.18, vol: 0.06, delay: delay + 0.07 });
             },
         };
     })();
@@ -810,7 +1239,7 @@
             <div class="mw-status">
                 <span class="mw-level"></span>
                 <span class="mw-hearts" role="img"></span>
-                <span class="mw-trophies"></span>
+                <span class="mw-coins"></span>
             </div>
             <div class="mw-buttons">
                 <button type="button" class="mw-button" data-action="hint">Hint</button>
@@ -831,7 +1260,7 @@
         title: root.querySelector('.mw-title'),
         level: root.querySelector('.mw-level'),
         hearts: root.querySelector('.mw-hearts'),
-        trophies: root.querySelector('.mw-trophies'),
+        coins: root.querySelector('.mw-coins'),
         sound: root.querySelector('.mw-sound'),
         stage: root.querySelector('.mw-stage'),
         board: root.querySelector('.mw-board'),
@@ -841,7 +1270,7 @@
     };
 
     // Write text into an element, with any numbers in the blocky title font. In the reading
-    // font a 2 looks like an 8 and a 5 like an S, which is no good for a level or trophy count.
+    // font a 2 looks like an 8 and a 5 like an S, which is no good for a level or coin count.
     function write(node, text) {
         node.replaceChildren(...String(text).split(/(\d+)/).map((part, i) => {
             if (i % 2 === 0) {
@@ -870,23 +1299,48 @@
         '....K....',
     ];
 
-    function heartSvg(full) {
-        const colors = full ? { K: '#1b1b1b', R: '#e53935', W: '#ffffff' } : { K: '#1b1b1b', R: '#7a6656', W: '#7a6656' };
+    // A gold coin: K is the outline, Y the gold, W a shine and D the stamped mark
+    const COIN = [
+        '..KKKK..',
+        '.KYYYYK.',
+        'KYWYDYYK',
+        'KWYYDYYK',
+        'KYYYDYYK',
+        'KYYYDYDK',
+        '.KYYYDK.',
+        '..KKKK..',
+    ];
+
+    function pixelSvg(rows, colors, className) {
         let pixels = '';
-        HEART.forEach((row, y) => [...row].forEach((ch, x) => {
+        rows.forEach((row, y) => [...row].forEach((ch, x) => {
             if (colors[ch]) {
                 pixels += `<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[ch]}"/>`;
             }
         }));
-        return `<svg class="mw-heart" viewBox="0 0 9 8" shape-rendering="crispEdges" aria-hidden="true">${pixels}</svg>`;
+        return `<svg class="${className}" viewBox="0 0 ${rows[0].length} ${rows.length}" shape-rendering="crispEdges" aria-hidden="true">${pixels}</svg>`;
+    }
+
+    function heartSvg(full) {
+        const colors = full ? { K: '#1b1b1b', R: '#e53935', W: '#ffffff' } : { K: '#1b1b1b', R: '#7a6656', W: '#7a6656' };
+        return pixelSvg(HEART, colors, 'mw-heart');
+    }
+
+    function coinSvg() {
+        return pixelSvg(COIN, { K: '#5c3d00', Y: '#ffc928', W: '#fff4b0', D: '#d19a00' }, 'mw-coin');
+    }
+
+    // "🪙 150", with the number in the blocky font
+    function coinsHtml(count) {
+        return `<span class="mw-coin-count">${coinSvg()}<span class="mw-num">${count}</span></span>`;
     }
 
     function updateBar() {
         write(el.level, 'Level ' + state.level);
         el.hearts.innerHTML = Array.from({ length: MAX_HEARTS }, (_, i) => heartSvg(i < state.hearts)).join('');
         el.hearts.setAttribute('aria-label', state.hearts + (state.hearts === 1 ? ' heart' : ' hearts') + ' left');
-        const trophies = Math.floor((state.level - 1) / 5);
-        write(el.trophies, trophies ? '🏆 × ' + trophies : '');
+        el.coins.innerHTML = coinsHtml(state.coins);
+        el.coins.setAttribute('aria-label', state.coins + (state.coins === 1 ? ' coin' : ' coins'));
         el.sound.textContent = state.muted ? '🔇 Sound off' : '🔊 Sound on';
         el.sound.setAttribute('aria-pressed', String(!state.muted));
     }
@@ -1127,16 +1581,58 @@
         sound.win();
         confetti();
 
-        const trophy = finished % 5 === 0;
-        const trophies = Math.floor(finished / 5);
+        // Coins: one for the level, one more for no bonks and a bonus every 5 levels
+        const earned = [['Level done', COINS_PER_LEVEL]];
+        if (state.bonks === 0) {
+            earned.push(['Perfect! Not a single bonk!', COINS_FOR_PERFECT]);
+        }
+        if (finished % 5 === 0) {
+            earned.push([`Level ${finished} bonus!`, COINS_EVERY_FIFTH]);
+        }
+        const total = earned.reduce((sum, [, coins]) => sum + coins, 0);
+        state.coins += total;
+        saveProgress();
+        updateBar();
+        earned.forEach((_, i) => sound.coin(0.7 + i * 0.25));
+
         showPanel(`
             <h2 id="mw-panel-title" class="mw-panel-title">Level ${finished} complete!</h2>
             <p class="mw-stars" aria-label="3 stars">★ ★ ★</p>
             <p class="mw-big">${escapeHtml(cheer())}</p>
-            ${state.bonks === 0 ? '<p class="mw-trophy">Perfect! Not a single bonk!</p>' : ''}
-            ${trophy ? `<p class="mw-trophy">🏆 You earned a trophy! That makes <span class="mw-num">${trophies}</span>.</p>` : ''}
+            <ul class="mw-earned">
+                ${earned.map(([why, coins]) => `<li><span>${numbers(why)}</span><span>+${coinsHtml(coins)}</span></li>`).join('')}
+            </ul>
+            <p class="mw-coin-total">You have ${coinsHtml(state.coins)} coins</p>
+            ${nextGoalHtml()}
             <button type="button" class="mw-button mw-go" data-action="next">Next level</button>
         `);
+    }
+
+    // What he's saving up for: the cheapest ride in the shop he doesn't have yet
+    function nextGoal() {
+        return Object.keys(RIDES)
+            .filter(key => isForSale(key) && !state.owned.includes(key))
+            .sort((a, b) => RIDES[a].price - RIDES[b].price)[0];
+    }
+
+    function progressHtml(key) {
+        const price = RIDES[key].price;
+        const percent = Math.min(100, Math.floor(state.coins / price * 100));
+        return `<span class="mw-progress" role="img" aria-label="${Math.min(state.coins, price)} of ${price} coins">` +
+            `<span class="mw-progress-fill" style="width: ${percent}%"></span></span>`;
+    }
+
+    function nextGoalHtml() {
+        const key = nextGoal();
+        if (!key) {
+            return '';
+        }
+        const ride = RIDES[key];
+        const left = ride.price - state.coins;
+        const text = left > 0
+            ? `${left} more for ${ride.label}!`
+            : `You can buy ${ride.label} in the shop!`;
+        return `<div class="mw-goal"><p>${numbers(text)}</p>${progressHtml(key)}</div>`;
     }
 
     function confetti() {
@@ -1345,6 +1841,8 @@
                 'Pick the level the math starts at. It moves up after 5 right answers in a row, and back down after 2 tough ones.')}</p>
             <div class="mw-math-levels">${options}</div>
             <p class="mw-note">${numbers('Math problems solved so far: ' + state.math.solved)}</p>
+            <p class="mw-note">${numbers(`Coins: ${state.coins}. Each level earns ${COINS_PER_LEVEL}, plus ${COINS_FOR_PERFECT} with no bonks ` +
+                `and ${COINS_EVERY_FIFTH} more every 5th level. They buy rides in the shop on the Change ride panel.`)}</p>
             <button type="button" class="mw-button mw-go" data-action="close">Done</button>
         `, 'grown-ups');
     }
@@ -1379,7 +1877,32 @@
             </button>`;
     }
 
+    // A ride in the shop: its price, and how close he is to it
+    function shopCard(key) {
+        const ride = RIDES[key];
+        return `
+            <button type="button" class="mw-ride mw-ride--shop${state.coins >= ride.price ? ' mw-ride--affordable' : ''}" data-shop="${key}">
+                <span class="mw-ride-art" data-preview="${key}"></span>
+                <span class="mw-ride-name">${ride.label}</span>
+                <span class="mw-price">${coinsHtml(ride.price)}</span>
+                ${progressHtml(key)}
+            </button>`;
+    }
+
+    // Draw each ride's picture into the cards on the panel
+    function fillPreviews() {
+        el.panel.querySelectorAll('[data-preview]').forEach(slot => {
+            // A plain car is the most car-like car; the others look best three squares long
+            const piece = { dir: 'right', len: slot.dataset.preview === 'cars' ? 2 : 3, color: '#e53935', colorName: 'red' };
+            slot.append(spriteFor(piece, slot.dataset.preview));
+        });
+    }
+
     function showRidePicker(firstTime) {
+        state.pickerFirstTime = firstTime;
+        const keys = Object.keys(RIDES);
+        const mine = keys.filter(canRideNow);
+        const forSale = keys.filter(key => !canRideNow(key));
         showPanel(`
             <h2 id="mw-panel-title" class="mw-panel-title">${firstTime ? 'Make Way!' : 'Pick your ride'}</h2>
             ${firstTime ? '<p class="mw-big">Help everyone get out of the traffic jam!</p>' : ''}
@@ -1388,17 +1911,87 @@
                 <input type="text" maxlength="16" autocomplete="off" value="${escapeHtml(state.name)}">
             </label>
             <p class="mw-pick">Pick your ride:</p>
-            <div class="mw-rides">${Object.keys(RIDES).map(rideCard).join('')}</div>
+            <div class="mw-rides">${mine.map(rideCard).join('')}</div>
+            ${forSale.length ? `
+                <h3 class="mw-shop-title">Shop</h3>
+                <p class="mw-shop-coins">You have ${coinsHtml(state.coins)} coins. Every level earns more!</p>
+                <div class="mw-rides">${forSale.map(shopCard).join('')}</div>` : ''}
             <button type="button" class="mw-button mw-go" data-action="start">Let's go!</button>
         `);
-        el.panel.querySelectorAll('[data-preview]').forEach(slot => {
-            // A plain car is the most car-like car; the others look best three squares long
-            const piece = { dir: 'right', len: slot.dataset.preview === 'cars' ? 2 : 3, color: '#e53935' };
-            slot.append(spriteFor(piece, slot.dataset.preview));
-        });
+        fillPreviews();
+    }
+
+    function canRideNow(key) {
+        return !isForSale(key) || state.owned.includes(key);
+    }
+
+    // A ride from the shop, up close: buy it, or see how many more coins it needs
+    function showShopItem(key) {
+        const ride = RIDES[key];
+        const left = ride.price - state.coins;
+        showPanel(`
+            <h2 id="mw-panel-title" class="mw-panel-title">${ride.place}</h2>
+            <div class="mw-shop-art" data-preview="${key}"></div>
+            <p class="mw-big">${escapeHtml(ride.about)}</p>
+            <p class="mw-shop-price">Costs ${coinsHtml(ride.price)} coins. You have ${coinsHtml(state.coins)}.</p>
+            ${left > 0 ? `
+                ${progressHtml(key)}
+                <p class="mw-big">${numbers(withName(`Just ${left} more coins to go{, name}! Keep clearing levels to earn them.`))}</p>
+                <button type="button" class="mw-button mw-go" data-action="shop-back">OK</button>` : `
+                <div class="mw-shop-buttons">
+                    <button type="button" class="mw-button" data-action="shop-back">Not now</button>
+                    <button type="button" class="mw-button mw-go" data-action="buy" data-key="${key}">Buy it!</button>
+                </div>`}
+        `);
+        const slot = el.panel.querySelector('[data-preview]');
+        slot.append(spriteFor({ dir: 'right', len: 4, color: '#1e88e5', colorName: 'blue' }, key));
+    }
+
+    function buy(key) {
+        const ride = RIDES[key];
+        if (state.owned.includes(key) || state.coins < ride.price) {
+            return;
+        }
+        state.coins -= ride.price;
+        state.owned.push(key);
+        state.ride = key;
+        saveProgress();
+        updateBar();
+        sound.win();
+        confetti();
+        showPanel(`
+            <h2 id="mw-panel-title" class="mw-panel-title">It's yours!</h2>
+            <div class="mw-shop-art" data-preview="${key}"></div>
+            <p class="mw-big">${escapeHtml(withName(`Welcome to ${ride.place}{, name}!`))}</p>
+            <p class="mw-note">${numbers(`You have ${state.coins} coins left. You can switch rides any time with Change ride.`)}</p>
+            <button type="button" class="mw-button mw-go" data-action="play">Let's play!</button>
+        `);
+        const slot = el.panel.querySelector('[data-preview]');
+        slot.append(spriteFor({ dir: 'right', len: 4, color: '#e53935', colorName: 'red' }, key));
+    }
+
+    // Back to the game after picking or buying a ride
+    function play() {
+        hidePanel();
+        redrawRides();
+        if (state.level === 1 && !state.driven) {
+            say(RIDES[state.ride].tutorial);
+        } else {
+            say(withName(RIDES[state.ride].resume + ' Keep going.'));
+        }
+        restartHintTimer();
     }
 
     el.panel.addEventListener('click', ev => {
+        const shopItem = ev.target.closest('[data-shop]');
+        if (shopItem) {
+            sound.wake();
+            sound.click();
+            keepTypedName();
+            showShopItem(shopItem.dataset.shop);
+            return;
+        }
+
         const ride = ev.target.closest('[data-ride]');
         if (ride) {
             sound.click();
@@ -1431,18 +2024,18 @@
         }
         sound.click();
         if (action.dataset.action === 'start') {
-            const input = el.panel.querySelector('input');
-            state.name = input.value.trim().slice(0, 16);
+            keepTypedName();
             state.started = true;
             saveProgress();
-            hidePanel();
-            redrawRides();
-            if (state.level === 1 && !state.driven) {
-                say(RIDES[state.ride].tutorial);
-            } else {
-                say(withName(RIDES[state.ride].resume + ' Keep going.'));
-            }
-            restartHintTimer();
+            play();
+        } else if (action.dataset.action === 'shop-back') {
+            showRidePicker(state.pickerFirstTime);
+        } else if (action.dataset.action === 'buy') {
+            buy(action.dataset.key);
+        } else if (action.dataset.action === 'play') {
+            state.started = true;
+            saveProgress();
+            play();
         } else if (action.dataset.action === 'next') {
             hidePanel();
             startLevel();
@@ -1455,6 +2048,14 @@
             restartHintTimer();
         }
     });
+
+    // Hold on to the name typed on the ride picker, even when he pops over to the shop first
+    function keepTypedName() {
+        const input = el.panel.querySelector('.mw-name input');
+        if (input) {
+            state.name = input.value.trim().slice(0, 16);
+        }
+    }
 
     // A keyboard works on the math break too: numbers, Backspace and Enter
     document.addEventListener('keydown', ev => {
@@ -1514,6 +2115,12 @@
     // For poking at in the browser console (and the tests): build a board without playing it
     window.MakeWay = {
         levelConfig, generateLevel, solvable, blockerOf, emptyGrid, occupy, spriteFor, RIDES,
-        mathProblem, MATH_LEVELS, showMathPanel, showGrownUps,
+        mathProblem, MATH_LEVELS, showMathPanel, showGrownUps, showRidePicker, showShopItem,
+        // Testing only: set the coins, e.g. MakeWay.coins(500)
+        coins(count) {
+            state.coins = count;
+            saveProgress();
+            updateBar();
+        },
     };
 })();

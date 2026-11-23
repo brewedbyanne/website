@@ -106,6 +106,24 @@ body {
     height: 24px;
 }
 
+/* A pixel coin next to a number, in the bar and on the panels */
+.mw-coin-count {
+    display: inline-flex;
+    align-items: center;
+    gap: .3em;
+    white-space: nowrap;
+}
+
+.mw-coin {
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+.mw-coin-count .mw-num {
+    vertical-align: 0;
+}
+
 /* ---------- Buttons, like stone blocks ---------- */
 
 .mw-button {
@@ -187,9 +205,9 @@ body {
     height: calc(var(--rows) * var(--cell));
     /* Framed like a chunk of ground: grass, then dirt, then a dark edge and a shadow */
     box-shadow:
-        0 0 0 6px var(--grass),
-        0 0 0 14px var(--dirt),
-        0 0 0 18px var(--dirt-dark),
+        0 0 0 6px var(--frame-top, var(--grass)),
+        0 0 0 14px var(--frame-middle, var(--dirt)),
+        0 0 0 18px var(--frame-edge, var(--dirt-dark)),
         0 14px 0 18px rgba(0, 0, 0, .18);
     /* Faint lines marking the squares */
     background-image:
@@ -212,6 +230,83 @@ body {
 
 .mw-board--stone {
     background-color: #8d8d8d;
+}
+
+/*
+ * The shop's places. Each lists the faint square lines first (as on every board) and then its
+ * own decorations, so background-size needs one size per layer.
+ */
+.mw-board--lava {
+    --frame-top: #ff7a1a;
+    --frame-middle: #3b2a2a;
+    --frame-edge: #140c0c;
+    background-color: #3a2828;
+    background-image:
+        linear-gradient(to right, rgba(255, 160, 80, .12) 2px, transparent 2px),
+        linear-gradient(rgba(255, 160, 80, .12) 2px, transparent 2px),
+        radial-gradient(circle at 18% 28%, rgba(255, 110, 20, .45), transparent 16%),
+        radial-gradient(circle at 78% 72%, rgba(255, 90, 10, .4), transparent 20%),
+        radial-gradient(circle at 62% 14%, rgba(255, 170, 40, .3), transparent 11%),
+        radial-gradient(circle at 30% 85%, rgba(255, 120, 30, .3), transparent 13%);
+    background-size: var(--cell) var(--cell), var(--cell) var(--cell), 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+}
+
+.mw-board--garden {
+    --frame-middle: #f4f1e8; /* a white picket fence */
+    --frame-edge: #9c8f75;
+    background-color: #7cc35a;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, .12) 2px, transparent 2px),
+        linear-gradient(rgba(255, 255, 255, .12) 2px, transparent 2px),
+        radial-gradient(circle, #ffe066 2px, transparent 3px),
+        radial-gradient(circle, #ffffff 3px, transparent 4px),
+        radial-gradient(circle, #ff8fab 3px, transparent 4px);
+    background-size: var(--cell) var(--cell), var(--cell) var(--cell), 97px 89px, 97px 89px, 131px 113px;
+    background-position: 0 0, 0 0, 31px 23px, 31px 23px, 70px 60px;
+}
+
+.mw-board--farm {
+    --frame-middle: #6b4a2b;
+    --frame-edge: #3d2a17;
+    background-color: #8a6a3d;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, .1) 2px, transparent 2px),
+        linear-gradient(rgba(255, 255, 255, .1) 2px, transparent 2px),
+        radial-gradient(ellipse at 25% 35%, #6a4a26 0 9%, transparent 10%),
+        radial-gradient(ellipse at 70% 65%, #6a4a26 0 12%, transparent 13%),
+        radial-gradient(ellipse at 80% 20%, #6a4a26 0 6%, transparent 7%),
+        repeating-linear-gradient(transparent 0 10px, rgba(0, 0, 0, .06) 10px 14px);
+    background-size: var(--cell) var(--cell), var(--cell) var(--cell), 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+}
+
+.mw-board--cave {
+    --frame-top: #b48cff;
+    --frame-middle: #4b3b63;
+    --frame-edge: #1f1730;
+    background-color: #3d2f52;
+    background-image:
+        linear-gradient(to right, rgba(220, 200, 255, .08) 2px, transparent 2px),
+        linear-gradient(rgba(220, 200, 255, .08) 2px, transparent 2px),
+        radial-gradient(circle, rgba(120, 255, 200, .8) 2px, transparent 3px),
+        radial-gradient(circle, rgba(255, 170, 240, .7) 2px, transparent 3px),
+        radial-gradient(ellipse at 30% 30%, rgba(180, 140, 255, .25), transparent 35%),
+        radial-gradient(ellipse at 75% 75%, rgba(120, 255, 200, .15), transparent 30%);
+    background-size: var(--cell) var(--cell), var(--cell) var(--cell), 89px 101px, 137px 113px, 100% 100%, 100% 100%;
+    background-position: 0 0, 0 0, 20px 40px, 70px 10px, 0 0, 0 0;
+}
+
+.mw-board--stage {
+    --frame-top: #ffd23f;
+    --frame-middle: #6a2c91;
+    --frame-edge: #2a1240;
+    background-color: #241339;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, .08) 2px, transparent 2px),
+        linear-gradient(rgba(255, 255, 255, .08) 2px, transparent 2px),
+        radial-gradient(circle, rgba(255, 255, 255, .7) 1px, transparent 2px),
+        radial-gradient(ellipse at 25% 30%, rgba(255, 79, 216, .35), transparent 30%),
+        radial-gradient(ellipse at 75% 70%, rgba(92, 225, 230, .3), transparent 30%);
+    background-size: var(--cell) var(--cell), var(--cell) var(--cell), 53px 47px, 100% 100%, 100% 100%;
 }
 
 .mw-piece {
@@ -340,9 +435,67 @@ body {
     text-shadow: 4px 4px 0 var(--dirt-dark);
 }
 
-.mw-trophy {
-    margin: 0 0 1.25rem;
-    font: 700 26px var(--read);
+/* Coins earned this level, one line per reason */
+.mw-earned {
+    width: min(460px, 100%);
+    margin: 0 auto 1rem;
+    padding: 0;
+    list-style: none;
+    font: 700 22px/1.3 var(--read);
+}
+
+.mw-earned li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .3rem 0;
+    border-bottom: 3px dashed var(--plank-dark);
+    text-align: left;
+}
+
+.mw-earned li > span:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: .2em;
+}
+
+.mw-coin-total,
+.mw-shop-coins,
+.mw-shop-price {
+    margin: 0 0 1rem;
+    font: 700 24px var(--read);
+}
+
+.mw-coin-total .mw-coin-count,
+.mw-shop-coins .mw-coin-count,
+.mw-shop-price .mw-coin-count {
+    vertical-align: -.1em;
+}
+
+.mw-goal {
+    width: min(460px, 100%);
+    margin: 0 auto 1.25rem;
+    font: 700 20px var(--read);
+}
+
+.mw-goal p {
+    margin: 0 0 .4rem;
+}
+
+/* How close he is to a ride in the shop */
+.mw-progress {
+    display: block;
+    width: 100%;
+    height: 14px;
+    border: 3px solid #000;
+    background-color: var(--dirt-dark);
+}
+
+.mw-progress-fill {
+    display: block;
+    height: 100%;
+    background-color: #ffc928;
+    box-shadow: inset 0 -3px 0 #d19a00;
 }
 
 .mw-name {
@@ -416,6 +569,69 @@ body {
     height: 48px;
     max-width: 100%;
     image-rendering: pixelated;
+}
+
+/* ---------- The shop ---------- */
+
+.mw-shop-title {
+    margin: 1.75rem 0 .5rem;
+    color: #fff;
+    font: 22px/1.4 var(--pixel);
+    text-shadow: 3px 3px 0 var(--dirt-dark);
+}
+
+/* Rides for sale: dark until he can afford them */
+.mw-ride--shop {
+    background-color: var(--stone-dark);
+    box-shadow: inset 3px 3px 0 var(--stone), inset -3px -4px 0 #2f2f2f;
+}
+
+.mw-ride--shop .mw-ride-art {
+    filter: brightness(.55) saturate(.6);
+}
+
+.mw-ride--affordable {
+    outline: 4px dashed #ffc928;
+    outline-offset: 3px;
+}
+
+.mw-ride--affordable .mw-ride-art {
+    filter: none;
+}
+
+.mw-price {
+    color: #ffc928;
+    font-size: 14px;
+}
+
+.mw-ride--shop .mw-progress {
+    height: 10px;
+    border-width: 2px;
+}
+
+/* A ride up close, before buying it */
+.mw-shop-art {
+    display: grid;
+    place-items: center;
+    margin: 0 0 1rem;
+}
+
+.mw-shop-art canvas {
+    width: min(384px, 90%);
+    height: auto;
+    image-rendering: pixelated;
+}
+
+.mw-panel > .mw-progress {
+    width: min(460px, 100%);
+    margin: 0 auto;
+}
+
+.mw-shop-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
 }
 
 /* ---------- The math break ---------- */
