@@ -94,6 +94,18 @@ body {
     gap: .5rem;
 }
 
+.mw-hearts {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mw-heart {
+    display: block;
+    width: 27px;
+    height: 24px;
+}
+
 /* ---------- Buttons, like stone blocks ---------- */
 
 .mw-button {
@@ -108,8 +120,11 @@ body {
     cursor: pointer;
 }
 
-.mw-button:hover {
-    background-color: #8a96cf;
+/* Only with a mouse: on an iPad, a tapped button would keep this color */
+@media (hover: hover) {
+    .mw-button:hover {
+        background-color: #8a96cf;
+    }
 }
 
 .mw-button:focus-visible {
@@ -146,8 +161,10 @@ body {
             100% 57.14%, 75% 57.14%, 75% 71.43%, 50% 71.43%, 50% 85.71%, 25% 85.71%, 25% 100%, 0 100%);
 }
 
-.mw-go:hover {
-    background-color: #6cc147;
+@media (hover: hover) {
+    .mw-go:hover {
+        background-color: #6cc147;
+    }
 }
 
 .mw-go:active {
@@ -366,25 +383,31 @@ body {
     }
 }
 
-.mw-ride {
-    display: grid;
-    justify-items: center;
-    gap: .6rem;
-    padding: .9rem .5rem .8rem;
+/* Ride cards, and the math levels on the grown-ups panel */
+.mw-ride,
+.mw-math-level {
     border: 3px solid #000;
     background-color: var(--stone);
     color: #fff;
-    font: 12px/1.3 var(--pixel);
     text-shadow: 2px 2px 0 #3a3a3a;
     box-shadow: inset 3px 3px 0 var(--stone-light), inset -3px -4px 0 var(--stone-dark);
     cursor: pointer;
 }
 
-.mw-ride--picked {
+.mw-ride--picked,
+.mw-math-level--picked {
     background-color: var(--grass);
     box-shadow: inset 3px 3px 0 var(--grass-light), inset -3px -4px 0 var(--grass-dark);
     outline: 4px solid #ffd23f;
     outline-offset: 3px;
+}
+
+.mw-ride {
+    display: grid;
+    justify-items: center;
+    gap: .6rem;
+    padding: .9rem .5rem .8rem;
+    font: 12px/1.3 var(--pixel);
 }
 
 .mw-ride-art canvas {
@@ -393,6 +416,172 @@ body {
     height: 48px;
     max-width: 100%;
     image-rendering: pixelated;
+}
+
+/* ---------- The math break ---------- */
+
+.mw-caption {
+    margin: 0 0 .25rem;
+    font: 700 22px var(--read);
+}
+
+.mw-problem {
+    margin: .25rem 0 .9rem;
+    color: #fff;
+    font: clamp(20px, 3.6vw, 32px)/1.5 var(--pixel);
+    text-shadow: 3px 3px 0 var(--dirt-dark);
+}
+
+/* Where his answer goes, like a slot in the equation */
+.mw-answer {
+    display: inline-block;
+    min-width: 3em;
+    padding: .2em .25em .1em;
+    border: 4px solid var(--dirt-dark);
+    background-color: #fff8e8;
+    color: var(--ink);
+    text-align: center;
+    text-shadow: none;
+}
+
+.mw-answer--empty {
+    color: #b9a58a;
+}
+
+.mw-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 0 .75rem;
+}
+
+.mw-blocks[hidden] {
+    display: none;
+}
+
+/* Rows of 5, like a ten frame, so they're quick to count */
+.mw-group {
+    display: inline-grid;
+    grid-template-columns: repeat(var(--cols, 5), 28px);
+    gap: 4px;
+    padding: 6px;
+    background-color: rgba(0, 0, 0, .15);
+}
+
+.mw-block {
+    width: 28px;
+    height: 28px;
+    background-color: var(--grass);
+    box-shadow: inset 3px 3px 0 var(--grass-light), inset -3px -3px 0 var(--grass-dark);
+}
+
+.mw-block--gold {
+    background-color: #f5c542;
+    box-shadow: inset 3px 3px 0 #fff1a8, inset -3px -3px 0 #b8860b;
+}
+
+/* Taken away: faded and crossed out */
+.mw-block--gone {
+    opacity: .4;
+    background:
+        linear-gradient(45deg, transparent 42%, #000 42% 58%, transparent 58%),
+        linear-gradient(-45deg, transparent 42%, #000 42% 58%, transparent 58%),
+        var(--grass);
+}
+
+.mw-sign {
+    color: #fff;
+    font: 26px var(--pixel);
+    text-shadow: 3px 3px 0 var(--dirt-dark);
+}
+
+.mw-math-message {
+    min-height: 1.3em;
+    margin: 0 0 .75rem;
+    font: 700 24px/1.3 var(--read);
+}
+
+/* A big number pad, so the iPad keyboard never pops up */
+.mw-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 84px);
+    justify-content: center;
+    gap: 10px;
+}
+
+.mw-key {
+    min-height: 62px;
+    padding: 0;
+    font-size: 24px;
+}
+
+.mw-key--ok {
+    background-color: var(--grass);
+    font-size: 20px;
+    box-shadow: inset 3px 3px 0 var(--grass-light), inset -3px -4px 0 var(--grass-dark);
+}
+
+@media (hover: hover) {
+    .mw-key--ok:hover {
+        background-color: #6cc147;
+    }
+}
+
+.mw-key--ok:active {
+    box-shadow: inset -3px -3px 0 var(--grass-light), inset 3px 4px 0 var(--grass-dark);
+}
+
+/* Erase: a ◀ drawn like the ▶ on the go buttons */
+.mw-key--erase::before {
+    content: "";
+    display: inline-block;
+    width: .5em;
+    height: .875em;
+    background-color: currentColor;
+    clip-path: polygon(100% 0, 75% 0, 75% 14.29%, 50% 14.29%, 50% 28.57%, 25% 28.57%, 25% 42.86%, 0 42.86%,
+            0 57.14%, 25% 57.14%, 25% 71.43%, 50% 71.43%, 50% 85.71%, 75% 85.71%, 75% 100%, 100% 100%);
+}
+
+/* Short iPad screens (sideways): a slimmer pad */
+@media (max-height: 820px) {
+    .mw-key {
+        min-height: 52px;
+    }
+
+    .mw-panel-title {
+        margin-bottom: .5rem;
+    }
+}
+
+/* ---------- Grown-ups ---------- */
+
+.mw-note {
+    max-width: 36em;
+    margin: 0 auto 1rem;
+    font: 600 20px/1.35 var(--read);
+}
+
+.mw-math-levels {
+    display: grid;
+    gap: .6rem;
+    margin-bottom: 1.25rem;
+}
+
+.mw-math-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .7rem 1rem;
+    font: 700 21px var(--read);
+    text-align: left;
+}
+
+.mw-math-example {
+    font: 13px var(--pixel);
+    white-space: nowrap;
 }
 
 /* Confetti when a level is done */
@@ -419,5 +608,9 @@ body {
 
     .mw-go {
         font-size: 15px;
+    }
+
+    .mw-key {
+        font-size: 20px;
     }
 }

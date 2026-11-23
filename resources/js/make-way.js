@@ -3,8 +3,10 @@
  *
  * The board is full of cars (or trains, ducks or mine carts), each pointing one way.
  * Tap one and it drives off the board, unless something is in its way, in which case it
- * goes BONK and rolls back. Nothing is ever lost: there are no strikes and no game over.
- * Clear every ride to finish the level. Levels are generated, and grow slowly.
+ * goes BONK, rolls back and costs a heart. Running out of hearts is never a game over: the
+ * board waits while a math problem fills them back up (grown-ups set the math level by
+ * holding down the title). Clear every ride to finish the level. Levels are generated,
+ * and grow slowly.
  *
  * A puzzle like this can never get stuck: driving a ride off only frees up space, so
  * any ride with a clear road is always a good move. The generator only has to make sure
@@ -33,7 +35,10 @@
             way: 'road',
             resume: 'Start your engines{, name}!',
             board: 'road',
-            tutorial: 'Tap a car to drive it off the road. If another car is in the way, it goes BONK!',
+            tutorial: 'Tap a car to drive it off the road. If another car is in the way, it goes BONK and costs a heart!',
+            empty: 'Out of gas!',
+            refill: 'Solve this to fill up the tank:',
+            full: 'Tank\'s full! Vroom!',
             bumps: ['Beep beep! Something is in the way.', 'Honk honk! That road is blocked.', 'Bonk! Try a different car.'],
         },
         trains: {
@@ -44,7 +49,10 @@
             way: 'track',
             resume: 'All aboard{, name}!',
             board: 'grass',
-            tutorial: 'Tap a train to send it down the tracks. If something is in the way, it goes BONK!',
+            tutorial: 'Tap a train to send it down the tracks. If something is in the way, it goes BONK and costs a heart!',
+            empty: 'Out of steam!',
+            refill: 'Solve this to get the steam going:',
+            full: 'Full steam ahead!',
             bumps: ['Toot toot! Something is in the way.', 'Bonk! That track is blocked.', 'Oops! Try a different train.'],
         },
         ducks: {
@@ -55,7 +63,10 @@
             way: 'path',
             resume: 'Waddle on{, name}!',
             board: 'pond',
-            tutorial: 'Tap a mama duck to lead her ducklings away. If someone is in the way, they go BONK!',
+            tutorial: 'Tap a mama duck to lead her ducklings away. If someone is in the way, they go BONK and it costs a heart!',
+            empty: 'The ducks are tired!',
+            refill: 'Solve this to give them a snack:',
+            full: 'Yum! Back to waddling!',
             bumps: ['Quack! Someone is in the way.', 'Bonk! Those ducks are blocked.', 'Oops! Try a different duck family.'],
         },
         carts: {
@@ -66,18 +77,98 @@
             way: 'tunnel',
             resume: 'Hard hats on{, name}!',
             board: 'stone',
-            tutorial: 'Tap a mine cart to roll it out of the mine. If something is in the way, it goes BONK!',
+            tutorial: 'Tap a mine cart to roll it out of the mine. If something is in the way, it goes BONK and costs a heart!',
+            empty: 'The drill ran out of power!',
+            refill: 'Solve this to power it back up:',
+            full: 'Drill powered up!',
             bumps: ['Clunk! Something is in the way.', 'Bonk! That tunnel is blocked.', 'Oops! Try a different cart.'],
         },
     };
+
+    // ---------- Math problems (they refill the hearts) ----------
+    //
+    // Each bonk costs a heart. When they're all gone, the board waits while a math problem fills
+    // them back up, so running out is a math break rather than losing. Multiplication shows up as
+    // equal groups written as repeated adding (4 + 4 + 4), which is how first graders meet it.
+
+    const MAX_HEARTS = 3;
+
+    const MATH_LEVELS = [
+        { name: 'Adding to 10', example: '3 + 4' },
+        { name: 'Adding and subtracting to 10', example: '9 - 3' },
+        { name: 'Adding to 20', example: '8 + 7' },
+        { name: 'Adding and subtracting to 20', example: '15 - 6' },
+        { name: 'To 20, plus equal groups', example: '4 + 4 + 4' },
+        { name: 'Bigger numbers and bigger groups', example: '34 + 5' },
+    ];
+
+    // Where a first grader who's ahead would start. Grown-ups can change it.
+    const DEFAULT_MATH_LEVEL = 4;
+
+    // The two numbers make a sum between low and high
+    function adding(low, high) {
+        const sum = randomInt(low, high);
+        const a = randomInt(1, sum - 1);
+        return { text: a + ' + ' + (sum - a), answer: sum, blocks: { add: [a, sum - a] } };
+    }
+
+    // Start from a number between low and high and take some away (never all of it)
+    function subtracting(low, high) {
+        const a = randomInt(low, high);
+        const b = randomInt(1, a - 1);
+        return { text: a + ' - ' + b, answer: a - b, blocks: { take: [a, b] } };
+    }
+
+    function equalGroups(mostGroups, biggestGroup) {
+        const count = randomInt(2, mostGroups), size = randomInt(2, biggestGroup);
+        return {
+            text: Array(count).fill(size).join(' + '),
+            caption: count + ' groups of ' + size,
+            answer: count * size,
+            blocks: { groups: [count, size] },
+        };
+    }
+
+    // A two-digit number and a one-digit number, with no carrying or borrowing (34 + 5, 47 - 3).
+    // Too many to count on blocks, so the hint shows how to do it with just the ones.
+    function biggerNumbers() {
+        const tens = randomInt(1, 9) * 10;
+        if (Math.random() < 0.5) {
+            const ones = randomInt(0, 8), b = randomInt(1, 9 - ones);
+            return {
+                text: (tens + ones) + ' + ' + b,
+                answer: tens + ones + b,
+                hint: `${ones} + ${b} = ${ones + b}, so it's ${tens} + ${ones + b}.`,
+            };
+        }
+        const ones = randomInt(1, 9), b = randomInt(1, ones);
+        return {
+            text: (tens + ones) + ' - ' + b,
+            answer: tens + ones - b,
+            hint: `${ones} - ${b} = ${ones - b}, so it's ${tens} + ${ones - b}.`,
+        };
+    }
+
+    function mathProblem(level) {
+        const roll = Math.random();
+        switch (level) {
+            case 1: return adding(3, 10);
+            case 2: return roll < 0.5 ? adding(3, 10) : subtracting(3, 10);
+            case 3: return adding(8, 20);
+            case 4: return roll < 0.5 ? adding(8, 20) : subtracting(8, 20);
+            case 5: return roll < 0.35 ? equalGroups(4, 5) : roll < 0.7 ? adding(8, 20) : subtracting(8, 20);
+            default: return roll < 0.35 ? equalGroups(5, 5) : biggerNumbers();
+        }
+    }
 
     // ---------- Saved progress (kept on this device only) ----------
     //
     // Progress is one object in localStorage under makeWay.save, with a version number. When a
     // change to the game needs the save to change shape, bump SAVE_VERSION and add a step to
-    // UPGRADES that turns the old shape into the new one. Before a save is upgraded, a copy of
-    // it is put aside under makeWay.backup.v<old version> and never written again, so a bad
-    // upgrade can be repaired by a later one. Nothing here ever deletes anything.
+    // UPGRADES that turns the old shape into the new one. (A brand-new field with a sensible
+    // default, like math, doesn't need that.) Before a save is upgraded, a copy of it is put
+    // aside under makeWay.backup.v<old version> and never written again, so a bad upgrade can
+    // be repaired by a later one. Nothing here ever deletes anything.
 
     const SAVE_KEY = 'makeWay.save';
     const SAVE_VERSION = 2;
@@ -147,6 +238,8 @@
     }
 
     const saved = loadSave();
+    const savedMath = saved.math && typeof saved.math === 'object' ? saved.math : {};
+    const isCount = n => Number.isInteger(n) && n >= 0;
 
     // Only take values from the save that make sense, so a damaged save can't break the game
     const state = {
@@ -155,6 +248,16 @@
         name: typeof saved.name === 'string' ? saved.name.slice(0, 16) : '',
         muted: saved.muted === true,
         started: saved.started === true,
+        math: {
+            level: Number.isInteger(savedMath.level) && savedMath.level >= 1 && savedMath.level <= MATH_LEVELS.length
+                ? savedMath.level : DEFAULT_MATH_LEVEL,
+            streak: isCount(savedMath.streak) ? savedMath.streak : 0, // right on the first try, in a row
+            tough: isCount(savedMath.tough) ? savedMath.tough : 0, // took 3 or more tries, in a row
+            solved: isCount(savedMath.solved) ? savedMath.solved : 0,
+        },
+        hearts: MAX_HEARTS,
+        bonks: 0, // this level
+        problem: null, // the math problem on screen
         cols: 0,
         rows: 0,
         pieces: [],
@@ -172,6 +275,7 @@
             name: state.name,
             muted: state.muted,
             started: state.started,
+            math: { ...savedMath, ...state.math },
         });
         storageSet(SAVE_KEY, JSON.stringify(saved));
     }
@@ -642,6 +746,13 @@
                 [523, 659, 784, 1047].forEach((freq, i) => tone({ freq, dur: 0.16, delay: i * 0.12 }));
                 tone({ freq: 1047, dur: 0.45, vol: 0.08, delay: 0.5 });
             },
+            correct() {
+                [784, 1047].forEach((freq, i) => tone({ freq, dur: 0.14, delay: i * 0.11 }));
+            },
+            // A little rising sparkle as the hearts fill back up
+            refill() {
+                [523, 659, 784].forEach((freq, i) => tone({ freq, dur: 0.1, vol: 0.07, delay: i * 0.15 }));
+            },
             click() {
                 tone({ freq: 660, dur: 0.05, vol: 0.05 });
             },
@@ -657,6 +768,11 @@
     // For putting text (like his name) inside HTML
     function escapeHtml(text) {
         return text.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+    }
+
+    // Text for inside HTML, with numbers in the blocky font (see write, below)
+    function numbers(text) {
+        return escapeHtml(String(text)).replace(/\d+/g, '<span class="mw-num">$&</span>');
     }
 
     function cheer() {
@@ -680,6 +796,7 @@
             <h1 class="mw-title">Make Way!</h1>
             <div class="mw-status">
                 <span class="mw-level"></span>
+                <span class="mw-hearts" role="img"></span>
                 <span class="mw-trophies"></span>
             </div>
             <div class="mw-buttons">
@@ -698,7 +815,9 @@
     `;
 
     const el = {
+        title: root.querySelector('.mw-title'),
         level: root.querySelector('.mw-level'),
+        hearts: root.querySelector('.mw-hearts'),
         trophies: root.querySelector('.mw-trophies'),
         sound: root.querySelector('.mw-sound'),
         stage: root.querySelector('.mw-stage'),
@@ -726,8 +845,33 @@
         write(el.message, text);
     }
 
+    // A pixel heart: K is the outline, R the inside, W a shine
+    const HEART = [
+        '.KK...KK.',
+        'KRRK.KRRK',
+        'KRWRKRRRK',
+        'KRRRRRRRK',
+        '.KRRRRRK.',
+        '..KRRRK..',
+        '...KRK...',
+        '....K....',
+    ];
+
+    function heartSvg(full) {
+        const colors = full ? { K: '#1b1b1b', R: '#e53935', W: '#ffffff' } : { K: '#1b1b1b', R: '#7a6656', W: '#7a6656' };
+        let pixels = '';
+        HEART.forEach((row, y) => [...row].forEach((ch, x) => {
+            if (colors[ch]) {
+                pixels += `<rect x="${x}" y="${y}" width="1" height="1" fill="${colors[ch]}"/>`;
+            }
+        }));
+        return `<svg class="mw-heart" viewBox="0 0 9 8" shape-rendering="crispEdges" aria-hidden="true">${pixels}</svg>`;
+    }
+
     function updateBar() {
         write(el.level, 'Level ' + state.level);
+        el.hearts.innerHTML = Array.from({ length: MAX_HEARTS }, (_, i) => heartSvg(i < state.hearts)).join('');
+        el.hearts.setAttribute('aria-label', state.hearts + (state.hearts === 1 ? ' heart' : ' hearts') + ' left');
         const trophies = Math.floor((state.level - 1) / 5);
         write(el.trophies, trophies ? '🏆 × ' + trophies : '');
         el.sound.textContent = state.muted ? '🔇 Sound off' : '🔊 Sound on';
@@ -780,6 +924,8 @@
         state.cols = cols;
         state.rows = rows;
         state.driven = 0;
+        state.hearts = MAX_HEARTS;
+        state.bonks = 0;
         state.grid = emptyGrid(cols, rows);
         state.pieces = generateLevel(cols, rows, count, state.level);
         state.pieces.forEach(piece => {
@@ -822,7 +968,8 @@
     }
 
     function tap(piece) {
-        if (piece.moving) {
+        // Out of hearts: the math problem is on its way
+        if (piece.moving || state.hearts === 0) {
             return;
         }
         sound.wake();
@@ -839,6 +986,7 @@
 
     function bump(piece, block) {
         piece.moving = true;
+        state.bonks++;
         const reach = block.gap + 0.25;
         const duration = reduceMotion ? 200 : 260 + block.gap * 70;
         const hit = duration * 0.45;
@@ -860,7 +1008,27 @@
                 ], { duration: 260 });
             }
             say(randomItem(RIDES[state.ride].bumps));
+            loseHeart();
         }, hit);
+    }
+
+    function loseHeart() {
+        if (state.hearts <= 0) {
+            return;
+        }
+        state.hearts--;
+        updateBar();
+        if (!reduceMotion) {
+            el.hearts.children[state.hearts].animate([
+                { transform: 'scale(1.6) rotate(-12deg)' }, { transform: 'scale(1) rotate(0)' },
+            ], { duration: 350, easing: 'ease-out' });
+        }
+        if (state.hearts === 1) {
+            say(withName('Careful{, name}! One heart left.'));
+        } else if (state.hearts === 0) {
+            clearTimeout(state.hintTimer);
+            setTimeout(showMathPanel, 700);
+        }
     }
 
     function driveOff(piece) {
@@ -946,6 +1114,7 @@
             <h2 id="mw-panel-title" class="mw-panel-title">Level ${finished} complete!</h2>
             <p class="mw-stars" aria-label="3 stars">★ ★ ★</p>
             <p class="mw-big">${escapeHtml(cheer())}</p>
+            ${state.bonks === 0 ? '<p class="mw-trophy">Perfect! Not a single bonk!</p>' : ''}
             ${trophy ? `<p class="mw-trophy">🏆 You earned a trophy! That makes <span class="mw-num">${trophies}</span>.</p>` : ''}
             <button type="button" class="mw-button mw-go" data-action="next">Next level</button>
         `);
@@ -971,18 +1140,216 @@
         }
     }
 
-    // ---------- Panels: picking a ride, and level complete ----------
+    // ---------- Panels: picking a ride, level complete, the math break and grown-ups ----------
 
-    function showPanel(html) {
+    function showPanel(html, kind = '') {
         el.panel.innerHTML = html;
+        el.panel.dataset.kind = kind;
         el.overlay.hidden = false;
         // Focus the big button rather than the name box, which would pop up the iPad keyboard
-        el.panel.querySelector('.mw-go').focus();
+        el.panel.querySelector('.mw-go, .mw-key--ok').focus();
     }
 
     function hidePanel() {
         el.overlay.hidden = true;
+        el.panel.dataset.kind = '';
     }
+
+    // ---------- The math break: out of hearts, so solve a problem to fill them back up ----------
+
+    function showMathPanel() {
+        const ride = RIDES[state.ride];
+        // Never the same problem twice in a row
+        let problem = mathProblem(state.math.level);
+        for (let i = 0; i < 5 && state.problem && problem.text === state.problem.text; i++) {
+            problem = mathProblem(state.math.level);
+        }
+        state.problem = { ...problem, typed: '', misses: 0, done: false };
+
+        const key = d => `<button type="button" class="mw-button mw-key" data-digit="${d}">${d}</button>`;
+        showPanel(`
+            <h2 id="mw-panel-title" class="mw-panel-title">${ride.empty}</h2>
+            <p class="mw-big">${ride.refill}</p>
+            ${problem.caption ? `<p class="mw-caption">${numbers(problem.caption)}</p>` : ''}
+            <p class="mw-problem">${problem.text} = <span class="mw-answer"></span></p>
+            <div class="mw-blocks" aria-hidden="true" hidden></div>
+            <p class="mw-math-message" aria-live="polite"></p>
+            <div class="mw-pad">
+                ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(key).join('')}
+                <button type="button" class="mw-button mw-key mw-key--erase" data-action="erase" aria-label="Erase"></button>
+                ${key(0)}
+                <button type="button" class="mw-button mw-key mw-key--ok" data-action="check">OK</button>
+            </div>
+        `, 'math');
+        // The first two levels always have blocks to count; the others get them after a wrong answer
+        if (state.math.level <= 2) {
+            showBlocks();
+        }
+        showTyped();
+    }
+
+    // Blocks to count: two colors for adding, some crossed out for taking away, or equal groups
+    function showBlocks() {
+        const box = el.panel.querySelector('.mw-blocks');
+        const blocks = state.problem.blocks;
+        if (!blocks || !box.hidden) {
+            return false;
+        }
+        const group = (count, color = '', crossedOut = 0) =>
+            `<span class="mw-group" style="--cols: ${Math.min(5, count)}">` +
+            Array.from({ length: count }, (_, i) =>
+                `<span class="mw-block ${i >= count - crossedOut ? 'mw-block--gone' : color}"></span>`).join('') +
+            '</span>';
+        if (blocks.add) {
+            box.innerHTML = group(blocks.add[0]) + '<span class="mw-sign">+</span>' + group(blocks.add[1], 'mw-block--gold');
+        } else if (blocks.take) {
+            box.innerHTML = group(blocks.take[0], '', blocks.take[1]);
+        } else {
+            const [count, size] = blocks.groups;
+            box.innerHTML = Array.from({ length: count }, (_, i) => group(size, i % 2 ? 'mw-block--gold' : '')).join('');
+        }
+        box.hidden = false;
+        return true;
+    }
+
+    function showTyped() {
+        const answer = el.panel.querySelector('.mw-answer');
+        answer.textContent = state.problem.typed || '?';
+        answer.classList.toggle('mw-answer--empty', !state.problem.typed);
+    }
+
+    function typeDigit(digit) {
+        const p = state.problem;
+        if (!p.done && p.typed.length < 3) {
+            p.typed += digit;
+            showTyped();
+        }
+    }
+
+    function eraseDigit() {
+        const p = state.problem;
+        if (!p.done) {
+            p.typed = p.typed.slice(0, -1);
+            showTyped();
+        }
+    }
+
+    function checkAnswer() {
+        const p = state.problem;
+        if (p.done || !p.typed) {
+            return;
+        }
+        const message = el.panel.querySelector('.mw-math-message');
+        if (Number(p.typed) === p.answer) {
+            p.done = true;
+            sound.correct();
+            write(message, 'Yes! ' + p.answer + ' is right!');
+            recordMath(p.misses + 1);
+            setTimeout(refillHearts, 1100);
+            return;
+        }
+
+        // Not quite: blocks to count (or a trick) after the first miss, and the answer after the third
+        p.misses++;
+        p.typed = '';
+        showTyped();
+        sound.bump();
+        if (!reduceMotion) {
+            el.panel.querySelector('.mw-answer').animate([
+                { transform: 'translateX(0)' }, { transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' },
+                { transform: 'translateX(-5px)' }, { transform: 'translateX(0)' },
+            ], { duration: 300 });
+        }
+        if (p.misses >= 3) {
+            write(message, `It's ${p.answer}! Type ${p.answer} to keep going.`);
+        } else if (p.misses === 1 && showBlocks()) {
+            write(message, 'Not quite. Count the blocks!');
+        } else if (p.misses === 1 && p.hint) {
+            write(message, 'Not quite. Here\'s a trick: ' + p.hint);
+        } else {
+            write(message, 'Not quite. Try again!');
+        }
+    }
+
+    // Move up a math level after 5 right on the first try in a row, and down one after 2 in a row
+    // that each took 3 or more tries
+    function recordMath(tries) {
+        const m = state.math;
+        m.solved++;
+        if (tries === 1) {
+            m.streak++;
+            m.tough = 0;
+            if (m.streak >= 5 && m.level < MATH_LEVELS.length) {
+                m.level++;
+                m.streak = 0;
+            }
+        } else {
+            m.streak = 0;
+            m.tough = tries >= 3 ? m.tough + 1 : 0;
+            if (m.tough >= 2 && m.level > 1) {
+                m.level--;
+                m.tough = 0;
+            }
+        }
+        saveProgress();
+    }
+
+    function refillHearts() {
+        hidePanel();
+        state.hearts = MAX_HEARTS;
+        updateBar();
+        sound.refill();
+        if (!reduceMotion) {
+            [...el.hearts.children].forEach((heart, i) => heart.animate([
+                { transform: 'scale(0)' }, { transform: 'scale(1.4)', offset: 0.7 }, { transform: 'scale(1)' },
+            ], { duration: 400, delay: i * 150, easing: 'ease-out', fill: 'backwards' }));
+        }
+        say(withName(RIDES[state.ride].full + ' Keep going{, name}!'));
+        restartHintTimer();
+    }
+
+    // ---------- Grown-ups: hold down the "Make Way!" title for 2 seconds ----------
+
+    function showGrownUps() {
+        clearTimeout(state.hintTimer);
+        const options = MATH_LEVELS.map((level, i) => {
+            const picked = i + 1 === state.math.level;
+            return `
+                <button type="button" class="mw-math-level${picked ? ' mw-math-level--picked' : ''}" data-action="math-level" data-level="${i + 1}" aria-pressed="${picked}">
+                    <span>${numbers(level.name)}</span>
+                    <span class="mw-math-example">${level.example}</span>
+                </button>`;
+        }).join('');
+        showPanel(`
+            <h2 id="mw-panel-title" class="mw-panel-title">Grown-ups</h2>
+            <p class="mw-note">${numbers(`Each bonk costs a heart. When all ${MAX_HEARTS} are gone, a math problem fills them back up. ` +
+                'Pick the level the math starts at. It moves up after 5 right answers in a row, and back down after 2 tough ones.')}</p>
+            <div class="mw-math-levels">${options}</div>
+            <p class="mw-note">${numbers('Math problems solved so far: ' + state.math.solved)}</p>
+            <button type="button" class="mw-button mw-go" data-action="close">Done</button>
+        `, 'grown-ups');
+    }
+
+    function setMathLevel(level) {
+        Object.assign(state.math, { level, streak: 0, tough: 0 });
+        saveProgress();
+        el.panel.querySelectorAll('[data-level]').forEach(option => {
+            const picked = Number(option.dataset.level) === level;
+            option.classList.toggle('mw-math-level--picked', picked);
+            option.setAttribute('aria-pressed', String(picked));
+        });
+    }
+
+    let holdTimer = null;
+    el.title.addEventListener('pointerdown', () => {
+        clearTimeout(holdTimer);
+        holdTimer = setTimeout(showGrownUps, 2000);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(type => {
+        el.title.addEventListener(type, () => clearTimeout(holdTimer));
+    });
+
+    // ---------- Picking a ride ----------
 
     function rideCard(key) {
         const selected = key === state.ride;
@@ -1025,11 +1392,24 @@
             return;
         }
 
+        const digit = ev.target.closest('[data-digit]');
+        if (digit) {
+            sound.wake();
+            sound.click();
+            typeDigit(digit.dataset.digit);
+            return;
+        }
+
         const action = ev.target.closest('[data-action]');
         if (!action) {
             return;
         }
         sound.wake();
+        if (action.dataset.action === 'check') {
+            // It makes its own right-or-wrong sound
+            checkAnswer();
+            return;
+        }
         sound.click();
         if (action.dataset.action === 'start') {
             const input = el.panel.querySelector('input');
@@ -1047,7 +1427,31 @@
         } else if (action.dataset.action === 'next') {
             hidePanel();
             startLevel();
+        } else if (action.dataset.action === 'erase') {
+            eraseDigit();
+        } else if (action.dataset.action === 'math-level') {
+            setMathLevel(Number(action.dataset.level));
+        } else if (action.dataset.action === 'close') {
+            hidePanel();
+            restartHintTimer();
         }
+    });
+
+    // A keyboard works on the math break too: numbers, Backspace and Enter
+    document.addEventListener('keydown', ev => {
+        if (el.overlay.hidden || el.panel.dataset.kind !== 'math') {
+            return;
+        }
+        if (/^\d$/.test(ev.key)) {
+            typeDigit(ev.key);
+        } else if (ev.key === 'Backspace') {
+            eraseDigit();
+        } else if (ev.key === 'Enter') {
+            checkAnswer();
+        } else {
+            return;
+        }
+        ev.preventDefault();
     });
 
     // Enter in the name box means "Let's go!"
@@ -1071,7 +1475,7 @@
             sound.click();
             showHint();
             restartHintTimer();
-        } else if (action.dataset.action === 'ride') {
+        } else if (action.dataset.action === 'ride' && state.hearts > 0) {
             sound.click();
             clearTimeout(state.hintTimer);
             showRidePicker(false);
@@ -1089,5 +1493,8 @@
     }
 
     // For poking at in the browser console (and the tests): build a board without playing it
-    window.MakeWay = { levelConfig, generateLevel, solvable, blockerOf, emptyGrid, occupy, spriteFor, RIDES };
+    window.MakeWay = {
+        levelConfig, generateLevel, solvable, blockerOf, emptyGrid, occupy, spriteFor, RIDES,
+        mathProblem, MATH_LEVELS, showMathPanel, showGrownUps,
+    };
 })();
