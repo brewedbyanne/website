@@ -1345,21 +1345,32 @@
         el.sound.setAttribute('aria-pressed', String(!state.muted));
     }
 
-    // Size the board to fill the screen, whichever way the iPad is turned
+    // Smaller squares than this are too fiddly to tap, so the board scrolls instead (see .mw-stage)
+    const MIN_CELL = 22;
+
+    // Size the board to fit the space between the bar and the message, whichever way the screen
+    // is turned. That space is measured rather than worked out from the window, so it already
+    // leaves out the iPad's status bar and home bar and a message that wraps onto a second line.
+    // The stage's padding is the room for the board's frame.
     function layout() {
         if (!state.cols) {
             return;
         }
-        const barHeight = root.querySelector('.mw-bar').offsetHeight;
-        const messageHeight = el.message.offsetHeight;
-        const frame = 56; // the grass-and-dirt border plus breathing room
-        const width = window.innerWidth - frame;
-        const height = window.innerHeight - barHeight - messageHeight - frame;
-        const cell = Math.max(28, Math.floor(Math.min(width / state.cols, height / state.rows, 140)));
+        const style = getComputedStyle(el.stage);
+        const width = el.stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        const height = el.stage.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+        const cell = Math.max(MIN_CELL, Math.floor(Math.min(width / state.cols, height / state.rows, 140)));
         el.board.style.setProperty('--cell', cell + 'px');
     }
 
-    window.addEventListener('resize', layout);
+    // Again whenever that space changes size: turning the iPad, the bar wrapping onto another
+    // line, or the message getting longer or shorter. (The space doesn't depend on the board,
+    // so resizing the board can't set this off again.)
+    if (window.ResizeObserver) {
+        new ResizeObserver(layout).observe(el.stage);
+    } else {
+        window.addEventListener('resize', layout);
+    }
 
     // ---------- Playing ----------
 

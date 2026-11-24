@@ -191,15 +191,24 @@ body {
 
 /* ---------- The board ---------- */
 
+/*
+ * The space between the bar and the message. The padding leaves room for the board's frame
+ * (18px all round, plus its 14px shadow underneath). The board is sized to fit (see layout in
+ * make-way.js), but if it ever can't, this scrolls instead of hiding the edge rows.
+ */
 .mw-stage {
     flex: 1;
     display: grid;
-    place-items: center;
     min-height: 0;
-    overflow: hidden;
+    padding: 22px 22px 36px;
+    overflow: auto;
+    overscroll-behavior: contain;
 }
 
+/* Centered by its margins: unlike centering the grid, these never push the board off the top
+   or left edge where scrolling can't reach it */
 .mw-board {
+    margin: auto;
     position: relative;
     width: calc(var(--cols) * var(--cell));
     height: calc(var(--rows) * var(--cell));
@@ -811,6 +820,22 @@ body {
 }
 
 /* ---------- Smaller screens ---------- */
+
+/* A phone (either way up) or a short window: a thinner frame round the board, so the squares
+   can be bigger */
+@media (max-width: 600px), (max-height: 600px) {
+    .mw-stage {
+        padding: 12px 12px 20px;
+    }
+
+    .mw-board {
+        box-shadow:
+            0 0 0 4px var(--frame-top, var(--grass)),
+            0 0 0 8px var(--frame-middle, var(--dirt)),
+            0 0 0 10px var(--frame-edge, var(--dirt-dark)),
+            0 8px 0 10px rgba(0, 0, 0, .18);
+    }
+}
 
 @media (max-width: 600px) {
     .mw-title {
